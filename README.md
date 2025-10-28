@@ -1,6 +1,6 @@
 # Projeto de Sistemas de Informação
 
-Repositório para o projeto da unidade curricular de **Projeto de Sistemas de Informação**, desenvolvido no âmbito do **TeSP de Programação de Sistemas de Informação (PSI)**.
+Repositório para o projeto da unidade curricular de **Acesso Móvel a Sistemas de Informação**, desenvolvido no âmbito do **TeSP de Programação de Sistemas de Informação (PSI)**.
 
 ---
 

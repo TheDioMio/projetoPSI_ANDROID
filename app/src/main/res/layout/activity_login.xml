@@ -1,102 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/cor_fundo_claro"
-    android:gravity="center_horizontal"
-    tools:context=".MainActivity">
+    tools:context=".LoginActivity">
 
-    <ImageView
-        android:id="@+id/imgLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="32dp"
-        app:srcCompat="@drawable/logo_cores"
-        android:scaleType="fitCenter" />
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/card_background"
-        android:layout_marginHorizontal="24dp"
-        android:padding="24dp"
-
-        android:stretchColumns="1">
-
-        <TableRow android:gravity="center_vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="IP:"
-                android:textColor="@color/text_white"
-                android:textSize="16sp" />
-            <EditText
-                android:id="@+id/etIP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="localhost"
-                android:background="@color/input_white"
-                android:padding="8dp"
-                android:layout_marginHorizontal="8dp" />
-            <ImageButton
-                android:id="@+id/btnPinIP"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:backgroundTint="@color/pin_yellow"
-                android:src="@android:drawable/ic_menu_mylocation" />
-        </TableRow>
-
-        <TableRow android:gravity="center_vertical" android:layout_marginTop="16dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Port:"
-                android:textColor="@color/text_white"
-                android:textSize="16sp" />
-            <EditText
-                android:id="@+id/etPort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="80"
-                android:inputType="number"
-                android:background="@color/input_white"
-                android:padding="8dp"
-                android:layout_marginHorizontal="8dp" />
-            <ImageButton
-                android:id="@+id/btnPinPort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:backgroundTint="@color/pin_yellow"
-                android:src="@android:drawable/ic_menu_mylocation" />
-        </TableRow>
-
-        <TableRow android:gravity="center_vertical" android:layout_marginTop="24dp">
-            <Space />
-            <Button
-                android:id="@+id/btnConnect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Connect"
-                app:backgroundTint="@color/connect_green"
-                android:layout_marginHorizontal="8dp" />
-            <ImageButton
-                android:id="@+id/btnPinConnect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:backgroundTint="@color/pin_yellow"
-                android:src="@android:drawable/ic_menu_mylocation" />
-        </TableRow>
-
-    </TableLayout>
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

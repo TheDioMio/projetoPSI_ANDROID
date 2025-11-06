@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">projetoANDROID</string>
     <string name="txt_status_conexao">Connection OK / Fail\n</string>
+    <string name="txt_homepage">Homepage</string>
+    <string name="txt_detalhes_animal">Detalhes do Animal</string>
+    <string name="ndOpen">Open</string>
+    <string name="ndClose">Close</string>
 </resources>

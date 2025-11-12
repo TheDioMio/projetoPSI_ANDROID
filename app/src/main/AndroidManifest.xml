@@ -12,25 +12,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjetoANDROID">
 
-        <!-- 🟢 MenuMainActivity será a primeira a abrir -->
         <activity
-            android:name=".MenuMainActivity"
-            android:theme="@style/Theme.ProjetoANDROID.NoActionBar"
-            android:exported="true">
+            android:name=".SignupActivity"
+            android:exported="false" />
+        <!-- 🟢 MenuMainActivity será a primeira a abrir -->
+
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ProjetoANDROID.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+
+<!--        <activity-->
+<!--            android:name=".MenuMainActivity"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/Theme.ProjetoANDROID.NoActionBar">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+<!--        <activity-->
+<!--            android:name=".LoginActivity"-->
+<!--            android:exported="false" />-->
+
         <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
+                    android:name=".MenuMainActivity"
+                    android:exported="true"
+                    android:theme="@style/Theme.ProjetoANDROID.NoActionBar"/>
 
         <activity
             android:name=".ConnectionActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="false" />

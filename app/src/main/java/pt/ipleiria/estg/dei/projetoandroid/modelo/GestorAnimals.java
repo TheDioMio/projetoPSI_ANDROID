@@ -9,6 +9,8 @@ import java.util.Date;
 public class GestorAnimals {
     private ArrayList<Animal> animals;
 
+    private String caminho ="127.0.0.1\\projetoPSI_WEB\\Assets\\img\\";
+
     public GestorAnimals() {
         animals = new ArrayList<>();
         gerarDadosDinamicos();
@@ -19,11 +21,11 @@ public class GestorAnimals {
 
         //está a carregar as imagens do disco local, mas no futuro vem da API
         ArrayList<String> imagens = new ArrayList<>();
-        imagens.add("https:\\127.0.0.1\\www\\projetoPSI_WEB\\backend\\web\\assets\\af788a85\\img\\avatar.pmg");
-        imagens.add("C:\\Users\\Igor\\Desktop\\img\\cao2.png");
-        imagens.add("C:\\Users\\Igor\\Desktop\\img\\cao3.png");
-        imagens.add("C:\\Users\\Igor\\Desktop\\img\\cao4.png");
-        imagens.add("C:\\Users\\Igor\\Desktop\\img\\cao5.png");
+        imagens.add(caminho+"cao1.png");
+        imagens.add(caminho+"cao2.png");
+        imagens.add(caminho+"cao3.png");
+        imagens.add(caminho+"cao4.png");
+        imagens.add(caminho+"cao5.png");
 
         animals.add(new Animal(
                 1,                  // id

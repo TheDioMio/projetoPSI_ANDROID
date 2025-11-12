@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:background="@color/white"
+    tools:context=".AnimalDetailsFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 📸 Imagem principal -->
+        <ImageView
+            android:id="@+id/imgPrincipal"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/imagem_principal"
+            android:src="@mipmap/placeholder" />
+
+        <!-- 🔄 Miniaturas em carrossel horizontal -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/layoutMiniaturas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="4dp" />
+        </HorizontalScrollView>
+
+        <!-- 📋 Detalhes do animal -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/tvNomeAnimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nome do animal"
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tvIdadeAnimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Idade: 2 anos"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvRacaAnimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Raça: Labrador"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvLocalizacaoAnimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Localização: Leiria"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvDescricaoAnimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descrição do animal..."
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

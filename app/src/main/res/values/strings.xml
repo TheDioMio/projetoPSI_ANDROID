@@ -5,4 +5,14 @@
     <string name="txt_detalhes_animal">Detalhes do Animal</string>
     <string name="ndOpen">Open</string>
     <string name="ndClose">Close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_Home">Home</string>
+    <string name="txt_button_pesquisar_animais">Pesquisar Animais</string>
+    <string name="txt_header_home_text">Encontre o seu novo companheiro</string>
+    <string name="txt_footer_termos">2025 termos a definir</string>
+    <string name="txt_name_test">REX</string>
+    <string name="txt_breed_test">Golden Retriver</string>
+    <string name="txt_age_test">2 anos</string>
+    <string name="imagem_principal">Foto do animal</string>
 </resources>

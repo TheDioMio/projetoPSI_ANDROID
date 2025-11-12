@@ -53,8 +53,8 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void carregarFragmentoInicial() {
-//        Fragment fragment = new ListaLivrosFragment();
-//        fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+       Fragment fragment = new HomeFragment();
+       fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
 
     }
 
@@ -79,38 +79,28 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        Fragment fragment = null;
+        if (menuItem.getItemId() == R.id.navHome){
+            fragment = new HomeFragment();
+            setTitle(menuItem.getTitle());
+            System.out.println("--> Nav Home");
+        } else if (menuItem.getItemId() == R.id.navDetalhesAnimal){
+            //fragment = new DinamicoFragment();
+            //setTitle(menuItem.getTitle());
+            System.out.println("--> Nav Dinamico");
+        }
+
+
+        if (fragment != null){
+            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+
+        }
+
+
+        drawer.closeDrawer(GravityCompat.START);
         return false;
     }
 
 
-//    @Override
-//    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-//        Fragment fragment = null;
-//        if (menuItem.getItemId() == R.id.navHome){
-//            fragment = new ListaLivrosFragment();
-//            setTitle(menuItem.getTitle());
-//            System.out.println("--> Nav Estatico");
-//        } else if (menuItem.getItemId() == R.id.navDinamico){
-//            //fragment = new DinamicoFragment();
-//            setTitle(menuItem.getTitle());
-//            System.out.println("--> Nav Dinamico");
-//        }else if (menuItem.getItemId() == R.id.navEmail){
-//
-//            Intent intent = new Intent(Intent.ACTION_SENDTO);
-//            intent.setData(Uri.parse("mailto:"+ email));
-//            intent.putExtra(Intent.EXTRA_SUBJECT, "PSI - AMSI 2025/2026");
-//            startActivity(intent);
-//
-//            System.out.println("--> Nav Email");
-//        }
-//
-//        if (fragment != null){
-//            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
-//
-//        }
-//
-//
-//        drawer.closeDrawer(GravityCompat.START);
-//        return false;
-//    }
 }

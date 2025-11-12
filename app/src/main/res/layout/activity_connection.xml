@@ -75,13 +75,15 @@
 
         <TableRow android:gravity="center_vertical" android:layout_marginTop="24dp">
             <Space />
+
             <Button
                 android:id="@+id/btnConnect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
                 android:text="Connect"
                 app:backgroundTint="@color/secondary"
-                android:layout_marginHorizontal="8dp" />
+                app:cornerRadius="@dimen/button_radius" />
             <ImageButton
                 android:id="@+id/btnPinConnect"
                 android:layout_width="wrap_content"

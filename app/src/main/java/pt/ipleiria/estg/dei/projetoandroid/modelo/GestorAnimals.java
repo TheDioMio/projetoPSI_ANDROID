@@ -2,41 +2,24 @@ package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
 import android.os.Build;
 
-import androidx.annotation.RequiresApi;
-
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class SingletonGestorAnimals {
-
-    private static SingletonGestorAnimals instance = null;
-
+public class GestorAnimals {
     private ArrayList<Animal> animals;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public static synchronized SingletonGestorAnimals getInstance(){
-        if (instance == null){
-            instance = new SingletonGestorAnimals();
-        }
-        return instance;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public SingletonGestorAnimals() {
+    public GestorAnimals() {
         animals = new ArrayList<>();
         gerarDadosDinamicos();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void gerarDadosDinamicos() {
         Date dataFixa = Date.from(Instant.now());
 
         //está a carregar as imagens do disco local, mas no futuro vem da API
         ArrayList<String> imagens = new ArrayList<>();
-        imagens.add("https:\\localhost\\www\\projetoPSI_WEB\\backend\\web\\assets\\af788a85\\img\\avatar.pmg");
+        imagens.add("https:\\127.0.0.1\\www\\projetoPSI_WEB\\backend\\web\\assets\\af788a85\\img\\avatar.pmg");
         imagens.add("C:\\Users\\Igor\\Desktop\\img\\cao2.png");
         imagens.add("C:\\Users\\Igor\\Desktop\\img\\cao3.png");
         imagens.add("C:\\Users\\Igor\\Desktop\\img\\cao4.png");
@@ -86,12 +69,14 @@ public class SingletonGestorAnimals {
                 "Cão muito amigável e brincalhão",  // description
                 "Lisboa",           // location
                 true,               // neutered
-                dataFixa,// created_at
+                dataFixa,           // created_at
                 imagens             // lista de imagens
         ));
 
         //animals.add(new Animal(1, 1, 1, 1, 1, 1, 1, "Rex", "Animal Meigo, gosta de crianças", "Leiria", true, dataFixa, ""));
     }
+
+
 
     public ArrayList<Animal> getAnimals() {
 
@@ -99,7 +84,6 @@ public class SingletonGestorAnimals {
     }
 
     public Animal getAnimal(int idAnimal){
-
 
         for (Animal animal: animals) {
             if (animal.getId()==idAnimal){

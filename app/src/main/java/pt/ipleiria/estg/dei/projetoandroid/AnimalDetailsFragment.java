@@ -14,7 +14,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
-import pt.ipleiria.estg.dei.projetoandroid.modelo.SingletonGestorAnimals;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,7 +87,7 @@ public class AnimalDetailsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             int animalId = args.getInt("ID_ANIMAL");
-            animal = SingletonGestorAnimals.getInstance().getAnimal(animalId);
+            animal = AppSingleton.getInstance().getAnimal(animalId);
             carregarDados(animal);
         }
 
@@ -96,9 +97,10 @@ public class AnimalDetailsFragment extends Fragment {
     private void carregarDados(Animal animal) {
         if (animal == null) return;
 
+        // Alterar o modo como mostramos os dados para em vez de ser colocado aqui no código ser colocado no layout
         tvNome.setText(animal.getName());
-        tvIdade.setText("Idade: " + animal.getAge() + " anos");
-        tvRaca.setText("Raça: " + animal.getBreed_id());
+        tvIdade.setText("Idade: " + animal.getAge()+"");
+        tvRaca.setText("Raça: " + animal.getBreed_id()+"");
         tvLocalizacao.setText("Localização: " + animal.getLocation());
         tvDescricao.setText(animal.getDescription());
 

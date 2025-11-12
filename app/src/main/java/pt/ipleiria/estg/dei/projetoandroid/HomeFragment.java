@@ -1,6 +1,5 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -12,14 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaAnimalsAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
-import pt.ipleiria.estg.dei.projetoandroid.modelo.SingletonGestorAnimals;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,7 +87,7 @@ public class HomeFragment extends Fragment {
         lvAnimals.addHeaderView(header);
         lvAnimals.addFooterView(footer);
 
-        animals = SingletonGestorAnimals.getInstance().getAnimals();
+        animals = AppSingleton.getInstance().getAnimals();
 
         //definir o adaptador
         adaptador = new ListaAnimalsAdaptador(getContext(), animals);

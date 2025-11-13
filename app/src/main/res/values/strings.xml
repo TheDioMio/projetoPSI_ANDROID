@@ -15,4 +15,15 @@
     <string name="txt_breed_test">Golden Retriver</string>
     <string name="txt_age_test">2 anos</string>
     <string name="imagem_principal">Foto do animal</string>
+    <string name="txt_user_details">Detalhes do Utilizador</string>
+    <string name="txt_img_profile">Foto de Perfil</string>
+    <string name="txt_name">Nome:</string>
+    <string name="txt_username">Username:</string>
+    <string name="txt_password">Password:</string>
+    <string name="txt_login">Login</string>
+    <string name="txt_registar">Registar</string>
+    <string name="txt_email">Email:</string>
+    <string name="txt_contact">Contacto:</string>
+    <string name="txt_new_passowrd">New Password:</string>
+    <string name="txt_save">Guardar</string>
 </resources>

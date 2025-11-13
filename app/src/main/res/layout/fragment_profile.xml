@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".ProfileFragment">
 
+    <!-- FOTO + BOTÃO EDITAR -->
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp">
 
         <ImageView
             android:id="@+id/imageView2"
@@ -28,85 +31,198 @@
             android:contentDescription="@null"
             android:padding="6dp"
             android:src="@android:drawable/ic_menu_camera" />
-
     </FrameLayout>
 
+    <!-- SECÇÃO: DETALHES DA CONTA -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Barra "Detalhes da Conta" -->
+        <TextView
+            android:id="@+id/tvAccountDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="4dp"
+            android:text="Detalhes da Conta"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:background="#EEEEEE"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Nome -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="@string/txt_name" />
 
             <EditText
                 android:id="@+id/et_name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight=".5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:ems="10"
-                android:inputType="text"
-                android:text="@string/txt_name" />
+                android:hint="@string/txt_name"
+                android:inputType="textPersonName" />
         </LinearLayout>
 
+        <!-- Username -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editTextText2"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/txt_username" />
+
+            <EditText
+                android:id="@+id/et_username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:ems="10"
-                android:inputType="text"
-                android:text="username" />
+                android:hint="@string/txt_username"
+                android:inputType="textPersonName" />
         </LinearLayout>
 
+        <!-- Email -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editTextText3"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/txt_email" />
+
+            <EditText
+                android:id="@+id/et_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:ems="10"
-                android:inputType="text"
-                android:text="email" />
+                android:hint="@string/txt_email"
+                android:inputType="textEmailAddress" />
         </LinearLayout>
 
+        <!-- Contacto -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editTextText4"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvContact"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/txt_contact" />
+
+            <EditText
+                android:id="@+id/et_contact"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:ems="10"
-                android:inputType="text"
-                android:text="localidade" />
+                android:hint="@string/txt_contact"
+                android:inputType="phone" />
         </LinearLayout>
 
     </LinearLayout>
+
+    <!-- Barra "Definições da Conta" -->
+    <TextView
+        android:id="@+id/tvAccountSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="4dp"
+        android:text="Definições da Conta"
+        android:textStyle="bold"
+        android:background="#EEEEEE"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- SECÇÃO: PASSWORDS -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Password atual -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/txt_password" />
+
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:ems="10"
+                android:hint="@string/txt_password"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+        <!-- Nova password -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvNewPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/txt_new_passowrd" />
+
+            <EditText
+                android:id="@+id/et_new_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:ems="10"
+                android:hint="@string/txt_new_passowrd"
+                android:inputType="textPassword" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Botão guardar -->
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/txt_save" />
 
 </LinearLayout>

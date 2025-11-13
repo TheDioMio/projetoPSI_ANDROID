@@ -16,4 +16,6 @@
     <string name="txt_age_test">2 anos</string>
     <string name="imagem_principal">Foto do animal</string>
     <string name="txt_user_details">Detalhes do Utilizador</string>
+    <string name="txt_img_profile">Foto de Perfil</string>
+    <string name="txt_name">Nome</string>
 </resources>

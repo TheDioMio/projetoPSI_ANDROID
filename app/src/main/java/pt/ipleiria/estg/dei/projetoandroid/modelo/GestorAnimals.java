@@ -21,11 +21,11 @@ public class GestorAnimals {
 
         //está a carregar as imagens do disco local, mas no futuro vem da API
         ArrayList<String> imagens = new ArrayList<>();
-        imagens.add(caminho+"cao1.png");
-        imagens.add(caminho+"cao2.png");
-        imagens.add(caminho+"cao3.png");
-        imagens.add(caminho+"cao4.png");
-        imagens.add(caminho+"cao5.png");
+        imagens.add("cao1");
+        imagens.add("cao2");
+        imagens.add("cao3");
+        imagens.add("cao4");
+        imagens.add("cao2");
 
         animals.add(new Animal(
                 1,                  // id

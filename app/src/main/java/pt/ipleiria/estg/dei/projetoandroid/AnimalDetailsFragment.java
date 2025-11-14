@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.List;
+
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
@@ -94,6 +96,40 @@ public class AnimalDetailsFragment extends Fragment {
         return view;
     }
 
+    private void carregarImagem(String img, ImageView destino) {
+
+        if (img == null || img.isEmpty()) {
+            destino.setImageResource(R.mipmap.placeholder);
+            return;
+        }
+
+        // URL → http/https
+        if (img.startsWith("http")) {
+            Glide.with(requireContext())
+                    .load(img)
+                    .placeholder(R.mipmap.placeholder)
+                    .error(R.mipmap.placeholder)
+                    .centerCrop()
+                    .into(destino);
+        }
+        // Drawable pelo nome
+        else {
+            int resId = getResources().getIdentifier(img, "drawable", requireContext().getPackageName());
+
+            if (resId != 0) {
+                Glide.with(requireContext())
+                        .load(resId)
+                        .placeholder(R.mipmap.placeholder)
+                        .error(R.mipmap.placeholder)
+                        .centerCrop()
+                        .into(destino);
+            } else {
+                destino.setImageResource(R.mipmap.placeholder);
+            }
+        }
+    }
+
+
     private void carregarDados(Animal animal) {
         if (animal == null) return;
 
@@ -104,39 +140,69 @@ public class AnimalDetailsFragment extends Fragment {
         tvLocalizacao.setText("Localização: " + animal.getLocation());
         tvDescricao.setText(animal.getDescription());
 
-        // imagem principal
-        if (animal.getImages() != null && !animal.getImages().isEmpty()) {
-            Glide.with(this)
-                    .load(animal.getImages().get(0))
-                    .centerCrop()
-                    .placeholder(R.mipmap.placeholder)
-                    .into(imgPrincipal);
+        List<String> imagens = animal.getImages();
 
-            // carregar as miniaturas
-            for (String url : animal.getImages()) {
-                ImageView miniatura = new ImageView(getContext());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
+        if (imagens != null && !imagens.isEmpty()) {
+
+            // ---- 1) Carregar a imagem principal ----
+            carregarImagem(imagens.get(0), imgPrincipal);
+
+            // ---- 2) Criar miniaturas ----
+            for (String img : imagens) {
+
+                ImageView mini = new ImageView(requireContext());
+                LinearLayout.LayoutParams params =
+                        new LinearLayout.LayoutParams(200, 200);
                 params.setMargins(8, 0, 8, 0);
-                miniatura.setLayoutParams(params);
-                miniatura.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                mini.setLayoutParams(params);
+                mini.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-                Glide.with(this)
-                        .load(url)
-                        .placeholder(R.mipmap.placeholder)
-                        .into(miniatura);
+                carregarImagem(img, mini);
 
-                // muda a imagem principal ao clicar
-                miniatura.setOnClickListener(v ->
-                        Glide.with(this)
-                                .load(url)
-                                .centerCrop()
-                                .placeholder(R.mipmap.placeholder)
-                                .into(imgPrincipal)
-                );
+                mini.setOnClickListener(v -> carregarImagem(img, imgPrincipal));
 
-                layoutMiniaturas.addView(miniatura);
+                layoutMiniaturas.addView(mini);
             }
         }
+
+
+
+
+//        // imagem principal
+//        if (animal.getImages() != null && !animal.getImages().isEmpty()) {
+//            Glide.with(this)
+//                    .load(animal.getImages().get(0))
+//                    .centerCrop()
+//                    .placeholder(R.mipmap.placeholder)
+//                    .into(imgPrincipal);
+//
+//            // carregar as miniaturas
+//            for (String url : animal.getImages()) {
+//                ImageView miniatura = new ImageView(getContext());
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
+//                params.setMargins(8, 0, 8, 0);
+//                miniatura.setLayoutParams(params);
+//                miniatura.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//
+//                Glide.with(this)
+//                        .load(url)
+//                        .placeholder(R.mipmap.placeholder)
+//                        .into(miniatura);
+//
+//                // muda a imagem principal ao clicar
+//                miniatura.setOnClickListener(v ->
+//                        Glide.with(this)
+//                                .load(url)
+//                                .centerCrop()
+//                                .placeholder(R.mipmap.placeholder)
+//                                .into(imgPrincipal)
+//                );
+//
+//                layoutMiniaturas.addView(miniatura);
+//            }
+//        }
+
+
 
     }
 }

@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/txt_credenciais_invalidas"
+                android:text="@string/txt_username"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -62,14 +62,15 @@
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
+
             <EditText
-                android:id="@+id/etPassword"
+                android:id="@+id/etPassword_"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:background="@color/white"
-                android:inputType="number"
-                android:padding="8dp" />
+                android:inputType="textPassword"
+                android:padding="8dp"/>
         </TableRow>
 
         <TableRow

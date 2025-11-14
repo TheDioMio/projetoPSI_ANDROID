@@ -35,7 +35,8 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        etPassword = findViewById(R.id.etPassword);
+        etPassword = findViewById(R.id.etPassword_);
+        etPassword.setText("");
         etUsername = findViewById(R.id.etUsername);
         btnLogin = findViewById(R.id.btnLogin);
         btnNewUser = findViewById(R.id.btnNewUser);
@@ -55,9 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Credenciais inválidas!", Toast.LENGTH_SHORT).show();
 
                 }
-//                Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
 
-//                startActivity(intent);
             }
         });
     }

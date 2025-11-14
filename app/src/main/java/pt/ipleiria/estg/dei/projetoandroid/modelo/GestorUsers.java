@@ -7,7 +7,6 @@ public class GestorUsers {
 
     private ArrayList<User> users;
 
-    private String caminho ="https:\\127.0.0.1\\projetoPSI_WEB\\Assets\\img\\";
 
     public GestorUsers() {
         users = new ArrayList<>();
@@ -18,9 +17,9 @@ public class GestorUsers {
     private void gerarDadosDinamicos() {
         //está a carregar as imagens do disco local, mas no futuro vem da API
 
-        users.add(new User(1, "Mário Pina", "mpuser", caminho+"avatar1.jpg", "Marinha Grande", "mpina@gmail.com"));
-        users.add(new User(2, "Diogo", "duser", caminho+"avatar2.jpg", "Leiria", "djacinto@gmail.com"));
-        users.add(new User(3, "Igor", "iuser", caminho+"avatar3.jpg", "Alcanena", "ipatrocinio@gmail.com"));
+        users.add(new User(1, "Mário Pina", "mpuser", "avatar1", "Marinha Grande", "mpina@gmail.com"));
+        users.add(new User(2, "Diogo", "duser", "avatar2", "Leiria", "djacinto@gmail.com"));
+        users.add(new User(3, "Igor", "iuser", "avatar3", "Alcanena", "ipatrocinio@gmail.com"));
 
     }
 

@@ -2,6 +2,8 @@ package pt.ipleiria.estg.dei.projetoandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -79,17 +81,47 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         if (user != null){
             nav_tvName.setText(user.getName().toString());
             nav_tvEmail.setText(user.getEmail().toString());
-            String avatarUrl = user.getImgAvatar();
-            if (avatarUrl != null && !avatarUrl.isEmpty()) {
-                Glide.with(this)
-                        .load(avatarUrl)
-                        .placeholder(R.drawable.logo_cores)
-                        .error(R.mipmap.default_avatar)
-                        .circleCrop()
-                        .into(nav_imgUser);
+//            String avatarUrl = user.getImgAvatar();
+//            if (avatarUrl != null && !avatarUrl.isEmpty()) {
+//                Glide.with(this)
+//                        .load(avatarUrl)
+//                        .placeholder(R.drawable.logo_cores)
+//                        .error(R.mipmap.default_avatar)
+//                        .circleCrop()
+//                        .into(nav_imgUser);
+//            } else {
+//                nav_imgUser.setImageResource(R.mipmap.default_avatar);
+//            }
+
+            String imgName = user.getImgAvatar();
+
+            if (imgName != null && !imgName.isEmpty()) {
+                // carregar a imagem da net
+                if (imgName.startsWith("http")) {
+                    Glide.with(this)
+                            .load(imgName)
+                            .placeholder(R.mipmap.default_avatar)
+                            .error(R.mipmap.default_avatar)
+                            .circleCrop()
+                            .into(nav_imgUser);
+
+                } else {
+                    // carregar a imagem local
+                    int resId = getResources().getIdentifier(imgName, "drawable", getPackageName());
+
+                    Glide.with(this)
+                            .load(resId)
+                            .placeholder(R.mipmap.default_avatar)
+                            .error(R.mipmap.default_avatar)
+                            .circleCrop()            // 🔥 Deixa redonda
+                            .into(nav_imgUser);
+                }
+
             } else {
                 nav_imgUser.setImageResource(R.mipmap.default_avatar);
             }
+
+
         }
 
     }

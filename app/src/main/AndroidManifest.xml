@@ -23,16 +23,8 @@
         <activity
             android:name=".MenuMainActivity"
             android:exported="true"
-            android:theme="@style/Theme.ProjetoANDROID.NoActionBar">
-            android:name=".LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.ProjetoANDROID.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:theme="@style/Theme.ProjetoANDROID.NoActionBar"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
 
 <!--        <activity-->
@@ -51,10 +43,15 @@
 
         <activity
             android:name=".LoginActivity"
-            android:exported="false" />
-                    android:name=".MenuMainActivity"
-                    android:exported="true"
-                    android:theme="@style/Theme.ProjetoANDROID.NoActionBar"/>
+            android:exported="true">
+
+            <!-- ESTA É A ACTIVITY QUE INICIA O APP -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".ConnectionActivity"

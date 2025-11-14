@@ -78,23 +78,47 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
             imgCapa = view.findViewById(R.id.imgCapa);
         }
 
+
         public void update(Animal animal) {
             tvName.setText(animal.getName());
             tvAge.setText(String.valueOf(animal.getAge()));
             tvBreed.setText(String.valueOf(animal.getBreed_id()));
 
+            String imgPath = null;
+
             if (animal.getImages() != null && !animal.getImages().isEmpty()) {
-                Glide.with(imgCapa.getContext())
-                        .load(animal.getImages().get(0)) // primeira imagem da lista
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.mipmap.placeholder)
-                        .error(R.mipmap.placeholder) // trocar por uma imagem de erro a nossa escolha
-                        .into(imgCapa);
-            } else {
+                imgPath = animal.getImages().get(0);
+            }
+
+            if (imgPath == null || imgPath.isEmpty()) {
                 imgCapa.setImageResource(R.mipmap.placeholder);
+                return;
+            }
+
+            if (imgPath.startsWith("http")) {
+                // 🔹 Se a imagem vem da internet → Glide
+                Glide.with(imgCapa.getContext())
+                        .load(imgPath)
+                        .centerCrop()
+                        .placeholder(R.mipmap.placeholder)
+                        .error(R.mipmap.placeholder)
+                        .into(imgCapa);
+
+            } else {
+                // 🔹 Se a imagem é local → drawable
+                int resId = imgCapa.getContext()
+                        .getResources()
+                        .getIdentifier(imgPath, "drawable", imgCapa.getContext().getPackageName());
+
+                if (resId != 0) {
+                    imgCapa.setImageResource(resId);
+                } else {
+                    imgCapa.setImageResource(R.mipmap.placeholder);
+                }
             }
         }
+
+//
 
     }
 }

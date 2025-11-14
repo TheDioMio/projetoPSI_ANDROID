@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,13 +22,21 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+
+import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
 public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;
+    public static final String IDUSER = "iduser";
+    private int iduser;
+    TextView nav_tvName, nav_tvEmail;
+    ImageView nav_imgUser;
 
 
     @Override
@@ -59,22 +68,30 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void carregarCabecalho() {
-//        email= getIntent().getStringExtra(EMAIL);
-//
-//        //aceder à sharedPreference e definir o modo de acesso
-//        sharedPreferences = getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
-//        //definir o Editor para permitir guardar / alterar o valor
-//        editor = sharedPreferences.edit();
-//        if (email!=null) {
-//            editor.putString(EMAIL, email);
-//            editor.apply();
-//        }else{
-//            email = sharedPreferences.getString(EMAIL, "Sem email");
-//        }
+        iduser= getIntent().getIntExtra(IDUSER, 0);
+        User user = AppSingleton.getInstance().getUser(iduser);
 
         View headerView = navigationView.getHeaderView(0);
-        TextView nav_tvEmail = headerView.findViewById(R.id.tvEmail);
-        //nav_tvEmail.setText(email);
+        nav_tvEmail = headerView.findViewById(R.id.tvEmail);
+        nav_tvName = headerView.findViewById(R.id.tvName);
+        nav_imgUser = headerView.findViewById(R.id.imgUser);
+
+        if (user != null){
+            nav_tvName.setText(user.getName().toString());
+            nav_tvEmail.setText(user.getEmail().toString());
+            String avatarUrl = user.getImgAvatar();
+            if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                Glide.with(this)
+                        .load(avatarUrl)
+                        .placeholder(R.drawable.logo_cores)
+                        .error(R.mipmap.default_avatar)
+                        .circleCrop()
+                        .into(nav_imgUser);
+            } else {
+                nav_imgUser.setImageResource(R.mipmap.default_avatar);
+            }
+        }
+
     }
 
     @Override
@@ -96,12 +113,10 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             System.out.println("--> Nav Detalhes Perfil");
         }
 
-
         if (fragment != null){
             fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
 
         }
-
 
         drawer.closeDrawer(GravityCompat.START);
         return false;

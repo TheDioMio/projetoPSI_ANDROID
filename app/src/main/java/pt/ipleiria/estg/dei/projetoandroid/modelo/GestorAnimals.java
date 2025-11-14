@@ -9,7 +9,7 @@ import java.util.Date;
 public class GestorAnimals {
     private ArrayList<Animal> animals;
 
-    private String caminho ="127.0.0.1\\projetoPSI_WEB\\Assets\\img\\";
+    private String caminho ="https:\\\127.0.0.1\\projetoPSI_WEB\\Assets\\img\\";
 
     public GestorAnimals() {
         animals = new ArrayList<>();

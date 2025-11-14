@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class AppSingleton {
     private static AppSingleton instance = null;
     private GestorAnimals gestorAnimals = new GestorAnimals();
+    private GestorUsers gestorUsers = new GestorUsers();
 
     public static synchronized AppSingleton getInstance(){
         if (instance == null){
@@ -23,5 +24,12 @@ public class AppSingleton {
         return gestorAnimals.getAnimal(idAnimal);
     }
 
+    public User getUserLogin(String username, String password){
+        return gestorUsers.getUserLogin(username, password);
+    }
+
+    public User getUser(int idUser){
+        return gestorUsers.getUser(idUser);
+    }
 
 }

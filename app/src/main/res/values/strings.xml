@@ -27,4 +27,8 @@
     <string name="txt_contact">Contacto:</string>
     <string name="txt_new_passowrd">New Password:</string>
     <string name="txt_save">Guardar</string>
+    <string name="txt_account_details">Detalhes da Conta</string>
+    <string name="txt_account_configs">Definições de Conta</string>
+    <string name="txt_location">Localização:</string>
+    <string name="txt_rpt_new_password">Repeat New Password:</string>
 </resources>

@@ -2,11 +2,14 @@ package pt.ipleiria.estg.dei.projetoandroid;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +26,12 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    // Valodação da nova password
+
+    private EditText etNewPass;
+    private EditText etRptNewPass;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -61,4 +70,33 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        etNewPass = view.findViewById(R.id.et_newPassword);
+        etRptNewPass = view.findViewById(R.id.et_rpt_new_password);
+    }
+
+
+    private boolean validatePassword() {
+
+
+        String newPassword = etNewPass.getText().toString().trim();
+        String rptPassword = etRptNewPass.getText().toString().trim();
+
+        if (!newPassword.equals(rptPassword)) {
+            etRptNewPass.setError("As passwords não coincidem");
+            etRptNewPass.requestFocus();
+            return false;
+        }
+
+
+        return false;
+
+    }
+
+
 }

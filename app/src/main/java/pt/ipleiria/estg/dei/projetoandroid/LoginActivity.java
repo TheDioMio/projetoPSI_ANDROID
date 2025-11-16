@@ -17,12 +17,8 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
 public class LoginActivity extends AppCompatActivity {
-
-
-
-
     private TextView etUsername, etPassword;
-    private Button btnLogin, btnNewUser;
+    private Button btnLogin, btnSignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword.setText("");
         etUsername = findViewById(R.id.etUsername);
         btnLogin = findViewById(R.id.btnLogin);
-        btnNewUser = findViewById(R.id.btnNewUser);
+        btnSignup = findViewById(R.id.btnSignup);
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -54,9 +50,16 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else {
                     Toast.makeText(LoginActivity.this, "Credenciais inválidas!", Toast.LENGTH_SHORT).show();
-
                 }
 
+            }
+        });
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                startActivity(intent);
             }
         });
     }

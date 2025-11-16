@@ -31,4 +31,6 @@
     <string name="txt_account_configs">Definições de Conta</string>
     <string name="txt_location">Localização:</string>
     <string name="txt_rpt_new_password">Repeat New Password:</string>
+    <string name="txt_toast_registo_utilizador_sucesso">Utilizador registado com sucesso!</string>
+    <string name="txt_toast_registo_utilizador_erro_campos">Preencha todos os campos!</string>
 </resources>

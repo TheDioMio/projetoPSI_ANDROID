@@ -15,6 +15,7 @@ public class AppSingleton {
     }
 
 
+    /*--> MÉTODOS DE ANIMAIS <--*/
     public ArrayList<Animal> getAnimals() {
 
         return gestorAnimals.getAnimals();
@@ -23,7 +24,11 @@ public class AppSingleton {
     public Animal getAnimal(int idAnimal){
         return gestorAnimals.getAnimal(idAnimal);
     }
+    /*--> MÉTODOS DE ANIMAIS <--*/
 
+
+
+    /*--> MÉTODOS DE UTILIZADORES <--*/
     public User getUserLogin(String username, String password){
         return gestorUsers.getUserLogin(username, password);
     }
@@ -32,4 +37,8 @@ public class AppSingleton {
         return gestorUsers.getUser(idUser);
     }
 
+    public void addUser(String username, String email, String password) {
+        gestorUsers.addUser(username, email, password);
+    }
+    /*--> MÉTODOS DE UTILIZADORES <--*/
 }

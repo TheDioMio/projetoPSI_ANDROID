@@ -31,4 +31,7 @@
     <string name="txt_account_configs">Definições de Conta</string>
     <string name="txt_location">Localização:</string>
     <string name="txt_rpt_new_password">Repeat New Password:</string>
+    <string name="txt_OsMeusAnimais">Os meus Animais</string>
+    <string name="txt_Descricao">Descrição</string>
+    <string name="txt_Esterlizado">Esterilizado</string>
 </resources>

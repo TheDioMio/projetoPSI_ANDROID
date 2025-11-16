@@ -17,6 +17,12 @@
             android:id="@+id/navProfileDetails"
             android:title="@string/txt_user_details"
             android:icon="@drawable/ic_detalhes_foreground"/>
+
+        <item
+            android:id="@+id/navMyAnimals"
+            android:icon="@drawable/ic_detalhes_foreground"
+            android:title="@string/txt_OsMeusAnimais" />
+
     </group>
 
 <!--    <item android:title="@string/txt_comunicar" >-->

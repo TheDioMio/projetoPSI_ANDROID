@@ -38,6 +38,7 @@ public class GestorUsers {
         return new ArrayList<>(users);
     }
 
+    //Alterar no futuro para ir a API buscar os dados
     public User getUserLogin(String username, String password){
 
         for (User user: users) {

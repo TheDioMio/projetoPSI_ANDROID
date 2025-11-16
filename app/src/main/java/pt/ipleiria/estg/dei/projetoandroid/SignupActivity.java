@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -49,7 +48,6 @@ public class SignupActivity extends AppCompatActivity {
 
                 AppSingleton.getInstance().addUser(username, email, password);
                 Toast.makeText(SignupActivity.this, R.string.txt_toast_registo_utilizador_sucesso, Toast.LENGTH_SHORT).show();
-
                 finish();
             }
         });

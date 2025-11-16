@@ -42,7 +42,7 @@ public class GestorUsers {
     public User getUserLogin(String username, String password){
 
         for (User user: users) {
-            if (Objects.equals(user.getUsername(), username)){
+            if (Objects.equals(user.getUsername(), username)/* && Objects.equals(user.getPass)*/){
                 return user;
             }
         }
@@ -60,7 +60,7 @@ public class GestorUsers {
             newId = users.get(users.size() -1).getId() + 1;
         }
 
-        //Valores que foram feitos padrão, porque não são metidos no layout login:
+        //Valores que foram feitos padrão, porque não são metidos no signup:
         String defaultName = username;
         String defaultAvatar = "avatar1";
         String defaultAddress = "Desconhecida";

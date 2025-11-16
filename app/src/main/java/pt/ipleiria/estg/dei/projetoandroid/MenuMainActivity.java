@@ -148,6 +148,9 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             fragment = new MyAnimalsFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav MY Animals");
+        } else if (menuItem.getItemId()== R.id.navCandidaturas) {
+            fragment = new ApplicationsFragment();
+            setTitle(menuItem.getTitle());
         }
 
 

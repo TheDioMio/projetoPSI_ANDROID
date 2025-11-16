@@ -46,8 +46,6 @@ public class AppSingleton {
     // GESTOR User
     // -------------------------
 
-
-    /*--> MÉTODOS DE UTILIZADORES <--*/
     public User getUserLogin(String username, String password){
         return gestorUsers.getUserLogin(username, password);
     }
@@ -56,6 +54,9 @@ public class AppSingleton {
         return gestorUsers.getUser(idUser);
     }
 
+    public void addUser(String username, String email, String password) {
+        gestorUsers.addUser(username, email, password);
+    }
 
     // -------------------------
     // GESTOR ANIMAL TYPE
@@ -106,9 +107,4 @@ public class AppSingleton {
     public ArrayList<Vaccination> getVaccinations() {
         return gestorVaccination.getVaccinations();
     }
-
-    public void addUser(String username, String email, String password) {
-        gestorUsers.addUser(username, email, password);
-    }
-    /*--> MÉTODOS DE UTILIZADORES <--*/
 }

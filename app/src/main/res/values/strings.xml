@@ -36,4 +36,9 @@
     <string name="txt_Esterlizado">Esterilizado</string>
     <string name="txt_toast_registo_utilizador_sucesso">Utilizador registado com sucesso!</string>
     <string name="txt_toast_registo_utilizador_erro_campos">Preencha todos os campos!</string>
+    <string name="txt_candidatura">Candidatura</string>
+    <string name="txt_animal_candidatura">Animal a candidatar-se</string>
+    <string name="txt_formulario_candidatura">Formulário de Candidatura</string>
+    <string name="txt_msg_candidatura">Escreva aqui a sua mensagem...</string>
+    <string name="txt_btn_submeter_candidatura">Submeter Candidatura</string>
 </resources>

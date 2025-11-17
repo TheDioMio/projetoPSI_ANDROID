@@ -15,8 +15,8 @@
             android:icon="@drawable/ic_detalhes_foreground"/>
         <item
             android:id="@+id/navProfileDetails"
-            android:title="@string/txt_user_details"
-            android:icon="@drawable/ic_detalhes_foreground"/>
+            android:icon="@drawable/ic_user_foreground"
+            android:title="@string/txt_user_details" />
 
         <item
             android:id="@+id/navMyAnimals"
@@ -27,6 +27,10 @@
             android:id="@+id/navCandidaturas"
             android:icon="@drawable/ic_candidaturas_foreground"
             android:title="@string/txt_candidatura" />
+        <item
+            android:id="@+id/navMessage"
+            android:icon="@drawable/ic_message_foreground"
+            android:title="@string/txt_sendMessage" />
 
     </group>
 

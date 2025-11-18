@@ -39,7 +39,6 @@ private ArrayList<String> images;
     public ArrayList<String> getImages() {
         return images;
     }
-
     public void setImages(ArrayList<String> images) {
         this.images = images;
     }

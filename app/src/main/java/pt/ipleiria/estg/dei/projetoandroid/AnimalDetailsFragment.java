@@ -3,10 +3,12 @@ package pt.ipleiria.estg.dei.projetoandroid;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,11 +31,10 @@ public class AnimalDetailsFragment extends Fragment {
     private ImageView imgPrincipal;
     private LinearLayout layoutMiniaturas;
     private TextView tvNome, tvIdade, tvRaca, tvLocalizacao, tvDescricao;
-
+    private Button btnApplication;
     private Animal animal;
+//    private FragmentManager fr
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -45,15 +46,6 @@ public class AnimalDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AnimalDetailsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static AnimalDetailsFragment newInstance(String param1, String param2) {
         AnimalDetailsFragment fragment = new AnimalDetailsFragment();
         Bundle args = new Bundle();
@@ -84,6 +76,7 @@ public class AnimalDetailsFragment extends Fragment {
         tvRaca = view.findViewById(R.id.tvRacaAnimal);
         tvLocalizacao = view.findViewById(R.id.tvLocalizacaoAnimal);
         tvDescricao = view.findViewById(R.id.tvDescricaoAnimal);
+        btnApplication = view.findViewById(R.id.btnApplication);
 
         //obtém o animal passado pelo Bundle
         Bundle args = getArguments();
@@ -93,6 +86,24 @@ public class AnimalDetailsFragment extends Fragment {
             carregarDados(animal);
         }
 
+
+        //Botão para submeter a candidatura no animal em específico
+        btnApplication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new ApplicationsFragment();
+
+                Bundle args = new Bundle();
+                if (animal != null) {
+                    args.putInt("ID_ANIMAL", animal.getId());
+                }
+                fragment.setArguments(args);
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contentFragment, fragment)
+                        .commit();
+            }
+        });
         return view;
     }
 

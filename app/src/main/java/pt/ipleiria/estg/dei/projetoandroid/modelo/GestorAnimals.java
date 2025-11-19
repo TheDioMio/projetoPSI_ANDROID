@@ -2,11 +2,12 @@ package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
 import android.os.Build;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class GestorAnimals {
+public class GestorAnimals implements Serializable {
     private ArrayList<Animal> animals;
 
     private String caminho ="https:\\\127.0.0.1\\projetoPSI_WEB\\Assets\\img\\";
@@ -15,6 +16,12 @@ public class GestorAnimals {
         animals = new ArrayList<>();
         gerarDadosDinamicos();
     }
+
+//Codigo que veio da ficha
+//    //adicionar um novo contacto
+//    public void adicionarContacto(Contacto contacto){
+//        contactos.add(contacto);
+//    }
 
     private void gerarDadosDinamicos() {
         Date dataFixa = Date.from(Instant.now());

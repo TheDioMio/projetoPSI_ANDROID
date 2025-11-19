@@ -1,5 +1,7 @@
 package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
+import android.graphics.Region;
+
 import java.util.ArrayList;
 
 public class AppSingleton {
@@ -19,6 +21,9 @@ public class AppSingleton {
         }
         return instance;
     }
+
+
+
 
 
     // -------------------------

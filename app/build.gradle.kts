@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.cardview)
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.play.services.maps)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
     testImplementation(libs.junit)

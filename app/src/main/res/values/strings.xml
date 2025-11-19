@@ -36,6 +36,12 @@
     <string name="txt_Esterlizado">Esterilizado</string>
     <string name="txt_toast_registo_utilizador_sucesso">Utilizador registado com sucesso!</string>
     <string name="txt_toast_registo_utilizador_erro_campos">Preencha todos os campos!</string>
+    <string name="txt_localidade">Localidade:</string>
+    <string name="txt_Contacto">Contacto:</string>
+    <string name="txt_separador"><![CDATA[-->]]></string>
+    <string name="txt_idade">Idade:</string>
+    <string name="txt_tamanho">Tamanho:</string>
+    <string name="txt_vacinas">Vacinas:</string>
     <string name="txt_candidatura">Candidatura</string>
     <string name="txt_animal_candidatura">Animal a candidatar-se</string>
     <string name="txt_formulario_candidatura">Formulário de Candidatura</string>
@@ -48,4 +54,5 @@
     <string name="txt_candidatura_enviada_com_sucesso">Candidatura enviada com sucesso!</string>
     <string name="txt_erro_descricao_candidatura">Introduza a descrição da candidatura!</string>
     <string name="txt_erro_buscar_id_animal">Erro a ir buscar o ID do animal!</string>
+    <string name="txt_esterelizado">Esterelizado:</string>
 </resources>

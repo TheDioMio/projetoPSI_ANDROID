@@ -12,9 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjetoANDROID">
-        <activity
-            android:name=".ProfileActivity"
-            android:exported="false" />
+
+<!--        <activity-->
+<!--            android:name=".ProfileActivity"-->
+<!--            android:exported="false" />-->
 
         <activity
             android:name=".SignupActivity"
@@ -27,20 +28,6 @@
             android:theme="@style/Theme.ProjetoANDROID.NoActionBar"/>
 
 
-
-<!--        <activity-->
-<!--            android:name=".MenuMainActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.ProjetoANDROID.NoActionBar">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-<!--        <activity-->
-<!--            android:name=".LoginActivity"-->
-<!--            android:exported="false" />-->
 
         <activity
             android:name=".LoginActivity"
@@ -61,5 +48,5 @@
             android:name=".MainActivity"
             android:exported="false" />
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

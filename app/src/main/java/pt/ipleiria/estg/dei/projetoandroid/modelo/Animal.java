@@ -1,13 +1,16 @@
 package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Animal {
+public class Animal implements Serializable {
 
 private int id, size_id, age_id, animal_type_id, breed_id, vaccines_id, user_id;
 
+
+//implementar para trazer os dados do owner
 private String name, description, location, animal_type, breed, user, age, size, vaccines;
 private boolean neutered;
 private Date created_at;

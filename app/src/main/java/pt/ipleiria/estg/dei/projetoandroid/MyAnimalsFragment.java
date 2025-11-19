@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -25,6 +26,9 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 // */
 public class MyAnimalsFragment extends Fragment {
 
+    //Codigo que veio dos ppt das aulas
+    //public static final int REQUEST_CODE_ADICIONAR_CONTACTO = 1;
+
     private ListView lvMyAnimals;
     private ListaAnimalsAdaptador adapter;
     private ArrayList<Animal> animaisDoUser;
@@ -32,6 +36,19 @@ public class MyAnimalsFragment extends Fragment {
     public MyAnimalsFragment() {
         // Required empty public constructor
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // REGISTAR O LISTENER AQUI !! (antes de onCreateView)
+        getParentFragmentManager().setFragmentResultListener(
+                "update_request",
+                this,
+                (requestKey, result) -> carregarLista()
+        );
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +62,12 @@ public class MyAnimalsFragment extends Fragment {
             User user = ((MenuMainActivity) getActivity()).getUserLogado();
             if (user == null) return;
 
+//            Codigo que veio da Ficha
+//            public void onClickAdicionarContacto(View view) {
+//                Intent intent = new Intent(this, AdicionarContactoActivity.class);
+//            }
+//            startActivityForResult(intent, REQUEST_CODE_ADICIONAR_CONTACTO);
+
             Bundle bundle = new Bundle();
             bundle.putInt("USER_ID", user.getId());
 
@@ -53,11 +76,10 @@ public class MyAnimalsFragment extends Fragment {
 
             getParentFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.contentFragment, fragment)
+                    .add(R.id.contentFragment, fragment)
                     .addToBackStack(null)
                     .commit();
         });
-
 
         // Carregar lista
         carregarLista();
@@ -65,12 +87,7 @@ public class MyAnimalsFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Atualiza a lista quando voltar do NewAnimalFragment
-        carregarLista();
-    }
+
 
     public void carregarLista() {
         User userLogado = ((MenuMainActivity) getActivity()).getUserLogado();

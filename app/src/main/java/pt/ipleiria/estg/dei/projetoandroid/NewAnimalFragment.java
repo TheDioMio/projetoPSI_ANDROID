@@ -24,6 +24,8 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
 public class NewAnimalFragment extends Fragment {
+    //Codigo que veio dos ppt das aulas
+//    public static final String NOVO_CONTACTO = "NOVO_CONTACTO";
     private EditText etNome, etDescription;
     private Spinner spTipo, spRaca, spIdade, spTamanho , spVaccination, spNeutered;;
     private Button btnGuardar;
@@ -54,6 +56,7 @@ public class NewAnimalFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,6 +86,18 @@ public class NewAnimalFragment extends Fragment {
         carregarSpinnerNeutered();
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
+
+//            public void onClickFabGuardarContacto(View view) {
+//                int id = Integer.parseInt(editTextID.getText().toString());
+//                String nome = editTextNome.getText().toString();
+//                Contacto novoContacto = new Contacto(id, nome);
+//                Intent returnIntent = new Intent();
+//                returnIntent.putExtra(NOVO_CONTACTO, novoContacto);
+//                setResult(RESULT_OK, returnIntent);
+//                finish();
+//            }
+
+
             @Override
             public void onClick(View v) {
                 String nome = etNome.getText().toString().trim();
@@ -146,13 +161,18 @@ public class NewAnimalFragment extends Fragment {
                 Toast.makeText(getContext(), "Animal guardado com sucesso!", Toast.LENGTH_SHORT).show();
 
                 // Voltar atrás
-                Fragment parent = getParentFragmentManager().findFragmentById(R.id.contentFragment);
-                if (parent instanceof MyAnimalsFragment) {
-                    ((MyAnimalsFragment) parent).carregarLista(); // chama o método público do fragmento
-                }
+                Bundle result = new Bundle();
+                getParentFragmentManager().setFragmentResult("update_request", result);
 
-                // Fechar o fragmento NewAnimal
-                getParentFragmentManager().beginTransaction().remove(NewAnimalFragment.this).commit();
+                getParentFragmentManager().popBackStack(); // fecha o fragmento
+
+//                Fragment parent = getParentFragmentManager().findFragmentById(R.id.contentFragment);
+//                if (parent instanceof MyAnimalsFragment) {
+//                    ((MyAnimalsFragment) parent).carregarLista(); // chama o método público do fragmento
+//                }
+//
+//                // Fechar o fragmento NewAnimal
+//                getParentFragmentManager().beginTransaction().remove(NewAnimalFragment.this).commit();
             }
         });
 
@@ -257,10 +277,5 @@ public class NewAnimalFragment extends Fragment {
 
         neuteredAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spNeutered.setAdapter(neuteredAdapter);
-
-
     }
-
-
-
 }

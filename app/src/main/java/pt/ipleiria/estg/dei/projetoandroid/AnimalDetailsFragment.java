@@ -13,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.GoogleMap;
+
+
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -21,11 +25,16 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
 public class AnimalDetailsFragment extends Fragment {
+//public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
+
+    private MapView mapView;
+    private GoogleMap gMap;
 
     private ImageView imgPrincipal;
     private LinearLayout layoutMiniaturas;
-    private TextView tvNome, tvIdade, tvRaca, tvLocalizacao, tvDescricao;
     private Button btnApplication;
+    private TextView tvNome, tvLocalizacao, tvDescricao, tvOwnerName, tvOwnerEmail, tvOwnerContact, tvSize, tvAge, tvVaccination, tvAnimalType, tvBreed, tvNeutered;
+
     private Animal animal;
 
     private static final String ARG_PARAM1 = "param1";
@@ -65,11 +74,17 @@ public class AnimalDetailsFragment extends Fragment {
         imgPrincipal = view.findViewById(R.id.imgPrincipal);
         layoutMiniaturas = view.findViewById(R.id.layoutMiniaturas);
         tvNome = view.findViewById(R.id.tvNomeAnimal);
-        tvIdade = view.findViewById(R.id.tvIdadeAnimal);
-        tvRaca = view.findViewById(R.id.tvRacaAnimal);
         tvLocalizacao = view.findViewById(R.id.tvLocalizacaoAnimal);
+
         tvDescricao = view.findViewById(R.id.tvDescricaoAnimal);
         btnApplication = view.findViewById(R.id.btnApplication);
+        tvAge = view.findViewById(R.id.tvAge);
+        tvVaccination = view.findViewById(R.id.tvVaccination);
+        tvNeutered = view.findViewById(R.id.tvNeutered);
+        tvBreed = view.findViewById(R.id.tvBreed);
+        tvAnimalType = view.findViewById(R.id.tvAnimalType);
+        tvSize = view.findViewById(R.id.tvSize);
+
 
         //obtém o animal passado pelo Bundle
         Bundle args = getArguments();
@@ -97,6 +112,10 @@ public class AnimalDetailsFragment extends Fragment {
                         .commit();
             }
         });
+//        mapView = view.findViewById(R.id.mapView);
+//        mapView.onCreate(savedInstanceState);
+//        mapView.getMapAsync(this);
+
         return view;
     }
 
@@ -133,16 +152,62 @@ public class AnimalDetailsFragment extends Fragment {
         }
     }
 
+//    @Override
+//    public void onMapReady(GoogleMap googleMap) {
+//        gMap = googleMap;
+//
+//        if (animal == null) return;
+//
+//        String locationName = animal.getLocation();   // Ex: “Leiria”
+//
+//        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+//
+//        try {
+//            List<Address> results = geocoder.getFromLocationName(locationName, 1);
+//
+//            if (results != null && !results.isEmpty()) {
+//
+//                Address addr = results.get(0);
+//                double lat = addr.getLatitude();
+//                double lng = addr.getLongitude();
+//
+//                LatLng posicao = new LatLng(lat, lng);
+//
+//                gMap.addMarker(new MarkerOptions()
+//                        .position(posicao)
+//                        .title(animal.getName()));
+//
+//                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicao, 12));
+//
+//            } else {
+//                // Se não encontrou a cidade
+//                Toast.makeText(getContext(), "Localização não encontrada: " + locationName, Toast.LENGTH_SHORT).show();
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+
+
 
     private void carregarDados(Animal animal) {
         if (animal == null) return;
 
         // Alterar o modo como mostramos os dados para em vez de ser colocado aqui no código ser colocado no layout
         tvNome.setText(animal.getName());
-        tvIdade.setText("Idade: " + animal.getAge()+"");
-        tvRaca.setText("Raça: " + animal.getBreed_id()+"");
-        tvLocalizacao.setText("Localização: " + animal.getLocation());
+        tvAnimalType.setText(animal.getAnimal_type());
+        tvBreed.setText(animal.getBreed());
+        tvAge.setText(animal.getAge());
+        tvSize.setText(animal.getSize());
+        tvVaccination.setText(animal.getVaccines());
+        tvNeutered.setText(String.valueOf(animal.isNeutered()));
+        tvLocalizacao.setText( animal.getLocation());
         tvDescricao.setText(animal.getDescription());
+
+
 
         List<String> imagens = animal.getImages();
 
@@ -168,45 +233,30 @@ public class AnimalDetailsFragment extends Fragment {
                 layoutMiniaturas.addView(mini);
             }
         }
-
-
-
-
-//        // imagem principal
-//        if (animal.getImages() != null && !animal.getImages().isEmpty()) {
-//            Glide.with(this)
-//                    .load(animal.getImages().get(0))
-//                    .centerCrop()
-//                    .placeholder(R.mipmap.placeholder)
-//                    .into(imgPrincipal);
-//
-//            // carregar as miniaturas
-//            for (String url : animal.getImages()) {
-//                ImageView miniatura = new ImageView(getContext());
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(200, 200);
-//                params.setMargins(8, 0, 8, 0);
-//                miniatura.setLayoutParams(params);
-//                miniatura.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//
-//                Glide.with(this)
-//                        .load(url)
-//                        .placeholder(R.mipmap.placeholder)
-//                        .into(miniatura);
-//
-//                // muda a imagem principal ao clicar
-//                miniatura.setOnClickListener(v ->
-//                        Glide.with(this)
-//                                .load(url)
-//                                .centerCrop()
-//                                .placeholder(R.mipmap.placeholder)
-//                                .into(imgPrincipal)
-//                );
-//
-//                layoutMiniaturas.addView(miniatura);
-//            }
-//        }
-
-
-
     }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        if (mapView != null) mapView.onResume();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        if (mapView != null) mapView.onPause();
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        if (mapView != null) mapView.onDestroy();
+//    }
+//
+//    @Override
+//    public void onLowMemory() {
+//        super.onLowMemory();
+//        if (mapView != null) mapView.onLowMemory();
+//    }
+
 }

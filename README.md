@@ -6,10 +6,11 @@ Repositório para o projeto da unidade curricular de **Acesso Móvel a Sistemas 
 
 ## 👥 Grupo
 
-- **Diogo Jacinto** (2241541)  
-- **Igor Patrocínio** (2241551)  
-- **Mário Pina** (2241534)  
+- **Diogo Jacinto** (2241541) A.K.A @TheDioMio
+- **Igor Patrocínio** (2241551) A.K.A @igor2241551
+- **Mário Pina** (2241534) A.K.A @SynthCodeDev
 
 ---
+
 
 

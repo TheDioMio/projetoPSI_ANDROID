@@ -20,12 +20,6 @@ import java.util.List;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AnimalDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AnimalDetailsFragment extends Fragment {
 
     private ImageView imgPrincipal;
@@ -33,7 +27,6 @@ public class AnimalDetailsFragment extends Fragment {
     private TextView tvNome, tvIdade, tvRaca, tvLocalizacao, tvDescricao;
     private Button btnApplication;
     private Animal animal;
-//    private FragmentManager fr
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";

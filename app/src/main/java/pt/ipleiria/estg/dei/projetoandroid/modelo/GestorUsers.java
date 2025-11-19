@@ -49,9 +49,6 @@ public class GestorUsers {
         return null;
     }
 
-
-
-    //Função para adicionar novos Users, AINDA NÃO ESTÁ A METER AS PASSWORDS!
     public void addUser(String username, String email, String password) {
         int newId;
         if(users.isEmpty()){

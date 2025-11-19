@@ -11,6 +11,7 @@ public class AppSingleton {
     private GestorAnimalAge gestorAnimalAge = new GestorAnimalAge();
     private GestorAnimalSize gestorAnimalSize = new GestorAnimalSize();
     private GestorVaccination gestorVaccination = new GestorVaccination();
+    private GestorApplication gestorApplication = new GestorApplication();
 
     public static synchronized AppSingleton getInstance(){
         if (instance == null){
@@ -23,7 +24,6 @@ public class AppSingleton {
     // -------------------------
     // GESTOR ANIMAL
     // -------------------------
-    /*--> MÉTODOS DE ANIMAIS <--*/
     public ArrayList<Animal> getAnimals() {
 
         return gestorAnimals.getAnimals();
@@ -106,5 +106,16 @@ public class AppSingleton {
     }
     public ArrayList<Vaccination> getVaccinations() {
         return gestorVaccination.getVaccinations();
+    }
+
+    // -------------------------
+    // GESTOR Application
+    // -------------------------
+
+    public void addApplication(int user_id, int animal_id, String description) {
+        gestorApplication.addApplication(user_id, animal_id, description);
+    }
+    public ArrayList<Application> getApplications() {
+        return gestorApplication.getApplications();
     }
 }

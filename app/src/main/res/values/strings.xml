@@ -45,4 +45,7 @@
     <string name="txt_messageSubject">Assunto:</string>
     <string name="txt_message">Mensagem:</string>
     <string name="txt_send">Enviar</string>
+    <string name="txt_candidatura_enviada_com_sucesso">Candidatura enviada com sucesso!</string>
+    <string name="txt_erro_descricao_candidatura">Introduza a descrição da candidatura!</string>
+    <string name="txt_erro_buscar_id_animal">Erro a ir buscar o ID do animal!</string>
 </resources>

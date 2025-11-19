@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaAnimalsAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
 public class ApplicationsFragment extends Fragment {
@@ -62,11 +64,55 @@ public class ApplicationsFragment extends Fragment {
         } else {
             System.out.println("O objeto animal está NULL!");
         }
+
+
+
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Vai buscar o utilizador:
                 User user = ((MenuMainActivity) getActivity()).getUserLogado();
-                if (user == null) return;
+                if (user == null){
+                    Toast.makeText(getContext(), "Utilizador não encontrado!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                //Verifica se o id do animal está a ser bem buscado:
+                if(animal.getId() <= 0){
+                    Toast.makeText(getContext(), R.string.txt_erro_buscar_id_animal, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Vai buscar a descrição no formulário:
+                String description = etDescription.getText().toString().trim();
+                if(description.isEmpty()){
+                    etDescription.setError(getString(R.string.txt_erro_descricao_candidatura));
+                    return;
+                }
+
+
+                AppSingleton.getInstance().addApplication(user.getId(), animal.getId(), description);
+                Toast.makeText(getContext(), R.string.txt_candidatura_enviada_com_sucesso, Toast.LENGTH_SHORT).show();
+
+
+                //Este bloco de código é para ver as informações que foram passadas para dentro da candidatura (se está tudo OK)
+
+                List<Application> listaCandidaturas = AppSingleton.getInstance().getApplications();
+                if (listaCandidaturas != null && !listaCandidaturas.isEmpty()) {
+                    Application ultimaCandidatura = listaCandidaturas.get(listaCandidaturas.size() - 1);
+                    System.out.println("Candidatura Criada com Sucesso: ID do Utilizador: " + ultimaCandidatura.getUser_id()
+                            + ", Descrição: " + ultimaCandidatura.getDescription() + ", ID do Animal: " + ultimaCandidatura.getAnimal_id());
+                    Toast.makeText(getContext(), R.string.txt_candidatura_enviada_com_sucesso, Toast.LENGTH_SHORT).show();
+
+
+                    /*O popBackStack faz "pop" do fragment em cima dos 13128312 fragmentos que temos na stack.
+                    * Não dá para utilizar o .beginTransaction().remove(ApplicationsFragment.this).commit(),
+                    * porque se não o ecrã fica todo branco!*/
+
+                    getParentFragmentManager().popBackStack();
+                } else {
+                    System.out.println("ERRO: A lista de candidaturas está vazia após a adição.");
+                }
             }
         });
         return view;
@@ -79,6 +125,13 @@ public class ApplicationsFragment extends Fragment {
 
         carregarImagem(imagens.get(0), imgAnimalCard);
     }
+
+
+
+
+
+
+
 
 
     private void carregarImagem(String img, ImageView destino) {

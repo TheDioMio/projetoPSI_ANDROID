@@ -171,25 +171,27 @@
     </LinearLayout>
 
     <!-- Barra "Definições da Conta" -->
-    <TextView
-        android:id="@+id/tvAccountSettings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:background="#EEEEEE"
-        android:paddingHorizontal="4dp"
-        android:paddingVertical="8dp"
-        android:text="@string/txt_account_configs"
-        android:textStyle="bold" />
 
     <!-- SECÇÃO: PASSWORDS -->
     <LinearLayout
+        android:id="@+id/layoutPasswordSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <!-- Password atual -->
+        <TextView
+            android:id="@+id/tvAccountSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="#EEEEEE"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="8dp"
+            android:text="@string/txt_account_configs"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -258,16 +260,17 @@
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/txt_save"
+            app:backgroundTint="@color/secondary" />
+
         <!-- Nova password -->
     </LinearLayout>
 
     <!-- Botão guardar -->
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/txt_save"
-        app:backgroundTint="@color/secondary" />
 
 </LinearLayout>

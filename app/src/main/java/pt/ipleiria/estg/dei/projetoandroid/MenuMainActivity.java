@@ -140,7 +140,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             System.out.println("--> Nav Dinamico");
         } else if (menuItem.getItemId() == R.id.navProfileDetails) {
 
-            fragment = new ProfileFragment();
+            fragment = ProfileFragment.newInstance(iduser, false);
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Detalhes Perfil");
         }else if (menuItem.getItemId() == R.id.navMyAnimals) {

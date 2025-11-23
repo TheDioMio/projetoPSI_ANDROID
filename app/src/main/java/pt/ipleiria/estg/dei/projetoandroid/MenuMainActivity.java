@@ -151,11 +151,11 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         } else if (menuItem.getItemId()== R.id.navCandidaturas) {
             fragment = new ApplicationsFragment();
             setTitle(menuItem.getTitle());
-        } else if (menuItem.getItemId()==R.id.navMessage) {
+        } else if (menuItem.getItemId() == R.id.navMessage) {
 
-            fragment = new MessageFragment();
+            fragment = new MessageListFragment(); // ou MessageListFragment.newInstance()
             setTitle(menuItem.getTitle());
-            System.out.println("--> Nav Message");
+            System.out.println("--> Nav Message List");
         }
 
         if (fragment != null){

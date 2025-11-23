@@ -14,6 +14,7 @@ public class AppSingleton {
     private GestorAnimalSize gestorAnimalSize = new GestorAnimalSize();
     private GestorVaccination gestorVaccination = new GestorVaccination();
     private GestorApplication gestorApplication = new GestorApplication();
+    private GestorMessage gestorMessage = new GestorMessage();
 
     public static synchronized AppSingleton getInstance(){
         if (instance == null){
@@ -123,4 +124,17 @@ public class AppSingleton {
     public ArrayList<Application> getApplications() {
         return gestorApplication.getApplications();
     }
+
+    // -------------------------
+    // GESTOR Message
+    // -------------------------
+
+    public ArrayList<Message> getMessagesForUser (int userId){
+        return gestorMessage.getMessageForUser(userId);
+    }
+
+
+
+
+
 }

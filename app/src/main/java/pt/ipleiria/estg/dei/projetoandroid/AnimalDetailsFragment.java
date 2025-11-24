@@ -109,6 +109,7 @@ public class AnimalDetailsFragment extends Fragment {
                 getParentFragmentManager()
                         .beginTransaction()
                         .replace(R.id.contentFragment, fragment)
+                        .addToBackStack(null)
                         .commit();
             }
         });

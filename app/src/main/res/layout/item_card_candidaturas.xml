@@ -3,58 +3,67 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/imgFotoAnimalCandidatura"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#E0E0E0"
             android:scaleType="centerCrop"
-            android:src="@mipmap/placeholder"
-            android:background="#E0E0E0" />
+            android:src="@mipmap/placeholder" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvNomeAnimalCandidatura"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nome do Animal"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:text="@string/txt_nome_do_animal"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="A tua mensagem:"
-                android:textSize="12sp"
-                android:textStyle="italic"
+                android:layout_marginTop="4dp"
+                android:text="@string/txt_mensagem"
                 android:textColor="#757575"
-                android:layout_marginTop="4dp"/>
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/tvDescricaoCandidatura"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Descrição da motivação..."
-                android:maxLines="2"
                 android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Descrição da motivação..."
                 android:textSize="14sp" />
-        </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvStatusCandidatura"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="PENDENTE"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="#FFC107"/> </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

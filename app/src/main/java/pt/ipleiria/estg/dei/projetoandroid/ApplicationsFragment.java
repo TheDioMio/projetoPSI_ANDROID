@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,12 +28,13 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
 public class ApplicationsFragment extends Fragment {
     private Button btnSubmit;
-    private EditText etDescription;
+    private EditText etDescription, etNomeCompleto, etIdade, etContacto;
     private TextView tvNomeCard, tvRacaCard;
     private ImageView imgAnimalCard;
     private AppSingleton singleton;
     private Animal animal;
-
+    private Spinner spTipoHabitacao;
+    private RadioGroup rgCriancas, rgCustos;
 
     public ApplicationsFragment() {
         // Required empty public constructor
@@ -48,6 +50,12 @@ public class ApplicationsFragment extends Fragment {
         tvNomeCard = view.findViewById(R.id.tvNomeCard);
         tvRacaCard = view.findViewById(R.id.tvRacaCard);
         imgAnimalCard = view.findViewById(R.id.imgAnimalCard);
+        etNomeCompleto = view.findViewById(R.id.etNomeCompleto);
+        etIdade = view.findViewById(R.id.etIdade);
+        etContacto = view.findViewById(R.id.etContacto);
+        spTipoHabitacao = view.findViewById(R.id.spTipoHabitacao);
+        rgCriancas = view.findViewById(R.id.rgCriancas);
+        rgCustos = view.findViewById(R.id.rgCustos);
 
         Bundle args = getArguments();
         if (args != null) {

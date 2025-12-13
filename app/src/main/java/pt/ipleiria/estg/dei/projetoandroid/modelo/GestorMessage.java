@@ -49,4 +49,15 @@ private ArrayList<Message> messages;
 
         return result;
     }
+
+    public Message getMessageById(int id) {
+        for (Message m : messages) {
+            if (m.getId() == id) {
+                return m;
+            }
+        }
+        return null;
+    }
+
+
 }

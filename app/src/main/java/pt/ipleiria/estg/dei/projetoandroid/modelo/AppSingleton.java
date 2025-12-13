@@ -134,6 +134,13 @@ public class AppSingleton {
     }
 
 
+    public Message getMessage(int idMessage) {
+        return gestorMessage.getMessageById(idMessage);
+    }
+
+
+
+
 
 
 

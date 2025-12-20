@@ -1,13 +1,16 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +31,9 @@ public class MyAnimalsFragment extends Fragment {
 
     //Codigo que veio dos ppt das aulas
     //public static final int REQUEST_CODE_ADICIONAR_CONTACTO = 1;
+
+    private final int ADD = 100;
+    private final int EDIT = 200;
 
     private ListView lvMyAnimals;
     private ListaAnimalsAdaptador adapter;
@@ -51,12 +57,27 @@ public class MyAnimalsFragment extends Fragment {
 
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Aqui recebe o codigo para saber se vem do edit ou do add e atualiza a lista
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_animals, container, false);
 
         lvMyAnimals = view.findViewById(R.id.lvMyAnimals);
         FloatingActionButton fabAdd = view.findViewById(R.id.fabAddAnimal);
+
+        lvMyAnimals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Intent intent = new Intent(getContext(), AnimalDetailsActivity.class);
+               startActivityForResult(intent, EDIT);
+            }
+        });
+
 
         fabAdd.setOnClickListener(v -> {
             User user = ((MenuMainActivity) getActivity()).getUserLogado();
@@ -65,8 +86,8 @@ public class MyAnimalsFragment extends Fragment {
 //            Codigo que veio da Ficha
 //            public void onClickAdicionarContacto(View view) {
 //                Intent intent = new Intent(this, AdicionarContactoActivity.class);
+//                startActivityForResult(intent, REQUEST_CODE_ADICIONAR_CONTACTO);
 //            }
-//            startActivityForResult(intent, REQUEST_CODE_ADICIONAR_CONTACTO);
 
             Bundle bundle = new Bundle();
             bundle.putInt("USER_ID", user.getId());
@@ -84,6 +105,8 @@ public class MyAnimalsFragment extends Fragment {
         // Carregar lista
         carregarLista();
 
+
+
         return view;
     }
 
@@ -95,7 +118,7 @@ public class MyAnimalsFragment extends Fragment {
 
         int userId = userLogado.getId();
 
-        ArrayList<Animal> animaisDoUserTemp = AppSingleton.getInstance().getAnimalsByUser(userId);
+        ArrayList<Animal> animaisDoUserTemp = AppSingleton.getInstance(getContext()).getAnimalsByUser(userId);
 
         if (adapter == null) {
             // Cria o adapter pela primeira vez

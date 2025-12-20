@@ -102,7 +102,7 @@ public class ProfileFragment extends Fragment {
         btnSaveProfile        = view.findViewById(R.id.btnSave);
         btnChangePhoto        = view.findViewById(R.id.imgProfileChange);
 
-        User user = AppSingleton.getInstance().getUser(userId);
+        User user = AppSingleton.getInstance(getContext()).getUser(userId);
 
         if (user != null) {
             etName.setText(user.getName());

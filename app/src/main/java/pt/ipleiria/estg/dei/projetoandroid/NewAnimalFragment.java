@@ -64,7 +64,7 @@ public class NewAnimalFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_new_animal, container, false);
 
         // Inicializar AppSingleton
-        app = AppSingleton.getInstance();
+        app = AppSingleton.getInstance(getContext());
 
 
         // Inicializar views
@@ -127,7 +127,7 @@ public class NewAnimalFragment extends Fragment {
 
                 boolean neutered = spNeutered.getSelectedItem().toString().equals("Sim");
 
-                User user = AppSingleton.getInstance().getUser(userId);
+                User user = AppSingleton.getInstance(getContext()).getUser(userId);
                 if (user == null) {
                     Toast.makeText(getContext(), "Erro: usuário não encontrado", Toast.LENGTH_SHORT).show();
                     return;
@@ -150,13 +150,15 @@ public class NewAnimalFragment extends Fragment {
                         spIdade.getSelectedItem().toString(),
                         spTamanho.getSelectedItem().toString(),
                         spVaccination.getSelectedItem().toString(),
+                        user.getName(),
+                        user.getEmail(),
                         neutered,
                         new Date(),
                         new ArrayList<>()
                 );
 
                 // Adicionar ao gestor
-                AppSingleton.getInstance().addAnimal(novoAnimal);
+                AppSingleton.getInstance(getContext()).addAnimal(novoAnimal);
 
                 Toast.makeText(getContext(), "Animal guardado com sucesso!", Toast.LENGTH_SHORT).show();
 

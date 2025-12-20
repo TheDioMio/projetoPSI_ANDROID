@@ -1,5 +1,9 @@
 import org.gradle.kotlin.dsl.implementation
 
+
+
+
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -42,6 +46,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.coordinatorlayout)
     implementation(libs.cardview)
+    implementation("com.android.volley:volley:1.2.1")
+
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.play.services.maps)
@@ -50,4 +56,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }

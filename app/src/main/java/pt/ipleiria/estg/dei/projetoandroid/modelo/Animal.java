@@ -11,12 +11,12 @@ private int id, size_id, age_id, animal_type_id, breed_id, vaccines_id, user_id;
 
 
 //implementar para trazer os dados do owner
-private String name, description, location, animal_type, breed, user, age, size, vaccines;
+private String name, description, location, animal_type, breed, user, age, size, vaccines, ownerName, email;
 private boolean neutered;
 private Date created_at;
 private ArrayList<String> images;
 
-    public Animal(int id, int size_id, int age_id, int animal_type_id, int breed_id, int vaccines_id, int user_id, String name, String description, String location, String animal_type, String breed, String user, String age, String size, String vaccines, boolean neutered, Date created_at, ArrayList<String> images) {
+    public Animal(int id, int size_id, int age_id, int animal_type_id, int breed_id, int vaccines_id, int user_id, String name, String description, String location, String animal_type, String breed, String user, String age, String size, String vaccines, String ownerName, String email, boolean neutered, Date created_at, ArrayList<String> images) {
         this.id = id;
         this.size_id = size_id;
         this.age_id = age_id;
@@ -33,11 +33,28 @@ private ArrayList<String> images;
         this.age = age;
         this.size = size;
         this.vaccines = vaccines;
+        this.ownerName = ownerName;
+        this.email = email;
         this.neutered = neutered;
         this.created_at = created_at;
         this.images = images;
     }
 
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public ArrayList<String> getImages() {
         return images;

@@ -79,7 +79,7 @@ public class ListaMessagesAdaptador extends BaseAdapter {
             tvDate.setText(message.getCreated_at());
 
             // ir buscar o nome do remetente ao Singleton
-            User sender = AppSingleton.getInstance().getUser(message.getSender_user_id());
+            User sender = AppSingleton.getInstance(context).getUser(message.getSender_user_id());
             if (sender != null) {
                 tvSender.setText("De: " + sender.getName());
             } else {

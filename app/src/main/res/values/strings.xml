@@ -75,4 +75,6 @@
     <string name="txt_acompanhamento">Acompanhamento</string>
     <string name="txt_visita_acompanhamento_pos_adocao">Aceita visita de acompanhamento pós-adoção?</string>
     <string name="txt_mensagem">A tua mensagem:</string>
+    <string name="txt_appname_petpanion">Petpanion</string>
+    <string name="txt_nao_tem_internet">Não tem ligação a internet!</string>
 </resources>

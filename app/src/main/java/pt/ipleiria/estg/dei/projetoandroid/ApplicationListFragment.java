@@ -40,7 +40,7 @@ public class ApplicationListFragment extends Fragment {
 
     private void carregarMinhasCandidaturas(int userId) {
         // Vai buscar TODAS as candidaturas, criadas por todos os users
-        List<Application> todasCandidaturas = AppSingleton.getInstance().getApplications();
+        List<Application> todasCandidaturas = AppSingleton.getInstance(getContext()).getApplications();
         userApplications = new ArrayList<>();
         // Aqui isto filtra para as do user em questão
         for (Application app : todasCandidaturas) {

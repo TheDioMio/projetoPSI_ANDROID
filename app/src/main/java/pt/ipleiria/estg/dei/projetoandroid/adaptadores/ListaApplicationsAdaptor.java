@@ -54,7 +54,7 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
 
         Application candidaturaAtual = candidaturas.get(position);
         int idAnimal = candidaturaAtual.getAnimal_id();
-        Animal animal = AppSingleton.getInstance().getAnimal(idAnimal);
+        Animal animal = AppSingleton.getInstance(context).getAnimal(idAnimal);
 
         tvDescricao.setText(candidaturaAtual.getDescription());
 

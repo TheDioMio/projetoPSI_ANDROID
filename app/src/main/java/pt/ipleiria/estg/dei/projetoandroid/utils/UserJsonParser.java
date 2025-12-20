@@ -1,0 +1,121 @@
+package pt.ipleiria.estg.dei.projetoandroid.utils;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Me;
+
+public class UserJsonParser {
+
+//    public static ArrayList<Livro> parserJsonLivros(JSONArray response){
+//        ArrayList<Livro> livros = new ArrayList<>();
+//        try{
+//            for (int i=0; i< response.length(); i++){
+//                JSONObject livro = response.getJSONObject(i);
+//                int idLivro = livro.getInt("id");
+//                String titulo = livro.getString("titulo");
+//                String autor = livro.getString("autor");
+//                String serie = livro.getString("serie");
+//                int ano = livro.getInt("ano");
+//                String capa = livro.getString("capa");
+//
+//                //Se receber um array dentro da resposta, temos de fazer outro FOR para colocar dentro do outro array
+//
+//                Livro auxLivro = new Livro(idLivro, ano, capa, titulo, serie, autor);
+//
+//                livros.add(auxLivro);
+//            }
+//        } catch (JSONException e){
+//            e.printStackTrace();
+//        }
+//
+//        return livros;
+//    }
+//
+//    public static Livro parserJsonLivro(String response){
+//        Livro auxLivro = null;
+//        try{
+//            JSONObject livro = new JSONObject(response);
+//
+//            int idLivro = livro.getInt("id");
+//            String titulo = livro.getString("titulo");
+//            String autor = livro.getString("autor");
+//            String serie = livro.getString("serie");
+//            int ano = livro.getInt("ano");
+//            String capa = livro.getString("capa");
+//
+//            auxLivro = new Livro(idLivro, ano, capa, titulo, serie, autor);
+//
+//        }catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return auxLivro;
+//    }
+
+    public static Me parserJsonMe(JSONObject resp){
+        Me auxMe = null;
+        try{
+            //JSONObject resp = new JSONObject(response);
+            if (resp.getBoolean("success")){
+
+                String email = resp.getString("email");
+                String name = resp.getString("name");
+                String username = resp.getString("username");
+                String address = resp.getString("address");
+                String avatar = resp.getString("avatar");
+                int user_id = resp.getInt("id");
+
+                auxMe = new Me(user_id, name, username, avatar, address, email);
+            }
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return auxMe;
+    }
+
+
+    public static String parserJsonLogin(String response){
+        String token = null, email = null, name = null, username= null, avatar = null;
+        int user_id = -1;
+        try{
+            JSONObject login = new JSONObject(response);
+            if (login.getBoolean("success")){
+                token = login.getString("token");
+//                email = login.getString("email");
+//                name = login.getString("name");
+//                username = login.getString("username");
+//                avatar = login.getString("avatar");
+//                user_id = login.getInt("user_id");
+
+            }
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return token;
+    }
+
+    public static boolean isConnectionInternet(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //necessita de permissões de acesso a internet
+        //e acesso ao estado la ligação
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+
+
+}

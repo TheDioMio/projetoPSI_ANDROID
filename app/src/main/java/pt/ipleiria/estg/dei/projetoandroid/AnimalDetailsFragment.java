@@ -3,7 +3,6 @@ package pt.ipleiria.estg.dei.projetoandroid;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ import java.util.List;
 
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
-import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
+
 public class AnimalDetailsFragment extends Fragment {
 //public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -69,7 +68,7 @@ public class AnimalDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_animal_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_animal_show, container, false);
 
         imgPrincipal = view.findViewById(R.id.imgPrincipal);
         layoutMiniaturas = view.findViewById(R.id.layoutMiniaturas);
@@ -84,13 +83,15 @@ public class AnimalDetailsFragment extends Fragment {
         tvBreed = view.findViewById(R.id.tvBreed);
         tvAnimalType = view.findViewById(R.id.tvAnimalType);
         tvSize = view.findViewById(R.id.tvSize);
-
+        tvOwnerName = view.findViewById(R.id.tvOwnerName);
+        tvOwnerEmail = view.findViewById(R.id.tvEmail);
+        tvOwnerContact = view.findViewById(R.id.tvOwnerContact);
 
         //obtém o animal passado pelo Bundle
         Bundle args = getArguments();
         if (args != null) {
             int animalId = args.getInt("ID_ANIMAL");
-            animal = AppSingleton.getInstance().getAnimal(animalId);
+            animal = AppSingleton.getInstance(getContext()).getAnimal(animalId);
             carregarDados(animal);
         }
 
@@ -204,10 +205,14 @@ public class AnimalDetailsFragment extends Fragment {
         tvAge.setText(animal.getAge());
         tvSize.setText(animal.getSize());
         tvVaccination.setText(animal.getVaccines());
-        tvNeutered.setText(String.valueOf(animal.isNeutered()));
+
+        String txtNeutered = getString(R.string.txt_nao);
+        if (animal.isNeutered()) txtNeutered = getString(R.string.txt_sim);
+        tvNeutered.setText(txtNeutered);
         tvLocalizacao.setText( animal.getLocation());
         tvDescricao.setText(animal.getDescription());
-
+        tvOwnerName.setText(animal.getOwnerName());
+        tvOwnerEmail.setText(animal.getEmail());
 
 
         List<String> imagens = animal.getImages();

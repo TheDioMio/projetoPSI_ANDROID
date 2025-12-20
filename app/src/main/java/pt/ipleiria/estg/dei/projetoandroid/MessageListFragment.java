@@ -90,7 +90,7 @@ public class MessageListFragment extends Fragment {
 
         // buscar mensagens do Singleton
         ArrayList<Message> recebidas =
-                AppSingleton.getInstance().getMessagesForUser(idUser);
+                AppSingleton.getInstance(getContext()).getMessagesForUser(idUser);
 
         // ligar o adaptador
         ListaMessagesAdaptador adaptador =

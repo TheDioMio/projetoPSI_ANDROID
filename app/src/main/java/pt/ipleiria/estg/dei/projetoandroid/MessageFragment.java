@@ -132,14 +132,14 @@ public class MessageFragment extends Fragment {
     // MODO: LER MENSAGEM
     // -------------------------------
     private void setupReadMode() {
-        Message msg = AppSingleton.getInstance().getMessage(messageId);
+        Message msg = AppSingleton.getInstance(getContext()).getMessage(messageId);
         if (msg == null) return;
 
         // preencher dados
         etSubject.setText(msg.getSubject());
         etMensagem.setText(msg.getText());
 
-        User sender = AppSingleton.getInstance().getUser(msg.getSender_user_id());
+        User sender = AppSingleton.getInstance(getContext()).getUser(msg.getSender_user_id());
         if (sender != null) {
             tvSendMessageTo.setText("Mensagem de: " + sender.getName());
         } else {
@@ -173,7 +173,7 @@ public class MessageFragment extends Fragment {
     // -------------------------------
     private void setupComposeMode() {
 
-        User receiver = AppSingleton.getInstance().getUser(receiverId);
+        User receiver = AppSingleton.getInstance(getContext()).getUser(receiverId);
         if (receiver != null) {
             tvSendMessageTo.setText("Enviar mensagem para: " + receiver.getName());
         } else {

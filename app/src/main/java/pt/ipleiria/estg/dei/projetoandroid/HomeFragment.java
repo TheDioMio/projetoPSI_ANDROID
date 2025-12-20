@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment {
         lvAnimals.addHeaderView(header);
         lvAnimals.addFooterView(footer);
 
-        animals = AppSingleton.getInstance().getAnimals();
+        animals = AppSingleton.getInstance(getContext()).getAnimals();
 
         //definir o adaptador
         adaptador = new ListaAnimalsAdaptador(getContext(), animals);

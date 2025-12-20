@@ -1,25 +1,19 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,19 +21,33 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 
+import pt.ipleiria.estg.dei.projetoandroid.listeners.MenuListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Me;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
-public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MenuListener {
 
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
-    private FragmentManager fragmentManager;
+    public static final String TOKEN = "token";
+
+    public static final String NAME = "name";
+    public static final String EMAIL = "email";
+    public static final String AVATAR = "avatar";
     public static final String IDUSER = "iduser";
+    private String token, avatar, email, name;
     private int iduser;
     private User userLogado;
     TextView nav_tvName, nav_tvEmail;
     ImageView nav_imgUser;
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
+    private FragmentManager fragmentManager;
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
+
+
 
 
     @Override
@@ -56,7 +64,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 drawer, toolbar, R.string.ndOpen, R.string.ndClose);
         toggle.syncState();
         drawer.addDrawerListener(toggle);
-        carregarCabecalho(); //TODO:criar método
+        carregarCabecalho();
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -75,51 +83,35 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     }
 
     private void carregarCabecalho() {
-        iduser= getIntent().getIntExtra(IDUSER, 0);
-        userLogado = AppSingleton.getInstance().getUser(iduser);
 
+        // 1️⃣ Receber token do intent
+        token = getIntent().getStringExtra(TOKEN);
+
+        if (token == null) {
+            Toast.makeText(this, "Token em falta", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 2️⃣ Guardar token nas SharedPreferences
+        SharedPreferences sp =
+                getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+
+        sp.edit().putString("TOKEN", token).apply();
+
+        // 3️⃣ Configurar Singleton
+        AppSingleton singleton = AppSingleton.getInstance(getApplicationContext());
+        singleton.setMenuListener(this);
+
+        // 4️⃣ Chamar API (AGORA o token já existe)
+        singleton.getMe(this);
+
+        // 5️⃣ Inicializar views do header
         View headerView = navigationView.getHeaderView(0);
         nav_tvEmail = headerView.findViewById(R.id.tvEmail);
         nav_tvName = headerView.findViewById(R.id.tvName);
         nav_imgUser = headerView.findViewById(R.id.imgUser);
-
-        if (userLogado != null){
-            nav_tvName.setText(userLogado.getName().toString());
-            nav_tvEmail.setText(userLogado.getEmail().toString());
-
-
-            String imgName = userLogado.getImgAvatar();
-
-            if (imgName != null && !imgName.isEmpty()) {
-                // carregar a imagem da net
-                if (imgName.startsWith("http")) {
-                    Glide.with(this)
-                            .load(imgName)
-                            .placeholder(R.mipmap.default_avatar)
-                            .error(R.mipmap.default_avatar)
-                            .circleCrop()
-                            .into(nav_imgUser);
-
-                } else {
-                    // carregar a imagem local
-                    int resId = getResources().getIdentifier(imgName, "drawable", getPackageName());
-
-                    Glide.with(this)
-                            .load(resId)
-                            .placeholder(R.mipmap.default_avatar)
-                            .error(R.mipmap.default_avatar)
-                            .circleCrop()            // 🔥 Deixa redonda
-                            .into(nav_imgUser);
-                }
-
-            } else {
-                nav_imgUser.setImageResource(R.mipmap.default_avatar);
-            }
-
-
-        }
-
     }
+
 
     public User getUserLogado() {
         return userLogado;
@@ -167,6 +159,40 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         drawer.closeDrawer(GravityCompat.START);
         return false;
     }
+
+
+    @Override
+    public void onRefreshMenu(Me me) {
+
+            nav_tvName.setText(me.getName());
+            nav_tvEmail.setText(me.getEmail());
+
+
+        String avatar = me.getImgAvatar();
+
+        if (avatar != null && !avatar.isEmpty()) {
+
+            String imageUrl;
+
+            if (avatar.startsWith("http")) {
+                imageUrl = avatar;
+            } else {
+                imageUrl = AppSingleton.getInstance(getApplicationContext()).FRONTEND_BASE_URL + avatar;
+            }
+
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.mipmap.default_avatar)
+                    .error(R.mipmap.default_avatar)
+                    .circleCrop()
+                    .into(nav_imgUser);
+
+        } else {
+            nav_imgUser.setImageResource(R.mipmap.default_avatar);
+        }
+
+
+        }
 
 
 }

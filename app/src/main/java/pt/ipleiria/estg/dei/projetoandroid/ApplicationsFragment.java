@@ -60,7 +60,7 @@ public class ApplicationsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             int idRecebido = args.getInt("ID_ANIMAL");
-            singleton = AppSingleton.getInstance();
+            singleton = AppSingleton.getInstance(getContext());
             animal = singleton.getAnimal(idRecebido);
         } else {
             System.out.println("DEBUG: args é NULL");
@@ -99,13 +99,13 @@ public class ApplicationsFragment extends Fragment {
                 }
 
 
-                AppSingleton.getInstance().addApplication(user.getId(), animal.getId(), description);
+                AppSingleton.getInstance(getContext()).addApplication(user.getId(), animal.getId(), description);
                 Toast.makeText(getContext(), R.string.txt_candidatura_enviada_com_sucesso, Toast.LENGTH_SHORT).show();
 
 
                 //Este bloco de código é para ver as informações que foram passadas para dentro da candidatura (se está tudo OK)
 
-                List<Application> listaCandidaturas = AppSingleton.getInstance().getApplications();
+                List<Application> listaCandidaturas = AppSingleton.getInstance(getContext()).getApplications();
                 if (listaCandidaturas != null && !listaCandidaturas.isEmpty()) {
                     Application ultimaCandidatura = listaCandidaturas.get(listaCandidaturas.size() - 1);
                     System.out.println("Candidatura Criada com Sucesso: ID do Utilizador: " + ultimaCandidatura.getUser_id()

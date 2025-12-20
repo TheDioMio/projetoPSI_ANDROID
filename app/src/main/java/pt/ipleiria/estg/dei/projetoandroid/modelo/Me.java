@@ -1,28 +1,27 @@
 package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
-import java.util.ArrayList;
-import java.util.Date;
+public class Me {
 
-public class User {
+    //CLASSE PARA JÁ IGUAL AO USER MAS NO FUTURO VAI CONTER MAIS INFORMAÇÕES
+    //MENSAGENS
+    // CANDIDATURAS
+    //ESTATISTICAS
+    //ETC
+    private int id;
+    private String name, username, imgAvatar, address, email;
 
-        private int id;
-        private String name, username, imgAvatar, address, email;
-
-    public User(int id, String name, String username, String imgAvatar, String address, String email) {
+    public Me(int id, String name, String username, String imgAvatar, String address, String email) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.imgAvatar = imgAvatar;
         this.address = address;
         this.email = email;
-
     }
-
 
     public int getId() {
         return id;
     }
-
 
     public String getName() {
         return name;
@@ -63,4 +62,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }

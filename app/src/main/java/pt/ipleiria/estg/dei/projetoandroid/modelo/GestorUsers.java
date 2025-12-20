@@ -18,9 +18,9 @@ public class GestorUsers {
         //está a carregar as imagens do disco local, mas no futuro vem da API
 
 
-        users.add(new User(1, "Mário Pina", "mpuser", "avatar1", "Marinha Grande", "mpina@gmail.com"));
-        users.add(new User(2, "Diogo", "duser", "avatar2", "Leiria", "djacinto@gmail.com"));
-        users.add(new User(3, "Igor", "iuser", "avatar3", "Alcanena", "ipatrocinio@gmail.com"));
+//        users.add(new User(1, "Mário Pina", "mpuser", "avatar1", "Marinha Grande", "mpina@gmail.com", "+351913456987"));
+//        users.add(new User(2, "Diogo", "duser", "avatar2", "Leiria", "djacinto@gmail.com", "+351913821960"));
+//        users.add(new User(3, "Igor", "iuser", "avatar3", "Alcanena", "ipatrocinio@gmail.com", "+351987876765"));
 
     }
 

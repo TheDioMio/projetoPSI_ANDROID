@@ -114,6 +114,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
 
     public User getUserLogado() {
+
         return userLogado;
     }
 

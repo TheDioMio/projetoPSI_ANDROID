@@ -125,6 +125,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     @Override
     public void onValidateLogin(String token) {
         if(token != null) {
+            //GUARDA O TOKEN NA SHARED PREFERENCES
             SharedPreferences sp = getSharedPreferences("TOKEN", Context.MODE_PRIVATE);
             sp.edit().putString("token", token).apply();
 

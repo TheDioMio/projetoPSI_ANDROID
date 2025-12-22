@@ -22,6 +22,8 @@ public class MessageJsonParser {
                 String subject = obj.getString("subject");
                 String text = obj.getString("text");
                 String createdAt = obj.optString("created_at", "");
+                String senderUsername = obj.optString("sender_username", "");
+                String receiverUsername = obj.optString("receiver_username", "");
 
                 Message m = new Message(
                         id,
@@ -29,7 +31,9 @@ public class MessageJsonParser {
                         receiverId,
                         subject,
                         text,
-                        createdAt
+                        createdAt,
+                        senderUsername,
+                        receiverUsername
                 );
 
                 lista.add(m);

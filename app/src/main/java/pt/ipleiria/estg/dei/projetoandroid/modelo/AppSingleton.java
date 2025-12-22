@@ -42,9 +42,9 @@ public class AppSingleton {
 
     private static RequestQueue volleyQueue;
 
-    public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
+    public String endereco = "http://10.0.2.2/PSI/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
+    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/PSI/projetoPSI_WEB/frontend/web";
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String getmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
@@ -73,7 +73,7 @@ public class AppSingleton {
     private GestorAnimalSize gestorAnimalSize = new GestorAnimalSize();
     private GestorVaccination gestorVaccination = new GestorVaccination();
     private GestorApplication gestorApplication = new GestorApplication();
-    private GestorMessage gestorMessage = new GestorMessage();
+
 
     public static synchronized AppSingleton getInstance(Context context){
         if (instance == null){
@@ -185,18 +185,11 @@ public class AppSingleton {
         return gestorApplication.getApplications();
     }
 
+
+    //*************************************** Mensagens *************************************
     // -------------------------
     // GESTOR Message
     // -------------------------
-
-    public ArrayList<Message> getMessagesForUser (int userId){
-        return gestorMessage.getMessageForUser(userId);
-    }
-
-
-    public Message getMessage(int idMessage) {
-        return gestorMessage.getMessageById(idMessage);
-    }
 
     public void setMessageListener(MessagesListener messageListener) {
         this.messagesListener = messageListener;
@@ -206,7 +199,7 @@ public class AppSingleton {
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
-                getMessageURL,   // já tens: endereco + "/messages"
+                getMessageURL,
                 null,
                 (JSONArray response) -> {
                     ArrayList<Message> lista = MessageJsonParser.parserJsonMessages(response);
@@ -242,6 +235,57 @@ public class AppSingleton {
         };
         volleyQueue.add(request);
     }
+
+    public interface SendMessageListener {
+        void onSuccess();
+        void onError(String erro);
+    }
+
+    public void enviarMensagemAPI(final int receiverId,
+                                  final String subject,
+                                  final String text,
+                                  final Context context,
+                                  final SendMessageListener listener) {
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                getMessageURL,
+                response -> {
+                    if (listener != null) listener.onSuccess();
+                },
+                error -> {
+                    String msg = (error.networkResponse != null)
+                            ? "Erro " + error.networkResponse.statusCode
+                            : "Erro de ligação ao servidor";
+                    if (listener != null) listener.onError(msg);
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("receiver_user_id", String.valueOf(receiverId));
+                params.put("subject", subject);
+                params.put("text", text);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Accept", "application/json");
+
+                String token = getToken(context);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+    //*************************************** Fim Mensagens *************************************
 
 
     // FUNÇÃO UTILIZADA PARA FAZER O LOGIN, PARA DEPOIS GUARDAR O TOKEN NA SHARED PREFERENCES

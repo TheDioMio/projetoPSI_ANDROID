@@ -140,9 +140,9 @@ public class MessageFragment extends Fragment {
         etSubject.setText(msg.getSubject());
         etMensagem.setText(msg.getText());
 
-        User sender = AppSingleton.getInstance(getContext()).getUser(msg.getSender_user_id());
-        if (sender != null) {
-            tvSendMessageTo.setText("Mensagem de: " + sender.getName());
+        String senderName = msg.getSender_username(); // novo getter
+        if (senderName != null && !senderName.isEmpty()) {
+            tvSendMessageTo.setText("Mensagem de: " + senderName);
         } else {
             tvSendMessageTo.setText("Mensagem de utilizador #" + msg.getSender_user_id());
         }
@@ -192,13 +192,33 @@ public class MessageFragment extends Fragment {
             String subject = etSubject.getText().toString().trim();
             String text = etMensagem.getText().toString().trim();
 
-            System.out.println("---- NOVA MENSAGEM ----");
-            System.out.println("PARA: " + receiverId);
-            System.out.println("ASSUNTO: " + subject);
-            System.out.println("TEXTO:\n" + text);
-            System.out.println("------------------------");
+            if (subject.isEmpty()) {
+                etSubject.setError("Assunto obrigatório");
+                return;
+            }
+            if (text.isEmpty()) {
+                etMensagem.setError("Mensagem obrigatória");
+                return;
+            }
 
-            // aqui apenas simula envio ─ no futuro: API
+            AppSingleton.getInstance(getContext()).enviarMensagemAPI(
+                    receiverId,
+                    subject,
+                    text,
+                    getContext(),
+                    new AppSingleton.SendMessageListener() {
+                        @Override
+                        public void onSuccess() {
+                            // volta atrás para a mensagem lida ou para a lista
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        }
+
+                        @Override
+                        public void onError(String erro) {
+                            // Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            );
         });
     }
 

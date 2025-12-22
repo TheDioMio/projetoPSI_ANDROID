@@ -60,12 +60,12 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
 
         if (animal != null) {
             tvNome.setText(animal.getName());
-
-            if (animal.getImages() != null && !animal.getImages().isEmpty()) {
-                carregarImagem(animal.getImages().get(0), imgAnimal);
-            } else {
-                imgAnimal.setImageResource(R.mipmap.placeholder);
-            }
+// a class animal mudou, adaptar aos novos caampos
+//            if (animal.getImages() != null && !animal.getImages().isEmpty()) {
+//                carregarImagem(animal.getImages().get(0), imgAnimal);
+//            } else {
+//                imgAnimal.setImageResource(R.mipmap.placeholder);
+//            }
         } else {
             tvNome.setText("Animal removido");
         }

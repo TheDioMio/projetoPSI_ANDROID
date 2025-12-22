@@ -91,11 +91,6 @@ public class UserJsonParser {
             JSONObject login = new JSONObject(response);
             if (login.getBoolean("success")){
                 token = login.getString("token");
-//                email = login.getString("email");
-//                name = login.getString("name");
-//                username = login.getString("username");
-//                avatar = login.getString("avatar");
-//                user_id = login.getInt("user_id");
 
             }
 

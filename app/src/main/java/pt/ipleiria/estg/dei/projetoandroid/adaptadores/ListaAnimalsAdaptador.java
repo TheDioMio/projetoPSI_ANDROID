@@ -82,18 +82,19 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
         public void update(Animal animal) {
             tvName.setText(animal.getName());
             tvAge.setText(String.valueOf(animal.getAge()));
-            tvBreed.setText(String.valueOf(animal.getBreed_id()));
+           // tvBreed.setText(String.valueOf(animal.getBreed_id()));
 
             String imgPath = null;
 
-            if (animal.getImages() != null && !animal.getImages().isEmpty()) {
-                imgPath = animal.getImages().get(0);
-            }
-
-            if (imgPath == null || imgPath.isEmpty()) {
-                imgCapa.setImageResource(R.mipmap.placeholder);
-                return;
-            }
+            // a class animal mudor logo temos de adaptar esta parte
+//            if (animal.getImages() != null && !animal.getImages().isEmpty()) {
+//                imgPath = animal.getImages().get(0);
+//            }
+//
+//            if (imgPath == null || imgPath.isEmpty()) {
+//                imgCapa.setImageResource(R.mipmap.placeholder);
+//                return;
+//            }
 
             if (imgPath.startsWith("http")) {
                 // 🔹 Se a imagem vem da internet → Glide

@@ -193,52 +193,52 @@ public class AnimalDetailsFragment extends Fragment {
 
 
 
-
+// A CLASS ANIMAL MUDOU LOGO TEMOS DE ADAPTAR
 
     private void carregarDados(Animal animal) {
         if (animal == null) return;
 
         // Alterar o modo como mostramos os dados para em vez de ser colocado aqui no código ser colocado no layout
         tvNome.setText(animal.getName());
-        tvAnimalType.setText(animal.getAnimal_type());
+        tvAnimalType.setText(animal.getType());
         tvBreed.setText(animal.getBreed());
         tvAge.setText(animal.getAge());
         tvSize.setText(animal.getSize());
-        tvVaccination.setText(animal.getVaccines());
+        tvVaccination.setText(animal.getVacination());
 
         String txtNeutered = getString(R.string.txt_nao);
-        if (animal.isNeutered()) txtNeutered = getString(R.string.txt_sim);
+        //if (animal.iNeutered()) txtNeutered = getString(R.string.txt_sim);
         tvNeutered.setText(txtNeutered);
-        tvLocalizacao.setText( animal.getLocation());
+        //tvLocalizacao.setText( animal.getLocation());
         tvDescricao.setText(animal.getDescription());
         tvOwnerName.setText(animal.getOwnerName());
-        tvOwnerEmail.setText(animal.getEmail());
+        //tvOwnerEmail.setText(animal.getEmail());
 
 
-        List<String> imagens = animal.getImages();
+       // List<String> imagens = animal.getImages();
 
-        if (imagens != null && !imagens.isEmpty()) {
-
-            // ---- 1) Carregar a imagem principal ----
-            carregarImagem(imagens.get(0), imgPrincipal);
-
-            // ---- 2) Criar miniaturas ----
-            for (String img : imagens) {
-
-                ImageView mini = new ImageView(requireContext());
-                LinearLayout.LayoutParams params =
-                        new LinearLayout.LayoutParams(200, 200);
-                params.setMargins(8, 0, 8, 0);
-                mini.setLayoutParams(params);
-                mini.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-                carregarImagem(img, mini);
-
-                mini.setOnClickListener(v -> carregarImagem(img, imgPrincipal));
-
-                layoutMiniaturas.addView(mini);
-            }
-        }
+//        if (imagens != null && !imagens.isEmpty()) {
+//
+//            // ---- 1) Carregar a imagem principal ----
+//            carregarImagem(imagens.get(0), imgPrincipal);
+//
+//            // ---- 2) Criar miniaturas ----
+//            for (String img : imagens) {
+//
+//                ImageView mini = new ImageView(requireContext());
+//                LinearLayout.LayoutParams params =
+//                        new LinearLayout.LayoutParams(200, 200);
+//                params.setMargins(8, 0, 8, 0);
+//                mini.setLayoutParams(params);
+//                mini.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//
+//                carregarImagem(img, mini);
+//
+//                mini.setOnClickListener(v -> carregarImagem(img, imgPrincipal));
+//
+//                layoutMiniaturas.addView(mini);
+//            }
+//        }
     }
 //
 //    @Override

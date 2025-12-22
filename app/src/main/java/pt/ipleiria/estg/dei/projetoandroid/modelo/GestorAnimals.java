@@ -159,13 +159,14 @@ public class GestorAnimals implements Serializable {
         animals.add(animal);
     }
 
+    // A CLASS ANIMAL MUDOU LOGO TEMOS DE APAPTAR ISTO AS NNOVOS CAMPOS
     public ArrayList<Animal> getAnimalsByUser(int userId) {
         ArrayList<Animal> resultado = new ArrayList<>();
-        for (Animal a : animals) {
-            if (a.getUser_id() == userId) {
-                resultado.add(a);
-            }
-        }
+//        for (Animal a : animals) {
+//            if (a.getUser_id() == userId) {
+//                resultado.add(a);
+//            }
+//        }
         return resultado;
     }
 

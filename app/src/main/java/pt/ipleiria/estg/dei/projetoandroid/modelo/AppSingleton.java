@@ -38,9 +38,10 @@ public class AppSingleton {
 
     private static RequestQueue volleyQueue;
 
-    public String endereco = "http://10.0.2.2/PSI/projetoPSI_WEB/backend/web/api";
+    public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
+
     //endereço para as imagens
-    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/PSI/projetoPSI_WEB/frontend/web";
+    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String getmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
@@ -233,7 +234,6 @@ public class AppSingleton {
                 return headers;
             }
         };
-
         volleyQueue.add(request);
     }
 

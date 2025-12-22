@@ -133,32 +133,33 @@ public class NewAnimalFragment extends Fragment {
                     return;
                 }
 
-                Animal novoAnimal = new Animal(
-                        0,
-                        tamanhoId,
-                        idadeId,
-                        tipoId,
-                        racaId,
-                        vacinasId,
-                        user.getId(),
-                        nome,
-                        descricao,
-                        "Localização", // definir origem real depois
-                        tipo.getDescription(),
-                        raca.getDescription(),
-                        user.getName(),
-                        spIdade.getSelectedItem().toString(),
-                        spTamanho.getSelectedItem().toString(),
-                        spVaccination.getSelectedItem().toString(),
-                        user.getName(),
-                        user.getEmail(),
-                        neutered,
-                        new Date(),
-                        new ArrayList<>()
-                );
+                // A CLASS ANIMAL MUDOU LOGO TEMOS DE ADAPTAR ESTE CODIGO
+//                Animal novoAnimal = new Animal(
+//                        0,
+//                        tamanhoId,
+//                        idadeId,
+//                        tipoId,
+//                        racaId,
+//                        vacinasId,
+//                        user.getId(),
+//                        nome,
+//                        descricao,
+//                        "Localização", // definir origem real depois
+//                        tipo.getDescription(),
+//                        raca.getDescription(),
+//                        user.getName(),
+//                        spIdade.getSelectedItem().toString(),
+//                        spTamanho.getSelectedItem().toString(),
+//                        spVaccination.getSelectedItem().toString(),
+//                        user.getName(),
+//                        user.getEmail(),
+//                        neutered,
+//                        new Date(),
+//                        new ArrayList<>()
+//                );
 
                 // Adicionar ao gestor
-                AppSingleton.getInstance(getContext()).addAnimal(novoAnimal);
+                //AppSingleton.getInstance(getContext()).addAnimal(novoAnimal);
 
                 Toast.makeText(getContext(), "Animal guardado com sucesso!", Toast.LENGTH_SHORT).show();
 

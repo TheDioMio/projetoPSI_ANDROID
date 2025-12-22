@@ -126,12 +126,13 @@ public class ApplicationsFragment extends Fragment {
         return view;
     }
 
+    // A CLASS ANIMAL MUDOU LOGO TEMOS DE ADAPTAR
     private void carregarAnimal(Animal animal) {
         tvNomeCard.setText(animal.getName());
         tvRacaCard.setText(animal.getBreed());
-        List<String> imagens = animal.getImages();
+        //List<String> imagens = animal.getImages();
 
-        carregarImagem(imagens.get(0), imgAnimalCard);
+        //carregarImagem(imagens.get(0), imgAnimalCard);
     }
 
 

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import pt.ipleiria.estg.dei.projetoandroid.MenuMainActivity;
 import pt.ipleiria.estg.dei.projetoandroid.R;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.LoginListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MenuListener;
@@ -237,47 +238,8 @@ public class AppSingleton {
     }
 
 
-
-    //codigo da ficha books
-
-//    public void loginAPI(final String email, final String password, final Context context){
-//        if(!LivroJsonParser.isConnectionInternet(context)){
-//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-//        }else{
-//            StringRequest request = new StringRequest(Request.Method.POST, getmUrlAPILogin, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String s) {
-//                    String token = LivroJsonParser.parserJsonLogin(s);
-//                    if(loginListener != null) {
-//                        loginListener.onValidateLogin(token, email);
-//                    }
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError volleyError) {
-//                    if (volleyError.networkResponse != null){
-//                        int statusCode = volleyError.networkResponse.statusCode;
-//                        System.out.println("-->STATUS: " + statusCode);
-//                    }else{
-//                        System.out.println("-->Erro: TIMEOUT OU SEM NET");
-//                    }
-//                    Toast.makeText(context, volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//            }){
-//                @Nullable
-//                @Override
-//                protected Map<String, String> getParams() throws AuthFailureError {
-//                    Map<String, String> params = new HashMap<>();
-//                    params.put("email",email);
-//                    params.put("password", password);
-//                    return params;
-//                }
-//            };
-//            volleyQueue.add(request);
-//        }
-//    }
-
-
+    // FUNÇÃO UTILIZADA PARA FAZER O LOGIN, PARA DEPOIS GUARDAR O TOKEN NA SHARED PREFERENCES
+    // RECEBE O TOKEN
     public void loginAPI(final String username, final String password, final Context context){
         if(!UserJsonParser.isConnectionInternet(context)){
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
@@ -291,16 +253,6 @@ public class AppSingleton {
                     }
                 }
             }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError volleyError) {
-//                    if (volleyError.networkResponse != null){
-//                        int statusCode = volleyError.networkResponse.statusCode;
-//                        System.out.println("-->STATUS: " + statusCode);
-//                    }else{
-//                        System.out.println("-->Erro: TIMEOUT OU SEM NET");
-//                    }
-//                    Toast.makeText(context, volleyError.getMessage(), Toast.LENGTH_SHORT).show();
-//                }
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
@@ -348,6 +300,9 @@ public class AppSingleton {
     }
 
 
+    // FUNÇÃO QUE PEDE OS DADOS DO UTILIZADOR QUE ESTÁ LOGADO PARA DEPOIS GUARDAR NA SHARED PREFERENCES
+    // ENVIA O TOKEN
+    // RECEBE OS DADOS DO UTILIZADOR  
     public void getMe( final Context context){
         if(!UserJsonParser.isConnectionInternet(context)){
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
@@ -357,8 +312,7 @@ public class AppSingleton {
                 public void onResponse(JSONObject response) {
                     //atualiza o singleton
                     me = UserJsonParser.parserJsonMe(response);
-                    //atualiza a BD
-                    //adicionarLivrosBD(livros);
+
                     if (menuListener != null) {
                         menuListener.onRefreshMenu(me);
                     }
@@ -366,12 +320,26 @@ public class AppSingleton {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+
                     String msg;
 
                     if (error.networkResponse != null) {
-                        msg = "Erro " + error.networkResponse.statusCode;
+                        int statusCode = error.networkResponse.statusCode;
+
+                        if (statusCode == 401) {
+                            msg = "Sessão expirada ou não autorizado";
+                        } else if (statusCode == 404) {
+                            msg = "Endpoint não encontrado";
+                        } else if (statusCode == 500) {
+                            msg = "Erro interno do servidor";
+                        } else {
+                            msg = "Erro HTTP: " + statusCode;
+                        }
+
+                    } else if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                        msg = "Sem ligação ao servidor";
                     } else {
-                        msg = "Erro de ligação ao servidor";
+                        msg = "Erro desconhecido";
                     }
 
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
@@ -396,7 +364,7 @@ public class AppSingleton {
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
 
-        return sharedPreferences.getString("TOKEN", null);
+        return sharedPreferences.getString(MenuMainActivity.TOKEN, null);
     }
 
 

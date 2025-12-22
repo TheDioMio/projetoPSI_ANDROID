@@ -7,8 +7,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
+
 import pt.ipleiria.estg.dei.projetoandroid.R;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
@@ -48,27 +51,38 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
             convertView = inflater.inflate(R.layout.item_card_candidaturas, null);
         }
 
+        // 1. Vincular os elementos visuais
         ImageView imgAnimal = convertView.findViewById(R.id.imgFotoAnimalCandidatura);
         TextView tvNome = convertView.findViewById(R.id.tvNomeAnimalCandidatura);
         TextView tvDescricao = convertView.findViewById(R.id.tvDescricaoCandidatura);
 
+        // 2. Obter a candidatura atual
         Application candidaturaAtual = candidaturas.get(position);
-        int idAnimal = candidaturaAtual.getAnimal_id();
-        Animal animal = AppSingleton.getInstance(context).getAnimal(idAnimal);
 
+        // 3. Preencher a descrição (motivo)
         tvDescricao.setText(candidaturaAtual.getDescription());
 
+        // 4. Ir buscar os dados do Animal associado através do Singleton
+        int idAnimal = candidaturaAtual.getAnimalId();
+        Animal animal = AppSingleton.getInstance(context).getAnimal(idAnimal);
+
         if (animal != null) {
+            // Se o animal existir na lista local, mostramos os dados
             tvNome.setText(animal.getName());
-// a class animal mudou, adaptar aos novos caampos
-//            if (animal.getImages() != null && !animal.getImages().isEmpty()) {
-//                carregarImagem(animal.getImages().get(0), imgAnimal);
-//            } else {
-//                imgAnimal.setImageResource(R.mipmap.placeholder);
-//            }
+
+            // Tenta carregar a imagem (assumindo que tens um método getPhotos ou similar, ajusta conforme o teu modelo Animal)
+            // Vou usar um código genérico aqui, ajusta se a tua classe Animal tiver outro nome para a lista de fotos
+            String imgUrl = null;
+            // if (animal.getPhotos() != null && !animal.getPhotos().isEmpty()) imgUrl = animal.getPhotos().get(0);
+
+            carregarImagem(imgUrl, imgAnimal);
+
         } else {
-            tvNome.setText("Animal removido");
+            // Se o animal não for encontrado (ex: base de dados local vazia ou animal apagado)
+            tvNome.setText("Animal #" + idAnimal);
+            imgAnimal.setImageResource(R.mipmap.placeholder);
         }
+
         return convertView;
     }
 
@@ -77,16 +91,17 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
             destino.setImageResource(R.mipmap.placeholder);
             return;
         }
-        if (img.startsWith("http")) {
-            Glide.with(context).load(img).placeholder(R.mipmap.placeholder).centerCrop().into(destino);
-        } else {
-            int resId = context.getResources().getIdentifier(img, "drawable", context.getPackageName());
-            if (resId != 0) {
-                Glide.with(context).load(resId).centerCrop().into(destino);
-            } else {
-                destino.setImageResource(R.mipmap.placeholder);
-            }
-        }
-    }
 
+        String urlFinal = img;
+        if (!img.startsWith("http")) {
+            urlFinal = AppSingleton.FRONTEND_BASE_URL + img;
+        }
+
+        Glide.with(context)
+                .load(urlFinal)
+                .placeholder(R.mipmap.placeholder)
+                .error(R.mipmap.placeholder)
+                .centerCrop()
+                .into(destino);
+    }
 }

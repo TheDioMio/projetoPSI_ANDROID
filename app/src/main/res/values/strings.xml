@@ -78,4 +78,6 @@
     <string name="txt_appname_petpanion">Petpanion</string>
     <string name="txt_nao_tem_internet">Não tem ligação a internet!</string>
     <string name="txt_messages">Mensagens</string>
+    <string name="txt_btn_applications_sent">Candidaturas Enviadas</string>
+    <string name="btn_txt_application_received">Candidaturas Recebidas</string>
 </resources>

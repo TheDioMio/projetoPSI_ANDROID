@@ -1,65 +1,59 @@
 package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
-import androidx.annotation.NonNull;
-
 public class Application {
-    private int id, status, user_id, animal_id, type;
+    private int id;
+    private int status; // 0=Pendente, 1=Aceite, 2=Recusada (exemplo)
     private String description;
+    private int userId; // Quem enviou
+    private int animalId; // Animal associado (pode ser 0 se for null na BD)
+    private int type; // Tipo de candidatura
+    private String createdAt; // Data de criação (String para facilitar)
+    private int targetUserId; // Quem recebe (dono do animal)
+    private String data; // O campo JSON vem como String
+    private String statusDate; // Data da mudança de estado
+    private int isRead; // 0 = Não lida, 1 = Lida
 
-    public Application(int id, int status, int user_id, int animal_id, int type, int target_user_id, String description) {
+    // Construtor Completo
+    public Application(int id, int status, String description, int userId, int animalId,
+                       int type, String createdAt, int targetUserId, String data,
+                       String statusDate, int isRead) {
         this.id = id;
         this.status = status;
-        this.user_id = user_id;
-        this.animal_id = animal_id;
-        this.type = type;
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public int getAnimal_id() {
-        return animal_id;
-    }
-
-    public void setAnimal_id(int animal_id) {
-        this.animal_id = animal_id;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
+        this.userId = userId;
+        this.animalId = animalId;
         this.type = type;
+        this.createdAt = createdAt;
+        this.targetUserId = targetUserId;
+        this.data = data;
+        this.statusDate = statusDate;
+        this.isRead = isRead;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    // Getters
+    public int getId() { return id; }
+    public int getStatus() { return status; }
+    public String getDescription() { return description; }
+    public int getUserId() { return userId; }
+    public int getAnimalId() { return animalId; }
+    public int getType() { return type; }
+    public String getCreatedAt() { return createdAt; }
+    public int getTargetUserId() { return targetUserId; }
+    public String getData() { return data; }
+    public String getStatusDate() { return statusDate; }
+    public int getIsRead() { return isRead; } // Podes mudar para boolean se preferires converter
 
-    public void setDescription(String description) {
-        this.description = description;
+    // Setters (Caso precises de alterar valores na APP)
+    public void setStatus(int status) { this.status = status; }
+    public void setIsRead(int isRead) { this.isRead = isRead; }
+
+    // Método auxiliar para obter o estado em texto (Opcional, mas útil para a Lista)
+    public String getStatusTexto() {
+        switch (this.status) {
+            case 0: return "Pendente";
+            case 1: return "Aceite";
+            case 2: return "Recusada";
+            default: return "Desconhecido";
+        }
     }
 }

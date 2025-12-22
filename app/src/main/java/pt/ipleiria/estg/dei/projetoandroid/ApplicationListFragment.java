@@ -1,57 +1,85 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.Toast;
-
+import android.widget.ListView; // MUDANÇA IMPORTANTE
 import java.util.ArrayList;
-import java.util.List;
 
-import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaApplicationsAdaptor;
+import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaApplicationsAdaptor; // Importa o nosso adaptador corrigido
+import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
-import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
-public class ApplicationListFragment extends Fragment {
-    private ListView lvApplications;
-    private ArrayList<Application> userApplications;
-    private ListaApplicationsAdaptor adaptador;
+public class ApplicationListFragment extends Fragment implements ApplicationListener {
+
+    private static final String ARG_TYPE = "type";
+    private String type; // "sent" ou "received"
+
+    private ListView lvApplications; // Mudámos de RecyclerView para ListView
+
+    public ApplicationListFragment() { }
+
+    public static ApplicationListFragment newInstance(String type) {
+        ApplicationListFragment fragment = new ApplicationListFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_TYPE, type);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            type = getArguments().getString(ARG_TYPE);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Layout que contém a ListView
         View view = inflater.inflate(R.layout.fragment_application_list, container, false);
 
+        // 1. Encontrar a ListView pelo ID correto do XML
         lvApplications = view.findViewById(R.id.lvApplications);
+        // Nota: ListView não precisa de LayoutManager
 
-       //Vai buscar o user logado e carrega as candidaturas dele.
-        User userLogado = ((MenuMainActivity) getActivity()).getUserLogado();
-        if (userLogado != null) {
-            carregarMinhasCandidaturas(userLogado.getId());
-        }
+        // 2. Chamar a API
+        // O "this" funciona porque implementamos ApplicationListener
+        AppSingleton.getInstance(getContext()).getApplicationsAPI(getContext(), type, this);
+
         return view;
     }
 
-    private void carregarMinhasCandidaturas(int userId) {
-        // Vai buscar TODAS as candidaturas, criadas por todos os users
-        List<Application> todasCandidaturas = AppSingleton.getInstance(getContext()).getApplications();
-        userApplications = new ArrayList<>();
-        // Aqui isto filtra para as do user em questão
-        for (Application app : todasCandidaturas) {
-            if (app.getUser_id() == userId) {
-                userApplications.add(app);
-            }
+    // --- MÉTODOS DO LISTENER ---
+
+    @Override
+    public void onRefreshList(ArrayList<Application> listaCandidaturas) {
+        // Este é o método que o AppSingleton chama quando os dados chegam
+        if (listaCandidaturas != null && getContext() != null) {
+            // Criar o adaptador e ligá-lo à ListView
+            ListaApplicationsAdaptor adapter = new ListaApplicationsAdaptor(getContext(), listaCandidaturas);
+            lvApplications.setAdapter(adapter);
         }
-        if (userApplications.isEmpty()) {
-            Toast.makeText(getContext(), R.string.txt_nenhuma_candidatura_feita, Toast.LENGTH_SHORT).show();
-        }
-        adaptador = new ListaApplicationsAdaptor(getContext(), userApplications);
-        lvApplications.setAdapter(adaptador);
+    }
+
+    // Implementar restantes métodos da interface para evitar erros (podem ficar vazios)
+    @Override
+    public void onRefreshApplicationList(ArrayList<Application> list) {
+        // Se a tua interface usar este nome, redireciona para o de cima
+        onRefreshList(list);
+    }
+
+    @Override
+    public void onError(String error) {
+        // Podes adicionar um Toast aqui se quiseres ver erros
+    }
+
+    @Override
+    public void onRefreshList(Object o) {
+        // Método genérico, não utilizado neste contexto
     }
 }

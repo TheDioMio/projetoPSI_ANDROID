@@ -237,7 +237,7 @@
                 android:text="@string/txt_sim"
                 android:layout_marginEnd="16dp"/>
             <RadioButton
-                android:id="@+id/rbVisitaNao"
+                android:id="@+id/rVisitaNao"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/txt_nao" />

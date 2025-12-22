@@ -122,7 +122,6 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
 
     public User getUserLogado() {
-
         //TEM DE IR A SHARED PREFERENCES BUSCAR O USER LOGADO
         return userLogado;
     }
@@ -148,7 +147,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav MY Animals");
         } else if (menuItem.getItemId()== R.id.navCandidaturas || menuItem.getItemId() == R.id.bottom_application) {
-            fragment = new ApplicationListFragment();
+            fragment = new ApplicationMenuFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Listagem de Candidaturas");
         } else if (menuItem.getItemId() == R.id.navMessage || menuItem.getItemId() == R.id.bottom_messages) {

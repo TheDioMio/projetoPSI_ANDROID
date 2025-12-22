@@ -37,6 +37,18 @@ public class GestorApplication {
         int type = 0;
         int target_user_id = 1;
 
-        applications.add(new Application(newId, status, user_id, animal_id, type, target_user_id, description));
+        applications.add(new Application(
+                newId,              // id
+                status,             // status
+                description,        // description (ATENÇÃO: Agora é o 3º parâmetro!)
+                user_id,            // userId
+                animal_id,          // animalId
+                type,               // type
+                "2023-01-01",       // createdAt (Valor provisório)
+                target_user_id,     // targetUserId
+                "{}",               // data (Valor provisório: JSON vazio)
+                "",                 // statusDate (Valor provisório)
+                0                   // isRead (0 = não lido)
+        ));
     }
 }

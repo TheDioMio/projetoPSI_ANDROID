@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MenuListener;
@@ -26,14 +27,17 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Me;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
-public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, MenuListener {
+public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnItemSelectedListener,MenuListener {
 
     public static final String TOKEN = "token";
 
     public static final String NAME = "name";
+    public static final String USERNAME = "username";
     public static final String EMAIL = "email";
     public static final String AVATAR = "avatar";
     public static final String IDUSER = "iduser";
+    public static final String ADDRESS = "address";
+    public static final String IMGAVATAR = "imgAvatar";
     private String token, avatar, email, name;
     private int iduser;
     private User userLogado;
@@ -43,6 +47,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     private DrawerLayout drawer;
     private FragmentManager fragmentManager;
 
+    private BottomNavigationView  bottomNav;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
@@ -59,6 +64,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         setSupportActionBar(toolbar);
         drawer = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navView);
+        bottomNav = findViewById(R.id.bottomNav);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
                 drawer, toolbar, R.string.ndOpen, R.string.ndClose);
@@ -67,7 +73,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         carregarCabecalho();
 
         navigationView.setNavigationItemSelectedListener(this);
-
+        bottomNav.setOnItemSelectedListener(this);
         fragmentManager = getSupportFragmentManager();
         carregarFragmentoInicial();
     }
@@ -84,19 +90,21 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
     private void carregarCabecalho() {
 
+
+        //DEVE IR BUSCAR O TOKEN A SHARED PREFERENCES E NÃO AO INTENT
         // 1️⃣ Receber token do intent
-        token = getIntent().getStringExtra(TOKEN);
-
-        if (token == null) {
-            Toast.makeText(this, "Token em falta", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 2️⃣ Guardar token nas SharedPreferences
-        SharedPreferences sp =
-                getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
-
-        sp.edit().putString("TOKEN", token).apply();
+//        token = getIntent().getStringExtra(TOKEN);
+//
+//        if (token == null) {
+//            Toast.makeText(this, "Token em falta", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        // 2️⃣ Guardar token nas SharedPreferences
+//        SharedPreferences sp =
+//                getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+//
+//        sp.edit().putString("TOKEN", token).apply();
 
         // 3️⃣ Configurar Singleton
         AppSingleton singleton = AppSingleton.getInstance(getApplicationContext());
@@ -115,41 +123,39 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
     public User getUserLogado() {
 
+        //TEM DE IR A SHARED PREFERENCES BUSCAR O USER LOGADO
         return userLogado;
     }
+
 
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         Fragment fragment = null;
-        if (menuItem.getItemId() == R.id.navHome){
+        if (menuItem.getItemId() == R.id.navHome || menuItem.getItemId() == R.id.bottom_home){
             fragment = new HomeFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Home");
         } else if (menuItem.getItemId() == R.id.navDetalhesAnimal){
             //fragment = new DinamicoFragment();
             //setTitle(menuItem.getTitle());
-            System.out.println("--> Nav Dinamico");
-        } else if (menuItem.getItemId() == R.id.navProfileDetails) {
-
+        } else if (menuItem.getItemId() == R.id.navProfileDetails || menuItem.getItemId() == R.id.bottom_profile) {
             fragment = ProfileFragment.newInstance(iduser, false);
             setTitle(menuItem.getTitle());
-            System.out.println("--> Nav Detalhes Perfil");
         }else if (menuItem.getItemId() == R.id.navMyAnimals) {
-
             fragment = new MyAnimalsFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav MY Animals");
-        } else if (menuItem.getItemId()== R.id.navCandidaturas) {
+        } else if (menuItem.getItemId()== R.id.navCandidaturas || menuItem.getItemId() == R.id.bottom_application) {
             fragment = new ApplicationListFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Listagem de Candidaturas");
-        } else if (menuItem.getItemId() == R.id.navMessage) {
-
+        } else if (menuItem.getItemId() == R.id.navMessage || menuItem.getItemId() == R.id.bottom_messages) {
             fragment = new MessageListFragment(); // ou MessageListFragment.newInstance()
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Message List");
+            Toast.makeText(getApplicationContext(), "Mensagens", Toast.LENGTH_SHORT).show();
         }
 
         if (fragment != null){
@@ -164,6 +170,38 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
     @Override
     public void onRefreshMenu(Me me) {
+
+        if (me == null) {
+            Toast.makeText(this, "Erro ao carregar dados do utilizador", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        //DEVE IR A SHARED PREFERENCES BUSCAR OS DADOS DO USER LOGADO
+        sharedPreferences = getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+        //definir o Editor para permitir guardar / alterar o valor
+        editor = sharedPreferences.edit();
+        if (me.getName()!=null || me.getUsername() != null || me.getEmail() != null || me.getAddress() != null|| me.getImgAvatar()!= null || me.getId() > 0) {
+            if ( me.getName()!= null) {
+                editor.putString(NAME, me.getName());
+            }
+            if ( me.getUsername()!= null) {
+                editor.putString(USERNAME, me.getUsername());
+            }
+            if ( me.getEmail()!= null) {
+                editor.putString(EMAIL, me.getEmail());
+            }
+            if ( me.getAddress()!= null) {
+                editor.putString(ADDRESS, me.getAddress());
+            }
+            if ( me.getImgAvatar()!= null) {
+                editor.putString(IMGAVATAR, me.getImgAvatar());
+            }
+            if ( me.getId() > 0) {
+                editor.putString(IDUSER, String.valueOf(me.getId()));
+            }
+
+            editor.apply();
+        }
 
             nav_tvName.setText(me.getName());
             nav_tvEmail.setText(me.getEmail());

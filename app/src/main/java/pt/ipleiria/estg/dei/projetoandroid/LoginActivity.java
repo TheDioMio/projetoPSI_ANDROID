@@ -126,11 +126,11 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     public void onValidateLogin(String token) {
         if(token != null) {
             //GUARDA O TOKEN NA SHARED PREFERENCES
-            SharedPreferences sp = getSharedPreferences("TOKEN", Context.MODE_PRIVATE);
-            sp.edit().putString("token", token).apply();
+            SharedPreferences sp = getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+            sp.edit().putString(MenuMainActivity.TOKEN, token).apply();
 
             Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
-            intent.putExtra(MenuMainActivity.TOKEN, token);
+//            intent.putExtra(MenuMainActivity.TOKEN, token);
             startActivity(intent);
             finish();
         }else{

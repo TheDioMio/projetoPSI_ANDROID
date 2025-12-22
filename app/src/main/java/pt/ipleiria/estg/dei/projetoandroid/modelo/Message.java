@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
-public class Message {
+import java.io.Serializable;
+
+public class Message implements Serializable {
 
     private int id, sender_user_id, reciver_user_id;
     private String subject, text, created_at;

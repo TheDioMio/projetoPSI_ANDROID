@@ -2,7 +2,6 @@ package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Region;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -30,17 +29,20 @@ import java.util.Map;
 import pt.ipleiria.estg.dei.projetoandroid.R;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.LoginListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MenuListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener;
+import pt.ipleiria.estg.dei.projetoandroid.utils.MessageJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.UserJsonParser;
 
 public class AppSingleton {
 
     private static RequestQueue volleyQueue;
 
-    public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
+    public String endereco = "http://10.0.2.2/PSI/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
+    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/PSI/projetoPSI_WEB/frontend/web";
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String getmUrlAPIMe = endereco+"/users/me";
+    private String getMessageURL = endereco+"/messages";
 
     public void setLoginListener(LoginListener loginListener) {
         this.loginListener = loginListener;
@@ -49,6 +51,8 @@ public class AppSingleton {
     private MenuListener menuListener;
 
     private Me me;
+
+    private MessagesListener messagesListener;
 
 
 
@@ -186,6 +190,51 @@ public class AppSingleton {
         return gestorMessage.getMessageById(idMessage);
     }
 
+    public void setMessageListener(MessagesListener messageListener) {
+        this.messagesListener = messageListener;
+    }
+
+    public void getAllMessagesAPI(final Context context) {
+
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                getMessageURL,   // já tens: endereco + "/messages"
+                null,
+                (JSONArray response) -> {
+                    ArrayList<Message> lista = MessageJsonParser.parserJsonMessages(response);
+                    if (messagesListener != null) {
+                        messagesListener.onRefreshListaMessages(lista);
+                    }
+                },
+                error -> {
+                    String msg;
+                    if (error.networkResponse != null) {
+                        msg = "Erro " + error.networkResponse.statusCode;
+                    } else {
+                        msg = "Erro de ligação ao servidor";
+                    }
+
+                    if (messagesListener != null) {
+                        messagesListener.onErro(msg);
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Accept", "application/json");
+
+                String token = getToken(context);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
 
 
 

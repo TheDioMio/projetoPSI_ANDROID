@@ -87,4 +87,9 @@ public class ListaMessagesAdaptador extends BaseAdapter {
             }
         }
     }
+
+    public void atualizar(ArrayList<Message> novaLista) {
+        this.messages = novaLista;
+        notifyDataSetChanged();
+    }
 }

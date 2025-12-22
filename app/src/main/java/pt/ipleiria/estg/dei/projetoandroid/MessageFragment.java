@@ -38,6 +38,7 @@ public class MessageFragment extends Fragment {
     private int messageId;
     private int receiverId;
     private String defaultSubject;
+    private static final String ARG_MESSAGE = "message";
 
     // -------------------------------
     // VIEWS
@@ -70,11 +71,11 @@ public class MessageFragment extends Fragment {
         return fragment;
     }
 
-    public static MessageFragment newInstanceForRead (int messageId){
+    public static MessageFragment newInstanceForRead(Message message){
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_MODE, MODE_READ);
-        args.putInt(ARG_MESSAGE_ID, messageId);
+        args.putSerializable(ARG_MESSAGE, message);
         fragment.setArguments(args);
         return fragment;
     }
@@ -132,7 +133,7 @@ public class MessageFragment extends Fragment {
     // MODO: LER MENSAGEM
     // -------------------------------
     private void setupReadMode() {
-        Message msg = AppSingleton.getInstance(getContext()).getMessage(messageId);
+        Message msg = (Message) getArguments().getSerializable(ARG_MESSAGE);
         if (msg == null) return;
 
         // preencher dados

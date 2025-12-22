@@ -30,7 +30,7 @@
         <item
             android:id="@+id/navMessage"
             android:icon="@drawable/ic_message_foreground"
-            android:title="@string/txt_sendMessage" />
+            android:title="@string/txt_messages" />
 
     </group>
 

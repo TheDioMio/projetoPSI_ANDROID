@@ -79,24 +79,42 @@ public class MessageListFragment extends Fragment {
 
         ListView lvMessages = view.findViewById(R.id.lvMessages);
 
-        // obter o utilizador logado a partir da MenuMainActivity
-        MenuMainActivity activity = (MenuMainActivity) getActivity();
-        if (activity == null) return;
-
-        User userLogado = activity.getUserLogado();
-        if (userLogado == null) return;
-
-        int idUser = userLogado.getId();
-
-        // buscar mensagens do Singleton
-        ArrayList<Message> recebidas =
-                AppSingleton.getInstance(getContext()).getMessagesForUser(idUser);
-
-        // ligar o adaptador
         ListaMessagesAdaptador adaptador =
-                new ListaMessagesAdaptador(getContext(), recebidas);
+                new ListaMessagesAdaptador(getContext(), new ArrayList<>());
 
         lvMessages.setAdapter(adaptador);
+
+        lvMessages.setOnItemClickListener((parent, v, position, id) -> {
+            Message selecionada = (Message) parent.getItemAtPosition(position);
+
+            MessageFragment frag = MessageFragment.newInstanceForRead(selecionada);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.contentFragment, frag)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        AppSingleton singleton = AppSingleton.getInstance(getContext());
+
+        singleton.setMessageListener(new pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener() {
+            @Override
+            public void onRefreshListaMessages(ArrayList<Message> lista) {
+                adaptador.atualizar(lista);
+            }
+
+            @Override
+            public void onErro(String erro) {
+                // opcional: Toast
+                // Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        singleton.getAllMessagesAPI(getContext());
+
+
+
     }
 
 

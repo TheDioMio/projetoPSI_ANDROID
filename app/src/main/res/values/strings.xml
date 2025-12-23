@@ -81,4 +81,19 @@
     <string name="txt_btn_applications_sent">Candidaturas Enviadas</string>
     <string name="btn_txt_application_received">Candidaturas Recebidas</string>
     <string name="txt_view_candidatura_de">Candidatura de (Nome Candidato)</string>
+    <string name="txt_view_status_badge" />
+    <string name="txt_status_atual">Estado Atual</string>
+    <string name="txt_candidatura_detail">Candidatura</string>
+    <string name="txt_detail_dados_pessoais">👤 DADOS PESSOAIS</string>
+    <string name="txt_detail_habitacao">🏠 HABITAÇÃO</string>
+    <string name="txt_detail_responsabilidade">🛡️ RESPONSABILIDADE</string>
+    <string name="txt_detail_contacto">Contacto</string>
+    <string name="txt_detail_tipo_habitacao">Tipo Habitação</string>
+    <string name="txt_detail_tempo_sozinho">Tempo Sozinho</string>
+    <string name="txt_detail_criancas">Crianças</string>
+    <string name="txt_detail_ciente_custos">Ciente dos Custos</string>
+    <string name="txt_detail_aceita_acompanhamento">Aceita Acompanhamento</string>
+    <string name="txt_detail_motivacao">💬 MOTIVAÇÃO</string>
+    <string name="txt_btn_aprovar">Aprovar</string>
+    <string name="txt_btn_rejeitar">Rejeitar</string>
 </resources>

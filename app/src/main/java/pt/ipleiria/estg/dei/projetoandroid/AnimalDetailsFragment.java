@@ -70,7 +70,7 @@ public class AnimalDetailsFragment extends Fragment {
 
         imgPrincipal = view.findViewById(R.id.imgPrincipal);
         layoutMiniaturas = view.findViewById(R.id.layoutMiniaturas);
-        tvNome = view.findViewById(R.id.tvNomeAnimal);
+        tvNome = view.findViewById(R.id.tvAnimalName);
         tvLocalizacao = view.findViewById(R.id.tvLocalizacaoAnimal);
 
         tvDescricao = view.findViewById(R.id.tvDescricaoAnimal);

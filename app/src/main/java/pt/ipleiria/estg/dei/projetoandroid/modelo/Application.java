@@ -7,7 +7,7 @@ public class Application {
     private int type;
     private String description;
 
-    private String userId;
+    private String candidateName;
     private String animalName;
 
     private String createdAt;
@@ -27,7 +27,7 @@ public class Application {
     private String children;
     private String followUp;
 
-    public Application(int id, int animalId, int status, int type, String description, String userId, String animalName,
+    public Application(int id, int animalId, int status, int type, String description, String candidateName, String animalName,
                        String createdAt, String targetUserId, String statusDate, int isRead,
                        /*String name,*/ int age, String contact, String motive, String home,
                        String timeAlone, String bills, String children, String followUp) {
@@ -35,7 +35,7 @@ public class Application {
         this.animalId = animalId;
         this.status = status;
         this.description = description;
-        this.userId = userId;
+        this.candidateName = candidateName;
         this.animalName = animalName;
         this.createdAt = createdAt;
         this.targetUserId = targetUserId;
@@ -67,7 +67,7 @@ public class Application {
 
     public int getStatus() { return status; }
     public String getDescription() { return description; }
-    public String getUserId() { return userId; }
+    public String getCandidateName() { return candidateName; }
     public String getAnimalName() { return animalName; }
     public String getCreatedAt() { return createdAt; }
     public String getTargetUserId() { return targetUserId; }

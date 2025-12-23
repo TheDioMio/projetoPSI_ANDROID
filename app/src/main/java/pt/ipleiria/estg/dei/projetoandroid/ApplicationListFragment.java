@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView; // MUDANÇA IMPORTANTE
 import java.util.ArrayList;
 
@@ -47,6 +48,30 @@ public class ApplicationListFragment extends Fragment implements ApplicationList
 
         // 2. Chamar a API
         AppSingleton.getInstance(getContext()).getApplicationsAPI(getContext(), type, this);
+
+        lvApplications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Passo A: Obter o objeto da linha clicada
+                // O adapter sabe qual é o objeto na posição X
+                Application selected = (Application) parent.getItemAtPosition(position);
+
+                // Passo B: Preparar os dados para enviar (apenas o ID chega)
+                Bundle bundle = new Bundle();
+                bundle.putInt("application_id", selected.getId());
+
+                // Passo C: Criar o fragmento de detalhes e dar-lhe os argumentos
+                ApplicationDetailsFragment detailsFragment = new ApplicationDetailsFragment();
+                detailsFragment.setArguments(bundle);
+
+                // Passo D: Navegar (Substituir o fragmento atual pelo de detalhes)
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contentFragment, detailsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         return view;
     }

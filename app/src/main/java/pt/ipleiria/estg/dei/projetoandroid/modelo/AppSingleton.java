@@ -160,9 +160,6 @@ public class AppSingleton {
         return AppDBHelper.getInstance(context).getAnimalById(id);
     }
 
-
-
-
     public void adicionarAnimalsBD(ArrayList<Animal> animals){
         AppDBHelper.getInstance(context).removerAllAnimalsBD();
         for (Animal a: animals){
@@ -174,6 +171,22 @@ public class AppSingleton {
         animals = appBD.getAllAnimalsBD();
         return new ArrayList<>(animals);
     }
+
+
+
+
+    public void adicionarApplicationsBD(ArrayList<Application> applications){
+        AppDBHelper.getInstance(context).removerAllApplicationsBD();
+        for (Application a: applications){
+            appBD.adicionarApplicationBD(a);
+        }
+    }
+
+    public ArrayList<Application> getAllApplicationsBD() {
+        applications = appBD.getAllApplicationsBD();
+        return new ArrayList<>(applications);
+    }
+
 
 
     public void adicionarCommentsBD(ArrayList<Comment> comments){
@@ -267,54 +280,9 @@ public class AppSingleton {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // -------------------------
     // GESTOR User
     // -------------------------
-//    public void addApplication(String user_id, int animal_id, String description) {
-//        int newId;
-//        if(applications.isEmpty()){
-//            newId = 1;
-//        } else {
-//            newId = applications.get(applications.size() -1).getId() + 1;
-//        }
-//
-//        //Valores que foram feitos padrão:
-//        int status = 0;
-//        int type = 0;
-//        int target_user_id = 1;
-//
-//        applications.add(new Application(
-//                newId,              // id
-//                status,             // status
-//                description,        // description
-//                user_id,            // userId
-//                animal_id,          // animalId
-//                type,               // type
-//                "2023-01-01",       // createdAt (Valor provisório)
-//                target_user_id,     // targetUserId
-//                "{}",               // data (Valor provisório: JSON vazio)
-//                "",                 // statusDate (Valor provisório)
-//                0                   // isRead (0 = não lido)
-//        ));
-//    }
 
 //    public User getUserLogin(String username, String password){
 //        return gestorUsers.getUserLogin(username, password);
@@ -378,72 +346,46 @@ public class AppSingleton {
 //        return gestorVaccination.getVaccinations();
 //    }
 //
-//    // -------------------------
-//    // GESTOR Application
-//    // -------------------------
 //
+
+
+
+
+
     // -------------------------
     // GESTOR Application
     // -------------------------
-//    public void addApplication(String user_id, int animal_id, String description) {
-//        int newId;
-//        if(applications.isEmpty()){
-//            newId = 1;
-//        } else {
-//            newId = applications.get(applications.size() -1).getId() + 1;
-//        }
-//
-//        //Valores que foram feitos padrão:
-//        int status = 0;
-//        int type = 0;
-//        int target_user_id = 1;
-//
-//        applications.add(new Application(
-//                newId,              // id
-//                status,             // status
-//                description,        // description
-//                user_id,            // userId
-//                animal_id,          // animalId
-//                type,               // type
-//                "2023-01-01",       // createdAt (Valor provisório)
-//                target_user_id,     // targetUserId
-//                "{}",               // data (Valor provisório: JSON vazio)
-//                "",                 // statusDate (Valor provisório)
-//                0                   // isRead (0 = não lido)
-//        ));
-//    }
-
-
     public ArrayList<Application> getApplications() {
         return new ArrayList<>(applications);
     }
-//
-//    // -------------------------
-//    // GESTOR Message
-//    // -------------------------
-//
-//    public ArrayList<Message> getMessagesForUser (int userId){
-//        return gestorMessage.getMessageForUser(userId);
-//    }
-//
-//
-//    public Message getMessage(int idMessage) {
-//        return gestorMessage.getMessageById(idMessage);
-//    }
 
-    // FUNÇÃO QUE PEDE AS CANDIDATURAS ENVIADAS/RECEBIDAS DO UTILIZADOR
+    public Application getApplication(int id) {
+        for (Application a : applications) {
+            if (a.getId() == id) {
+                return a;
+            }
+        }
+
+        // fallback BD
+        return AppDBHelper.getInstance(context).getApplicationById(id);
+    }
+
     public void getApplicationsAPI(final Context context, String type, final ApplicationListener listener) {
         String url = endereco + "/applications/" + type;
 
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONArray jsonArray) {
                         try {
                             // Tenta converter
-                            ArrayList<Application> lista = ApplicationJsonParser.parserJsonApplications(response);
+                            applications = ApplicationJsonParser.parserJsonApplications(jsonArray);
+                            //Limpar dados antigos das applications anteriores
+                            appBD.removerAllApplicationsBD();
+                            //Guardar na BD local
+                            adicionarApplicationsBD(applications);
                             if (listener != null) {
-                                listener.onRefreshList(lista);
+                                listener.onRefreshList(applications);
                             }
                         } catch (Exception e) {
                             // Se falhar aqui, é erro no Parser (campos errados ou nulos)
@@ -463,7 +405,7 @@ public class AppSingleton {
                             try {
                                 // Tenta ler o que o servidor escreveu no erro
                                 String data = new String(error.networkResponse.data, "UTF-8");
-                                android.util.Log.e("ERRO_API", data); // Vê no Logcat do Android Studio
+                                android.util.Log.e("ERRO_API", data); // VEJAM NO LOGCAT!
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -491,6 +433,14 @@ public class AppSingleton {
         };
         volleyQueue.add(req);
     }
+
+    public void adicionarApplicationBD(ArrayList<Application> applications){
+//        livrosBD.removerAllLivrosBD();
+//        for (Livro l: livros){
+//            livrosBD.adicionarLivroBD(l);
+//        }
+
+    }
     // -------------------------
     // FIM GESTOR Application
     // -------------------------
@@ -501,6 +451,14 @@ public class AppSingleton {
     // -------------------------
     // GESTOR Message
     // -------------------------
+//    public ArrayList<Message> getMessagesForUser (int userId){
+//        return gestorMessage.getMessageForUser(userId);
+//    }
+//
+//
+//    public Message getMessage(int idMessage) {
+//        return gestorMessage.getMessageById(idMessage);
+//    }
 
     public void setMessageListener(MessagesListener messageListener) {
         this.messagesListener = messageListener;

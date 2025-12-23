@@ -7,41 +7,31 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ApplicationDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
+
+
 public class ApplicationDetailsFragment extends Fragment {
+    private TextView tvNomeCandidato, tvSubmissionDate, tvAnimalName, tvStatusBadge,
+            tvCandidateName, tvCandidateAge, tvContact, tvHome, tvTimeAlone, tvChildren,
+            tvBills, tvFollowUp,tvMotive;
+    private Button btnApprove, btnReject;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Application application;
 
     public ApplicationDetailsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ApplicationDetailsFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static ApplicationDetailsFragment newInstance(String param1, String param2) {
         ApplicationDetailsFragment fragment = new ApplicationDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,15 +40,61 @@ public class ApplicationDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_application_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_application_details, container, false);
+
+        tvNomeCandidato = view.findViewById(R.id.tvNomeCandidato);
+        tvSubmissionDate = view.findViewById(R.id.tvSubmissionDate);
+        tvAnimalName = view.findViewById(R.id.tvAnimalName);
+        tvStatusBadge = view.findViewById(R.id.tvStatusBadge);
+        tvCandidateName = view.findViewById(R.id.tvCandidateName);
+        tvCandidateAge = view.findViewById(R.id.tvCandidateAge);
+        tvContact = view.findViewById(R.id.tvContact);
+        tvHome = view.findViewById(R.id.tvHome);
+        tvTimeAlone = view.findViewById(R.id.tvTimeAlone);
+        tvChildren = view.findViewById(R.id.tvChildren);
+        tvBills = view.findViewById(R.id.tvBills);
+        tvFollowUp = view.findViewById(R.id.tvFollowUp);
+        tvMotive = view.findViewById(R.id.tvMotive);
+        btnReject = view.findViewById(R.id.btnReject);
+        btnApprove = view.findViewById(R.id.btnApprove);
+
+
+        //obtém a application passada pelo Bundle
+        Bundle args = getArguments();
+        if (args != null) {
+            int applicationId = args.getInt("application_id");
+            application = AppSingleton.getInstance(getContext()).getApplication(applicationId);
+            carregarDados(application);
+        }
+
+        return view;
+    }
+
+
+
+    //CARREGAR DADOS DA APPLICATION
+    private void carregarDados(Application application) {
+        if (application == null) return;
+
+        //Todos os dados são carregados diretamente no layout
+        tvNomeCandidato.setText(application.getCandidateName());
+        tvSubmissionDate.setText(application.getCreatedAt());
+        tvAnimalName.setText(application.getAnimalName());
+        tvStatusBadge.setText(application.getStatusTexto());
+        tvCandidateName.setText(application.getCandidateName());
+        tvCandidateAge.setText(application.getAge() + "");
+        tvContact.setText(application.getContact());
+        tvHome.setText(application.getHome());
+        tvTimeAlone.setText(application.getTimeAlone());
+        tvChildren.setText(application.getChildren());
+        tvBills.setText(application.getBills());
+        tvFollowUp.setText(application.getFollowUp());
+        tvMotive.setText(application.getMotive());
     }
 }

@@ -42,9 +42,9 @@ public class AppSingleton {
 
     private static RequestQueue volleyQueue;
 
-    public String endereco = "http://10.0.2.2/PSI/projetoPSI_WEB/backend/web/api";
+    public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/PSI/projetoPSI_WEB/frontend/web";
+    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String getmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
@@ -72,7 +72,6 @@ public class AppSingleton {
     private GestorAnimalAge gestorAnimalAge = new GestorAnimalAge();
     private GestorAnimalSize gestorAnimalSize = new GestorAnimalSize();
     private GestorVaccination gestorVaccination = new GestorVaccination();
-    private GestorApplication gestorApplication = new GestorApplication();
 
 
     public static synchronized AppSingleton getInstance(Context context){
@@ -177,16 +176,105 @@ public class AppSingleton {
     // -------------------------
     // GESTOR Application
     // -------------------------
+//    public void addApplication(String user_id, int animal_id, String description) {
+//        int newId;
+//        if(applications.isEmpty()){
+//            newId = 1;
+//        } else {
+//            newId = applications.get(applications.size() -1).getId() + 1;
+//        }
+//
+//        //Valores que foram feitos padrão:
+//        int status = 0;
+//        int type = 0;
+//        int target_user_id = 1;
+//
+//        applications.add(new Application(
+//                newId,              // id
+//                status,             // status
+//                description,        // description
+//                user_id,            // userId
+//                animal_id,          // animalId
+//                type,               // type
+//                "2023-01-01",       // createdAt (Valor provisório)
+//                target_user_id,     // targetUserId
+//                "{}",               // data (Valor provisório: JSON vazio)
+//                "",                 // statusDate (Valor provisório)
+//                0                   // isRead (0 = não lido)
+//        ));
+//    }
 
-    public void addApplication(int user_id, int animal_id, String description) {
-        gestorApplication.addApplication(user_id, animal_id, description);
-    }
     public ArrayList<Application> getApplications() {
-        return gestorApplication.getApplications();
+        return new ArrayList<>(applications);
     }
 
+    // FUNÇÃO QUE PEDE AS CANDIDATURAS ENVIADAS/RECEBIDAS DO UTILIZADOR
+    public void getApplicationsAPI(final Context context, String type, final ApplicationListener listener) {
+        String url = endereco + "/applications/" + type;
 
-    //*************************************** Mensagens *************************************
+        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            // Tenta converter
+                            ArrayList<Application> lista = ApplicationJsonParser.parserJsonApplications(response);
+                            if (listener != null) {
+                                listener.onRefreshList(lista);
+                            }
+                        } catch (Exception e) {
+                            // Se falhar aqui, é erro no Parser (campos errados ou nulos)
+                            e.printStackTrace();
+                            Toast.makeText(context, "Erro ao processar dados: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String message = "Erro desconhecido";
+
+                        if (error.networkResponse != null) {
+                            // Se o servidor respondeu (ex: 404, 500, 401)
+                            message = "Erro Servidor: " + error.networkResponse.statusCode;
+                            try {
+                                // Tenta ler o que o servidor escreveu no erro
+                                String data = new String(error.networkResponse.data, "UTF-8");
+                                android.util.Log.e("ERRO_API", data); // Vê no Logcat do Android Studio
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (error instanceof com.android.volley.ParseError) {
+                            message = "Erro de Formato (ParseError): O JSON não veio como esperado.";
+                        } else if (error instanceof com.android.volley.NoConnectionError) {
+                            message = "Sem ligação à Internet";
+                        } else if (error instanceof com.android.volley.TimeoutError) {
+                            message = "O servidor demorou muito a responder";
+                        }
+
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                        error.printStackTrace(); // Imprime o erro completo na consola
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+        volleyQueue.add(req);
+    }
+    // -------------------------
+    // FIM GESTOR Application
+    // -------------------------
+
+
+
+
     // -------------------------
     // GESTOR Message
     // -------------------------
@@ -408,68 +496,6 @@ public class AppSingleton {
             };
             volleyQueue.add(request);
         }
-    }
-
-    // FUNÇÃO QUE PEDE AS CANDIDATURAS ENVIADAS DO UTILIZADOR
-    // FUNÇÃO QUE PEDE AS CANDIDATURAS (COM MELHOR TRATAMENTO DE ERROS)
-    public void getApplicationsAPI(final Context context, String type, final ApplicationListener listener) {
-        String url = endereco + "/applications/" + type;
-
-        JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            // Tenta converter
-                            ArrayList<Application> lista = ApplicationJsonParser.parserJsonApplications(response);
-                            if (listener != null) {
-                                listener.onRefreshList(lista);
-                            }
-                        } catch (Exception e) {
-                            // Se falhar aqui, é erro no Parser (campos errados ou nulos)
-                            e.printStackTrace();
-                            Toast.makeText(context, "Erro ao processar dados: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String message = "Erro desconhecido";
-
-                        if (error.networkResponse != null) {
-                            // Se o servidor respondeu (ex: 404, 500, 401)
-                            message = "Erro Servidor: " + error.networkResponse.statusCode;
-                            try {
-                                // Tenta ler o que o servidor escreveu no erro
-                                String data = new String(error.networkResponse.data, "UTF-8");
-                                android.util.Log.e("ERRO_API", data); // Vê no Logcat do Android Studio
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else if (error instanceof com.android.volley.ParseError) {
-                            message = "Erro de Formato (ParseError): O JSON não veio como esperado.";
-                        } else if (error instanceof com.android.volley.NoConnectionError) {
-                            message = "Sem ligação à Internet";
-                        } else if (error instanceof com.android.volley.TimeoutError) {
-                            message = "O servidor demorou muito a responder";
-                        }
-
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                        error.printStackTrace(); // Imprime o erro completo na consola
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                String token = getToken(context);
-                if (token != null) {
-                    headers.put("Authorization", "Bearer " + token);
-                }
-                return headers;
-            }
-        };
-        volleyQueue.add(req);
     }
 
     public String getToken(Context context) {

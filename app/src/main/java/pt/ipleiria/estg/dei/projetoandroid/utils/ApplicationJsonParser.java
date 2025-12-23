@@ -18,16 +18,24 @@ public class ApplicationJsonParser {
 
                 Application app = new Application(
                         obj.getInt("id"),
+                        obj.getInt("animal_id"),
                         obj.getInt("status"),
-                        obj.optString("description", "Sem descrição"),
-                        obj.getInt("user_id"),
-                        obj.optInt("animal_id", 0),
-                        obj.optInt("type", 0),
-                        obj.optString("created_at", ""),
-                        obj.optInt("target_user_id", 0),
-                        obj.optString("data", ""),
-                        obj.optString("statusDate", ""),
-                        obj.optInt("isRead", 0)
+                        obj.getInt("type"),
+                        obj.getString("description"),
+                        obj.getString("user_id"),
+                        obj.getString("animal_name"),
+                        obj.getString("created_at"),
+                        obj.getString("target_user_id"),
+                        obj.getString("statusDate"),
+                        obj.getInt("isRead"),
+                        obj.getInt("age"),
+                        obj.getString("contact"),
+                        obj.getString("motive"),
+                        obj.getString("home"),
+                        obj.getString("timeAlone"),
+                        obj.getString("bills"),
+                        obj.getString("children"),
+                        obj.getString("followUp")
                 );
 
                 lista.add(app);

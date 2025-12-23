@@ -2,57 +2,103 @@ package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
 public class Application {
     private int id;
-    private int status; // 0=Pendente, 1=Aceite, 2=Recusada (exemplo)
+    private int animalId;
+    private int status;
+    private int type;
     private String description;
-    private int userId; // Quem enviou
-    private int animalId; // Animal associado (pode ser 0 se for null na BD)
-    private int type; // Tipo de candidatura
-    private String createdAt; // Data de criação (String para facilitar)
-    private int targetUserId; // Quem recebe (dono do animal)
-    private String data; // O campo JSON vem como String
-    private String statusDate; // Data da mudança de estado
-    private int isRead; // 0 = Não lida, 1 = Lida
 
-    // Construtor Completo
-    public Application(int id, int status, String description, int userId, int animalId,
-                       int type, String createdAt, int targetUserId, String data,
-                       String statusDate, int isRead) {
+    private String userId;
+    private String animalName;
+
+    private String createdAt;
+    private String targetUserId;
+
+    private String statusDate;
+    private int isRead;
+
+    private String name;      // Nome do candidato (do form)
+    private int age;          // Idade
+    private String contact;
+    private String motive;
+
+    private String home;
+    private String timeAlone;
+    private String bills;
+    private String children;
+    private String followUp;
+
+    public Application(int id, int animalId, int status, int type, String description, String userId, String animalName,
+                       String createdAt, String targetUserId, String statusDate, int isRead,
+                       /*String name,*/ int age, String contact, String motive, String home,
+                       String timeAlone, String bills, String children, String followUp) {
         this.id = id;
+        this.animalId = animalId;
         this.status = status;
         this.description = description;
         this.userId = userId;
-        this.animalId = animalId;
-        this.type = type;
+        this.animalName = animalName;
         this.createdAt = createdAt;
         this.targetUserId = targetUserId;
-        this.data = data;
         this.statusDate = statusDate;
         this.isRead = isRead;
+        this.type = type;
+
+        //ISTO VEM DO JSON
+//        this.name = name;
+        this.age = age;
+        this.contact = contact;
+        this.motive = motive;
+        this.home = home;
+        this.timeAlone = timeAlone;
+        this.bills = bills;
+        this.children = children;
+        this.followUp = followUp;
+        //ISTO VEM DO JSON
     }
 
-    // Getters
+    // --- Getters ---
     public int getId() { return id; }
+
+    public int getAnimalId() {return animalId;}
+
+    public int getType() {return type;}
+
+    public String getName() {return name;}
+
     public int getStatus() { return status; }
     public String getDescription() { return description; }
-    public int getUserId() { return userId; }
-    public int getAnimalId() { return animalId; }
-    public int getType() { return type; }
+    public String getUserId() { return userId; }
+    public String getAnimalName() { return animalName; }
     public String getCreatedAt() { return createdAt; }
-    public int getTargetUserId() { return targetUserId; }
-    public String getData() { return data; }
+    public String getTargetUserId() { return targetUserId; }
     public String getStatusDate() { return statusDate; }
-    public int getIsRead() { return isRead; } // Podes mudar para boolean se preferires converter
+    public int getIsRead() { return isRead; }
 
-    // Setters (Caso precises de alterar valores na APP)
+//    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getContact() { return contact; }
+    public String getMotive() { return motive; }
+    public String getHome() { return home; }
+    public String getTimeAlone() { return timeAlone; }
+    public String getBills() { return bills; }
+    public String getChildren() { return children; }
+    public String getFollowUp() { return followUp; }
+    // --- Getters ---
+
+
+    // Setters
     public void setStatus(int status) { this.status = status; }
     public void setIsRead(int isRead) { this.isRead = isRead; }
 
-    // Método auxiliar para obter o estado em texto (Opcional, mas útil para a Lista)
+    // Métodos auxiliares para receber parametros json em string
+    // Helper para o Status
     public String getStatusTexto() {
         switch (this.status) {
-            case 0: return "Pendente";
-            case 1: return "Aceite";
-            case 2: return "Recusada";
+            case 0: return "Enviado";
+            case 1: return "Em Análise";
+            case 2: return "Aprovada";
+            case 3: return "Rejeitada";
+            case 4: return "Cancelada";
             default: return "Desconhecido";
         }
     }

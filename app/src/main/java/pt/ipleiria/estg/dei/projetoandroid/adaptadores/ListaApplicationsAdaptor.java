@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.R;
@@ -55,31 +57,33 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
         ImageView imgAnimal = convertView.findViewById(R.id.imgFotoAnimalCandidatura);
         TextView tvNome = convertView.findViewById(R.id.tvNomeAnimalCandidatura);
         TextView tvDescricao = convertView.findViewById(R.id.tvDescricaoCandidatura);
+        TextView tvStatusCandidatura = convertView.findViewById(R.id.tvStatusCandidatura);
 
         // 2. Obter a candidatura atual
         Application candidaturaAtual = candidaturas.get(position);
 
-        // 3. Preencher a descrição (motivo)
-        tvDescricao.setText(candidaturaAtual.getDescription());
+        // 3. Preencher a descrição (motivo) e status
+        tvDescricao.setText(candidaturaAtual.getMotive());
+        tvStatusCandidatura.setText(candidaturaAtual.getStatusTexto());
 
         // 4. Ir buscar os dados do Animal associado através do Singleton
         int idAnimal = candidaturaAtual.getAnimalId();
         Animal animal = AppSingleton.getInstance(context).getAnimal(idAnimal);
 
         if (animal != null) {
-            // Se o animal existir na lista local, mostramos os dados
+            // Se o animal existir na lista local, mostramos os dados da lista local
             tvNome.setText(animal.getName());
 
-            // Tenta carregar a imagem (assumindo que tens um método getPhotos ou similar, ajusta conforme o teu modelo Animal)
-            // Vou usar um código genérico aqui, ajusta se a tua classe Animal tiver outro nome para a lista de fotos
-            String imgUrl = null;
+            // Tenta carregar a imagem
+            // Usei uma coisa genérica, à espera do código do igor para carregar as imgs do animal
+//            String imgUrl = null;
             // if (animal.getPhotos() != null && !animal.getPhotos().isEmpty()) imgUrl = animal.getPhotos().get(0);
 
-            carregarImagem(imgUrl, imgAnimal);
+//            carregarImagem(imgUrl, imgAnimal);
 
         } else {
             // Se o animal não for encontrado (ex: base de dados local vazia ou animal apagado)
-            tvNome.setText("Animal #" + idAnimal);
+            tvNome.setText(candidaturaAtual.getAnimalName());
             imgAnimal.setImageResource(R.mipmap.placeholder);
         }
 

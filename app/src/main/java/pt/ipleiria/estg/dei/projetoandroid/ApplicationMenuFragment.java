@@ -57,7 +57,6 @@ public class ApplicationMenuFragment extends Fragment {
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            // IMPORTANTE: Substitui R.id.fragment_container pelo ID do teu FrameLayout na MainActivity
             fragmentTransaction.replace(R.id.contentFragment, listFragment);
             fragmentTransaction.addToBackStack(null); // Permite voltar atrás com o botão "Back"
             fragmentTransaction.commit();

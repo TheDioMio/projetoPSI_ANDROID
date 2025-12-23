@@ -16,9 +16,9 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
 public class ApplicationListFragment extends Fragment implements ApplicationListener {
 
     private static final String ARG_TYPE = "type";
-    private String type; // "sent" ou "received"
+    private String type; // "sent" ou "received", é isto que troca entre as listas
 
-    private ListView lvApplications; // Mudámos de RecyclerView para ListView
+    private ListView lvApplications;
 
     public ApplicationListFragment() { }
 
@@ -40,15 +40,12 @@ public class ApplicationListFragment extends Fragment implements ApplicationList
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Layout que contém a ListView
         View view = inflater.inflate(R.layout.fragment_application_list, container, false);
 
         // 1. Encontrar a ListView pelo ID correto do XML
         lvApplications = view.findViewById(R.id.lvApplications);
-        // Nota: ListView não precisa de LayoutManager
 
         // 2. Chamar a API
-        // O "this" funciona porque implementamos ApplicationListener
         AppSingleton.getInstance(getContext()).getApplicationsAPI(getContext(), type, this);
 
         return view;

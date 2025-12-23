@@ -28,7 +28,7 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
 
 import java.util.ArrayList;
 
-public class ApplicationsFragment extends Fragment implements ApplicationListener {
+public class ApplicationsSendFragment extends Fragment implements ApplicationListener {
 
     private Button btnSubmit;
     private EditText etDescription, etNomeCompleto, etIdade, etContacto;
@@ -39,14 +39,14 @@ public class ApplicationsFragment extends Fragment implements ApplicationListene
     private Spinner spTipoHabitacao, spHorasAnimal;
     private RadioGroup rgCriancas, rgCustos;
 
-    public ApplicationsFragment() {
+    public ApplicationsSendFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_applications, container, false);
+        View view = inflater.inflate(R.layout.fragment_send_applications, container, false);
 
         // 1. Inicializar Views
         btnSubmit = view.findViewById(R.id.btnSubmit);

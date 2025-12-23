@@ -18,8 +18,6 @@ import com.google.android.gms.maps.GoogleMap;
 
 import com.bumptech.glide.Glide;
 
-import java.util.List;
-
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 
@@ -100,7 +98,7 @@ public class AnimalDetailsFragment extends Fragment {
         btnApplication.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new ApplicationsFragment();
+                Fragment fragment = new ApplicationsSendFragment();
 
                 Bundle args = new Bundle();
                 if (animal != null) {

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import pt.ipleiria.estg.dei.projetoandroid.ApplicationsFragment;
 import pt.ipleiria.estg.dei.projetoandroid.MenuMainActivity;
 import pt.ipleiria.estg.dei.projetoandroid.R;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;

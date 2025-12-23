@@ -136,9 +136,9 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             fragment = new HomeFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Home");
-        } else if (menuItem.getItemId() == R.id.navDetalhesAnimal){
-            //fragment = new DinamicoFragment();
-            //setTitle(menuItem.getTitle());
+        } else if (menuItem.getItemId() == R.id.navDetalhesAnimal|| menuItem.getItemId() == R.id.bottom_animals){
+            fragment = new AllAnimalsFragment();
+            setTitle(menuItem.getTitle());
         } else if (menuItem.getItemId() == R.id.navProfileDetails || menuItem.getItemId() == R.id.bottom_profile) {
             fragment = ProfileFragment.newInstance(iduser, false);
             setTitle(menuItem.getTitle());

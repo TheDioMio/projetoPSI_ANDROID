@@ -25,10 +25,14 @@ public class Animal implements Serializable {
     private String listingDescription;
     private String listingViews;
 
-    public Animal(int id, String name, String description, String createdAt, String age, String size,
-                  String type, String breed, String neutered, String vacination, String ownerName,
-                  String ownerAddress, String ownerEmail, String ownerAvatar, String listingDescription,
-                  String listingViews) {
+    private ArrayList<Comment> comments;
+    private ArrayList<AnimalFile> animalfiles;
+
+
+    public Animal(int id, String name, String description, String createdAt,
+                  String age, String size, String type, String breed, String neutered, String vacination,
+                  String ownerName, String ownerAddress, String ownerEmail, String ownerAvatar, String listingDescription,
+                  String listingViews, ArrayList<Comment> comments, ArrayList<AnimalFile> animalfiles) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -45,6 +49,8 @@ public class Animal implements Serializable {
         this.ownerAvatar = ownerAvatar;
         this.listingDescription = listingDescription;
         this.listingViews = listingViews;
+        this.comments = (comments != null) ? comments : new ArrayList<>();
+        this.animalfiles = (animalfiles != null) ? animalfiles : new ArrayList<>();
     }
 
     public int getId() {
@@ -170,5 +176,21 @@ public class Animal implements Serializable {
 
     public void setListingViews(String listingViews) {
         this.listingViews = listingViews;
+    }
+
+    public ArrayList<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public ArrayList<AnimalFile> getAnimalfiles() {
+        return animalfiles;
+    }
+
+    public void setAnimalfiles(ArrayList<AnimalFile> animalfiles) {
+        this.animalfiles = animalfiles;
     }
 }

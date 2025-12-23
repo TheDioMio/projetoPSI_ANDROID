@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -18,17 +17,17 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AnimalFile;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 
-public class ListaAnimalsAdaptador extends BaseAdapter {
+public class ListaAnimalsGridAdaptador extends BaseAdapter
+{
 
     Context context;
     LayoutInflater inflater;
     ArrayList<Animal> animals;
 
-    public ListaAnimalsAdaptador(Context context, ArrayList<Animal> animals) {
+    public ListaAnimalsGridAdaptador(Context context, ArrayList<Animal> animals) {
         this.context = context;
         this.animals = animals;
     }
-
 
     @Override
     public int getCount() {
@@ -55,7 +54,7 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
 
         if (convertView == null){
             convertView = inflater.inflate(R
-                    .layout.item_animal_card, null);
+                    .layout.item_animal_card_grid, null);
         }
 
         ViewHolderLista viewHolder = (ViewHolderLista) convertView.getTag();
@@ -71,13 +70,13 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
 
     private class ViewHolderLista{
         private TextView tvName, tvAge, tvBreed;
-        private ImageView imgCapa;
+        private ImageView imgAnimal;
 
         public ViewHolderLista(View view) {
             tvName = view.findViewById(R.id.tvName);
             tvAge = view.findViewById(R.id.tvAge);
             tvBreed = view.findViewById(R.id.tvBreed);
-            imgCapa = view.findViewById(R.id.imgCapa);
+            imgAnimal = view.findViewById(R.id.imgAnimal);
         }
 
 
@@ -109,15 +108,13 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
                         .load(imageUrl)
                         .placeholder(R.mipmap.default_avatar)
                         .error(R.mipmap.default_avatar)
-                        .circleCrop()
-                        .into(imgCapa);
+                        .centerCrop()
+                        .into(imgAnimal);
 
             } else {
-                imgCapa.setImageResource(R.mipmap.default_avatar);
+                imgAnimal.setImageResource(R.mipmap.default_avatar);
             }
         }
-
-//
-
     }
 }
+

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class AppDBHelper extends SQLiteOpenHelper {
 
+    private static AppDBHelper instance;
     private static final String DB_NAME = "petpanionDB";
     private static final int DB_VERSION = 1;
     private final SQLiteDatabase database;
@@ -48,6 +49,14 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public static final String FILE_ADDRESS = "file_address";
 
 
+    public static synchronized AppDBHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new AppDBHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+
 
     //TABELA DOS COMENTÁRIOS
     private static final String TABLE_ANIMALS_COMMENTS = "animal_comments";
@@ -61,7 +70,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
 
 
-    public AppDBHelper(Context context) {
+    private AppDBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         database = getWritableDatabase();
     }
@@ -140,8 +149,14 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
+                int animalId = cursor.getInt(0);
+
+                ArrayList<Comment> comments = getCommentsByAnimalId(animalId);
+
+                ArrayList<AnimalFile> files = getFilesByAnimalId(animalId);
+
                 animals.add(new Animal(
-                        cursor.getInt(0),     // ID
+                        animalId,
                         cursor.getString(1),  // NAME
                         cursor.getString(2),  // DESCRIPTION
                         cursor.getString(3),  // CREATED_AT
@@ -156,8 +171,11 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         cursor.getString(12), // OWNER_EMAIL
                         cursor.getString(13), // OWNER_AVATAR
                         cursor.getString(14), // LISTING_DESCRIPTION
-                        cursor.getString(15)  // LISTING_VIEWS
+                        cursor.getString(15),  // LISTING_VIEWS
+                        comments, // comments
+                        files  // animalfiles
                 ));
+
             } while (cursor.moveToNext());
         }
 
@@ -169,7 +187,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
 
-        //penso que tenho de passar o id que vem do animal
+        values.put(ID, animal.getId());
         values.put(NAME, animal.getName());
         values.put(DESCRIPTION, animal.getDescription());
         values.put(CREATED_AT, animal.getCreatedAt());
@@ -229,12 +247,22 @@ public class AppDBHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndexOrThrow(OWNER_EMAIL)),
                     cursor.getString(cursor.getColumnIndexOrThrow(OWNER_AVATAR)),
                     cursor.getString(cursor.getColumnIndexOrThrow(LISTING_DESCRIPTION)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(LISTING_VIEWS))
+                    cursor.getString(cursor.getColumnIndexOrThrow(LISTING_VIEWS)),
+                    new ArrayList<>(), // comments
+                    new ArrayList<>()  // animalfiles
             );
+            animal.setAnimalfiles(getFilesByAnimalId(animal.getId()));
+            animal.setComments(getCommentsByAnimalId(animal.getId()));
         }
 
         cursor.close();
         return animal;
+    }
+
+    public void removerAllAnimalsBD() {
+        this.database.delete(TABLE_ANIMALS, null, null);
+        this.database.delete(TABLE_ANIMALS_FILES, null, null);
+        this.database.delete(TABLE_ANIMALS_COMMENTS, null, null);
     }
 
 
@@ -243,7 +271,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     //INICIO----------------------------------------------FOTOS-----------------------------------------------------
 
-    public ArrayList<AnimalFile> getFotosBD(int idAnimal) {
+    public ArrayList<AnimalFile> getFilesBD(int idAnimal) {
         ArrayList<AnimalFile> files = new ArrayList<>();
 
         Cursor cursor = database.query(
@@ -269,10 +297,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
 
-    public AnimalFile adicionarFotoBD(AnimalFile file) {
+    public AnimalFile adicionarFileBD(AnimalFile file) {
 
         ContentValues values = new ContentValues();
-
+        values.put(ID_FILE, file.getIdFile());
         values.put(ID_ANIMAL, file.getIdAnimal());
         values.put(FILE_ADDRESS, file.getFileAddress());
 
@@ -286,7 +314,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<AnimalFile> getFotosByAnimalId(int idAnimal) {
+    public ArrayList<AnimalFile> getFilesByAnimalId(int idAnimal) {
 
         ArrayList<AnimalFile> files = new ArrayList<>();
 
@@ -351,7 +379,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public Comment adicionarCommentBD(Comment comment) {
 
         ContentValues values = new ContentValues();
-
+        values.put(ID_COMMENT, comment.getIdComment());
         values.put(ID_ANIMAL, comment.getIdAnimal());
         values.put(COMMENT_TEXT, comment.getText());
         values.put(COMMENT_DATE, comment.getDate());

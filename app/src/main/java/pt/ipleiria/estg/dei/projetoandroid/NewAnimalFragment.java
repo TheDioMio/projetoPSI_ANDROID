@@ -202,72 +202,72 @@ public class NewAnimalFragment extends Fragment {
 
     private void carregarSpinnerTipoAnimal() {
 
-        ArrayList<AnimalType> tipos = app.getAnimalTypes();
-
-        ArrayAdapter<AnimalType> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                tipos
-        );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spTipo.setAdapter(adapter);
+//        ArrayList<AnimalType> tipos = app.getAnimalTypes();
+//
+//        ArrayAdapter<AnimalType> adapter = new ArrayAdapter<>(
+//                getContext(),
+//                android.R.layout.simple_spinner_item,
+//                tipos
+//        );
+//
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spTipo.setAdapter(adapter);
     }
 
     private void carregarSpinnerRaca(int tipoId) {
 
-        ArrayList<AnimalBreed> racas = app.getBreedsByAnimalType(tipoId);
-
-        ArrayAdapter<AnimalBreed> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                racas
-        );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spRaca.setAdapter(adapter);
+//        ArrayList<AnimalBreed> racas = app.getBreedsByAnimalType(tipoId);
+//
+//        ArrayAdapter<AnimalBreed> adapter = new ArrayAdapter<>(
+//                getContext(),
+//                android.R.layout.simple_spinner_item,
+//                racas
+//        );
+//
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spRaca.setAdapter(adapter);
     }
 
     private void carregarSpinnerIdade() {
 
-        ArrayList<String> idades = app.getAnimalAgesStrings();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                idades
-        );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spIdade.setAdapter(adapter);
+//        ArrayList<String> idades = app.getAnimalAgesStrings();
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                getContext(),
+//                android.R.layout.simple_spinner_item,
+//                idades
+//        );
+//
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spIdade.setAdapter(adapter);
     }
 
     private void carregarSpinnerTamanho() {
 
-        ArrayList<String> tamanhos = app.getAnimalSizesStrings();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                tamanhos
-        );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spTamanho.setAdapter(adapter);
+//        ArrayList<String> tamanhos = app.getAnimalSizesStrings();
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                getContext(),
+//                android.R.layout.simple_spinner_item,
+//                tamanhos
+//        );
+//
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spTamanho.setAdapter(adapter);
     }
 
     private void carregarSpinnerVaccination() {
 
-        ArrayList<String> vacinas = app.getVaccinationStrings();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                vacinas
-        );
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spVaccination.setAdapter(adapter);
+//        ArrayList<String> vacinas = app.getVaccinationStrings();
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                getContext(),
+//                android.R.layout.simple_spinner_item,
+//                vacinas
+//        );
+//
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spVaccination.setAdapter(adapter);
     }
 
     private void carregarSpinnerNeutered() {

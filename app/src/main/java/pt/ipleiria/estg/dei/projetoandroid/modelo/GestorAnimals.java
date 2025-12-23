@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.projetoandroid.modelo;
 
+import android.content.Context;
 import android.os.Build;
 
 import java.io.Serializable;
@@ -7,167 +8,46 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 
+import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalsListener;
+
 public class GestorAnimals implements Serializable {
-    private ArrayList<Animal> animals;
-
-    private String caminho ="https:\\\127.0.0.1\\projetoPSI_WEB\\Assets\\img\\";
-
-    public GestorAnimals() {
-        animals = new ArrayList<>();
-        gerarDadosDinamicos();
-    }
-
-//Codigo que veio da ficha
-//    //adicionar um novo contacto
-//    public void adicionarContacto(Contacto contacto){
-//        contactos.add(contacto);
+//private ArrayList<Animal> animals;
+//
+//
+//    public GestorAnimals() {
+//        animals = new ArrayList<>();
 //    }
-
-    private void gerarDadosDinamicos() {
-//        Date dataFixa = Date.from(Instant.now());
 //
-//        //está a carregar as imagens do disco local, mas no futuro vem da API
-//        ArrayList<String> imagens = new ArrayList<>();
-//        imagens.add("cao1");
-//        imagens.add("cao2");
-//        imagens.add("cao3");
-//        imagens.add("cao4");
-//        imagens.add("cao2");
+//    public ArrayList<Animal> getAnimals() {
 //
-//        animals.add(new Animal(
-//                1,      // id
-//                2,      // size_id
-//                3,      // age_id
-//                1,      // animal_type_id
-//                1,      // breed_id
-//                1,      // vaccines_id
-//                3,     // user_id
-//                "Rex",  // name
-//                "Cão muito amigável e brincalhão", // description
-//                "Lisboa", // location
-//                "Cão",     // animal_type (string)
-//                "Labrador", // breed (string)
-//                "João",     // user (string)
-//                "Adulto",   // age (string)
-//                "Médio",    // size (string)
-//                "Com vacinas", // vaccines (string)
-//                "Igor",
-//                "ipatrocinio@gmail.com",
-//                true,      // neutered
-//                dataFixa,  // created_at
-//                imagens    // images
-//        ));
+//        return new ArrayList<>(animals);
+//    }
 //
-//        animals.add(new Animal(
-//                2,
-//                2,
-//                3,
-//                2,
-//                3,
-//                1,
-//                2,
-//                "Mia",
-//                "Gato muito amigável e brincalhão",
-//                "Lisboa",
-//                "Gato",
-//                "Europeu",
-//                "João",
-//                "Adulto",
-//                "Médio",
-//                "Com vacinas",
-//                "Igor",
-//                "ipatrocinio@gmail.com",
-//                "+351913821960",
-//                true,
-//                dataFixa,
-//                imagens
-//        ));
+//    public Animal getAnimal(int idAnimal){
 //
-//
-//        animals.add(new Animal(
-//                3,
-//                2,
-//                3,
-//                1,
-//                2,
-//                1,
-//                3,
-//                "Bobi",
-//                "Cão muito amigável e brincalhão",
-//                "Lisboa",
-//                "Cão",
-//                "Labrador",
-//                "João",
-//                "Adulto",
-//                "Médio",
-//                "Com vacinas",
-//                "Igor",
-//                "ipatrocinio@gmail.com",
-//                "+351913821960",
-//                true,
-//                dataFixa,
-//                imagens
-//        ));
-//
-//
-//        animals.add(new Animal(
-//                4,
-//                1,
-//                2,
-//                2,
-//                4,
-//                1,
-//                3,
-//                "Tareco",
-//                "Gato muito amigável e brincalhão",
-//                "Lisboa",
-//                "Cão",
-//                "Labrador",
-//                "João",
-//                "Adulto",
-//                "Médio",
-//                "Com vacinas",
-//                "Igor",
-//                "ipatrocinio@gmail.com",
-//                "+351913821960",
-//                true,
-//                dataFixa,
-//                imagens
-//        ));
-
-
-    }
-
-
-
-    public ArrayList<Animal> getAnimals() {
-
-        return new ArrayList<>(animals);
-    }
-
-    public Animal getAnimal(int idAnimal){
-
-        for (Animal animal: animals) {
-            if (animal.getId()==idAnimal){
-                return animal;
-            }
-        }
-        return null;
-    }
-
-    public void addAnimal(Animal animal) {
-        animals.add(animal);
-    }
-
-    // A CLASS ANIMAL MUDOU LOGO TEMOS DE APAPTAR ISTO AS NNOVOS CAMPOS
-    public ArrayList<Animal> getAnimalsByUser(int userId) {
-        ArrayList<Animal> resultado = new ArrayList<>();
-//        for (Animal a : animals) {
-//            if (a.getUser_id() == userId) {
-//                resultado.add(a);
+//        for (Animal animal: animals) {
+//            if (animal.getId()==idAnimal){
+//                return animal;
 //            }
 //        }
-        return resultado;
-    }
+//        return null;
+//    }
+//
+//    public void addAnimal(Animal animal) {
+//        animals.add(animal);
+//    }
+//
+//    // A CLASS ANIMAL MUDOU LOGO TEMOS DE APAPTAR ISTO AS NNOVOS CAMPOS
+//    public ArrayList<Animal> getAnimalsByUser(int userId) {
+//        ArrayList<Animal> resultado = new ArrayList<>();
+////        for (Animal a : animals) {
+////            if (a.getUser_id() == userId) {
+////                resultado.add(a);
+////            }
+////        }
+//        return resultado;
+//    }
 
 }
+
+

@@ -118,19 +118,19 @@ public class MyAnimalsFragment extends Fragment {
 
         int userId = userLogado.getId();
 
-        ArrayList<Animal> animaisDoUserTemp = AppSingleton.getInstance(getContext()).getAnimalsByUser(userId);
+        //ArrayList<Animal> animaisDoUserTemp = AppSingleton.getInstance(getContext()).getAnimalsByUser(userId);
 
-        if (adapter == null) {
-            // Cria o adapter pela primeira vez
-            animaisDoUser = new ArrayList<>(animaisDoUserTemp);
-            adapter = new ListaAnimalsAdaptador(getContext(), animaisDoUser);
-            lvMyAnimals.setAdapter(adapter);
-        } else {
-            // Atualiza lista existente
-            animaisDoUser.clear();
-            animaisDoUser.addAll(animaisDoUserTemp);
-            adapter.notifyDataSetChanged();
-        }
+//        if (adapter == null) {
+//            // Cria o adapter pela primeira vez
+//            animaisDoUser = new ArrayList<>(animaisDoUserTemp);
+//            adapter = new ListaAnimalsAdaptador(getContext(), animaisDoUser);
+//            lvMyAnimals.setAdapter(adapter);
+//        } else {
+//            // Atualiza lista existente
+//            animaisDoUser.clear();
+//            animaisDoUser.addAll(animaisDoUserTemp);
+//            adapter.notifyDataSetChanged();
+//        }
     }
 
 }

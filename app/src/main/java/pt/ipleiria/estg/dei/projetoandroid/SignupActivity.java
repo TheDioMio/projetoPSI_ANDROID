@@ -46,7 +46,7 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
-                AppSingleton.getInstance(getApplicationContext()).addUser(username, email, password);
+                //AppSingleton.getInstance(getApplicationContext()).addUser(username, email, password);
                 Toast.makeText(SignupActivity.this, R.string.txt_toast_registo_utilizador_sucesso, Toast.LENGTH_SHORT).show();
                 finish();
             }

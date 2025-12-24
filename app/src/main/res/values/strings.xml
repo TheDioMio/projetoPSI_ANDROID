@@ -105,4 +105,5 @@
     <string name="txt_animais">Animais</string>
     <string name="txt_adotar">Adotar</string>
     <string name="txt_enviar_mensagem">Enviar mensagem</string>
+    <string name="txt_candidatura_de">Candidatura de</string>
 </resources>

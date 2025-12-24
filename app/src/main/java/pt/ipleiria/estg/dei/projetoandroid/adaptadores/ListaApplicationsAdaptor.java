@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.projetoandroid.adaptadores;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.R;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.AnimalFile;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
 
@@ -60,50 +63,59 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
         // 2. Obter a candidatura atual
         Application candidaturaAtual = candidaturas.get(position);
 
-        // 3. Preencher a descrição (motivo) e status
+        // 3. Preencher a descrição (motivo), status e nome
         tvDescricao.setText(candidaturaAtual.getMotive());
-        tvStatusCandidatura.setText(candidaturaAtual.getStatusTexto());
+        badgeStatus(candidaturaAtual.getStatus(), tvStatusCandidatura);
+        tvNome.setText(candidaturaAtual.getAnimalName());
 
-        // 4. Ir buscar os dados do Animal associado através do Singleton
-        int idAnimal = candidaturaAtual.getAnimalId();
-        Animal animal = AppSingleton.getInstance(context).getAnimalBD(idAnimal);
-
-        if (animal != null) {
-            // Se o animal existir na lista local, mostramos os dados da lista local
-            tvNome.setText(animal.getName());
-
-            // Tenta carregar a imagem
-            // Usei uma coisa genérica, à espera do código do igor para carregar as imgs do animal
-//            String imgUrl = null;
-            // if (animal.getPhotos() != null && !animal.getPhotos().isEmpty()) imgUrl = animal.getPhotos().get(0);
-
-//            carregarImagem(imgUrl, imgAnimal);
-
-        } else {
-            // Se o animal não for encontrado (ex: base de dados local vazia ou animal apagado)
-            tvNome.setText(candidaturaAtual.getAnimalName());
-            imgAnimal.setImageResource(R.mipmap.placeholder);
-        }
+        //Dar load à imagem: tornado fácil porque o path já vem da API (NÃO DEPENDENTE DO ANIMAL)
+        String imgPath = candidaturaAtual.getAnimalImage();
+        animalImgLoad(imgPath, imgAnimal);
 
         return convertView;
     }
 
-    private void carregarImagem(String img, ImageView destino) {
-        if (img == null || img.isEmpty()) {
-            destino.setImageResource(R.mipmap.placeholder);
-            return;
-        }
+    private void animalImgLoad(String imgPath, ImageView imgAnimal) {
+        if (imgPath != null && !imgPath.isEmpty()) {
+            String imageUrl;
+            imageUrl = AppSingleton.FRONTEND_BASE_URL + imgPath;
 
-        String urlFinal = img;
-        if (!img.startsWith("http")) {
-            urlFinal = AppSingleton.FRONTEND_BASE_URL + img;
-        }
+            Glide.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.mipmap.default_avatar)
+                    .error(R.mipmap.default_avatar)
+                    .into(imgAnimal);
 
-        Glide.with(context)
-                .load(urlFinal)
-                .placeholder(R.mipmap.placeholder)
-                .error(R.mipmap.placeholder)
-                .centerCrop()
-                .into(destino);
+        } else {
+            // Se a string da imagem for nula ou vazia, img default
+            imgAnimal.setImageResource(R.mipmap.default_avatar);
+        }
+    }
+
+    private void badgeStatus(String value, TextView textview) {
+        textview.setText(value);
+
+        if(value != null){
+            switch (value) {
+                // --- ESTADOS PENDENTES (AMARELO) ---
+                case Application.STATUS_SENT:
+                case Application.STATUS_PENDING:
+                    textview.setTextColor(ColorStateList.valueOf(Color.parseColor("#FFC107")));
+                    break;
+                // --- ESTADO APROVADO (VERDE) ---
+                case Application.STATUS_APPROVED:
+                    textview.setTextColor(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+                    break;
+
+                // --- ESTADO REJEITADO (VERMELHO) ---
+                case Application.STATUS_REJECTED:
+                    textview.setTextColor(ColorStateList.valueOf(Color.parseColor("#F44336")));
+                    break;
+
+                default:
+                    textview.setTextColor(ColorStateList.valueOf(Color.GRAY));
+                    break;
+            }
+        }
     }
 }

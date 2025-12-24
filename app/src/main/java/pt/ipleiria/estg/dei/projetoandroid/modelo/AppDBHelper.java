@@ -63,6 +63,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public static final String TARGET_USER_ID = "target_user_id";
     public static final String APPLICATION_ANIMAL_ID = "animal_id";
     public static final String APPLICATION_ANIMAL_NAME = "animal_name";
+    public static final String APPLICATION_ANIMAL_IMAGE = "animal_image";
     public static final String CANDIDATE_AGE = "candidate_age";
     public static final String CANDIDATE_CONTACT = "candidate_contact";
     public static final String MOTIVE = "motive";
@@ -144,7 +145,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         String createApplicationsTable = "CREATE TABLE " + TABLE_APPLICATIONS + " (" +
                 APPLICATION_ID + " INTEGER PRIMARY KEY, " +
-                STATUS + " INTEGER, " +
+                STATUS + " TEXT, " +
                 APPLICATION_TYPE + " INTEGER, " +
                 APPLICATION_CREATED_AT + " TEXT, " +
                 STATUS_DATE + " TEXT, " +
@@ -154,6 +155,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 TARGET_USER_ID + " TEXT, " +
                 APPLICATION_ANIMAL_ID + " INTEGER, " +
                 APPLICATION_ANIMAL_NAME + " TEXT, " +
+                APPLICATION_ANIMAL_IMAGE + " TEXT, " +
 
                 //DADOS JSON DO FORMULÁRIO
                 CANDIDATE_AGE + " INTEGER, " +
@@ -488,6 +490,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String[] columns = new String[]{
                 APPLICATION_ID, APPLICATION_ANIMAL_ID, STATUS, APPLICATION_TYPE,
                 APPLICATION_DESCRIPTION, CANDIDATE_NAME, APPLICATION_ANIMAL_NAME,
+                APPLICATION_ANIMAL_IMAGE,
                 APPLICATION_CREATED_AT, TARGET_USER_ID, STATUS_DATE, IS_READ,
                 CANDIDATE_AGE, CANDIDATE_CONTACT, MOTIVE, HOME, TIME_ALONE,
                 BILLS, CHILDREN, FOLLOW_UP
@@ -506,8 +509,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ID)),
                         // 2. int animalId
                         cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_ID)),
-                        // 3. int status
-                        cursor.getInt(cursor.getColumnIndexOrThrow(STATUS)),
+                        // 3. String status
+                        cursor.getString(cursor.getColumnIndexOrThrow(STATUS)),
                         // 4. int type
                         cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_TYPE)),
                         // 5. String description
@@ -516,31 +519,33 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_NAME)),
                         // 7. String animalName
                         cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_NAME)),
-                        // 8. String createdAt
+                        // 8. String animalImage
+                        cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_IMAGE)),
+                        // 9. String createdAt
                         cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_CREATED_AT)),
-                        // 9. String targetUserId
+                        // 10. String targetUserId
                         cursor.getString(cursor.getColumnIndexOrThrow(TARGET_USER_ID)),
-                        // 10. String statusDate
+                        // 11. String statusDate
                         cursor.getString(cursor.getColumnIndexOrThrow(STATUS_DATE)),
-                        // 11. int isRead
+                        // 12. int isRead
                         cursor.getInt(cursor.getColumnIndexOrThrow(IS_READ)),
 
                         // --- DADOS DO FORMULÁRIO ---
-                        // 12. int age
+                        // 13. int age
                         cursor.getInt(cursor.getColumnIndexOrThrow(CANDIDATE_AGE)),
-                        // 13. String contact
+                        // 14. String contact
                         cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_CONTACT)),
-                        // 14. String motive
+                        // 15. String motive
                         cursor.getString(cursor.getColumnIndexOrThrow(MOTIVE)),
-                        // 15. String home
+                        // 16. String home
                         cursor.getString(cursor.getColumnIndexOrThrow(HOME)),
-                        // 16. String timeAlone
+                        // 17. String timeAlone
                         cursor.getString(cursor.getColumnIndexOrThrow(TIME_ALONE)),
-                        // 17. String bills
+                        // 18. String bills
                         cursor.getString(cursor.getColumnIndexOrThrow(BILLS)),
-                        // 18. String children
+                        // 19. String children
                         cursor.getString(cursor.getColumnIndexOrThrow(CHILDREN)),
-                        // 19. String followUp
+                        // 20. String followUp
                         cursor.getString(cursor.getColumnIndexOrThrow(FOLLOW_UP))
                 ));
             } while (cursor.moveToNext());
@@ -600,26 +605,26 @@ public class AppDBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             application = new Application(
                     // A ORDEM TEM DE SER IGUAL AO CONSTRUTOR DO MODELO
-                    cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ID)),            // 1
-                    cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_ID)),     // 2
-                    cursor.getInt(cursor.getColumnIndexOrThrow(STATUS)),                    // 3
-                    cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_TYPE)),          // 4
-                    cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_DESCRIPTION)), // 5
-                    cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_NAME)),         // 6
-                    cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_NAME)), // 7
-                    cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_CREATED_AT)),  // 8
-                    cursor.getString(cursor.getColumnIndexOrThrow(TARGET_USER_ID)),         // 9
-                    cursor.getString(cursor.getColumnIndexOrThrow(STATUS_DATE)),            // 10
-                    cursor.getInt(cursor.getColumnIndexOrThrow(IS_READ)),                   // 11
-
-                    cursor.getInt(cursor.getColumnIndexOrThrow(CANDIDATE_AGE)),             // 12
-                    cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_CONTACT)),      // 13
-                    cursor.getString(cursor.getColumnIndexOrThrow(MOTIVE)),                 // 14
-                    cursor.getString(cursor.getColumnIndexOrThrow(HOME)),                   // 15
-                    cursor.getString(cursor.getColumnIndexOrThrow(TIME_ALONE)),             // 16
-                    cursor.getString(cursor.getColumnIndexOrThrow(BILLS)),                  // 17
-                    cursor.getString(cursor.getColumnIndexOrThrow(CHILDREN)),               // 18
-                    cursor.getString(cursor.getColumnIndexOrThrow(FOLLOW_UP))               // 19
+                    cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ID)),                // 1
+                    cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_ID)),         // 2
+                    cursor.getString(cursor.getColumnIndexOrThrow(STATUS)),                        // 3
+                    cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_TYPE)),              // 4
+                    cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_DESCRIPTION)),    // 5
+                    cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_NAME)),             // 6
+                    cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_NAME)),    // 7
+                    cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_IMAGE)),   // 8
+                    cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_CREATED_AT)),     // 9
+                    cursor.getString(cursor.getColumnIndexOrThrow(TARGET_USER_ID)),             // 10
+                    cursor.getString(cursor.getColumnIndexOrThrow(STATUS_DATE)),                // 11
+                    cursor.getInt(cursor.getColumnIndexOrThrow(IS_READ)),                       // 12
+                    cursor.getInt(cursor.getColumnIndexOrThrow(CANDIDATE_AGE)),                 // 13
+                    cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_CONTACT)),          // 14
+                    cursor.getString(cursor.getColumnIndexOrThrow(MOTIVE)),                     // 15
+                    cursor.getString(cursor.getColumnIndexOrThrow(HOME)),                       // 16
+                    cursor.getString(cursor.getColumnIndexOrThrow(TIME_ALONE)),                 // 17
+                    cursor.getString(cursor.getColumnIndexOrThrow(BILLS)),                      // 18
+                    cursor.getString(cursor.getColumnIndexOrThrow(CHILDREN)),                   // 19
+                    cursor.getString(cursor.getColumnIndexOrThrow(FOLLOW_UP))                   // 20
             );
         }
 

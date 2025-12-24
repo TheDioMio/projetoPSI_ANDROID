@@ -3,12 +3,13 @@ package pt.ipleiria.estg.dei.projetoandroid.modelo;
 public class Application {
     private int id;
     private int animalId;
-    private int status;
+    private String status;
     private int type;
     private String description;
 
     private String candidateName;
     private String animalName;
+    private String animalImage;
 
     private String createdAt;
     private String targetUserId;
@@ -27,8 +28,15 @@ public class Application {
     private String children;
     private String followUp;
 
-    public Application(int id, int animalId, int status, int type, String description, String candidateName, String animalName,
-                       String createdAt, String targetUserId, String statusDate, int isRead,
+    public static final String STATUS_SENT = "Pendente";
+    public static final String STATUS_PENDING = "Em análise";
+    public static final String STATUS_APPROVED = "Aprovada";
+    public static final String STATUS_REJECTED = "Rejeitada";
+    public static final String STATUS_CANCELLED = "Cancelada";
+
+
+    public Application(int id, int animalId, String status, int type, String description, String candidateName, String animalName,
+                       String animalImage,String createdAt, String targetUserId, String statusDate, int isRead,
                        /*String name,*/ int age, String contact, String motive, String home,
                        String timeAlone, String bills, String children, String followUp) {
         this.id = id;
@@ -37,6 +45,7 @@ public class Application {
         this.description = description;
         this.candidateName = candidateName;
         this.animalName = animalName;
+        this.animalImage = animalImage;
         this.createdAt = createdAt;
         this.targetUserId = targetUserId;
         this.statusDate = statusDate;
@@ -65,10 +74,11 @@ public class Application {
 
     public String getName() {return name;}
 
-    public int getStatus() { return status; }
+    public String getStatus() { return status; }
     public String getDescription() { return description; }
     public String getCandidateName() { return candidateName; }
     public String getAnimalName() { return animalName; }
+    public String getAnimalImage() {return animalImage;}
     public String getCreatedAt() { return createdAt; }
     public String getTargetUserId() { return targetUserId; }
     public String getStatusDate() { return statusDate; }
@@ -87,19 +97,5 @@ public class Application {
 
 
     // Setters
-    public void setStatus(int status) { this.status = status; }
     public void setIsRead(int isRead) { this.isRead = isRead; }
-
-    // Métodos auxiliares para receber parametros json em string
-    // Helper para o Status
-    public String getStatusTexto() {
-        switch (this.status) {
-            case 0: return "Enviado";
-            case 1: return "Em Análise";
-            case 2: return "Aprovada";
-            case 3: return "Rejeitada";
-            case 4: return "Cancelada";
-            default: return "Desconhecido";
-        }
-    }
 }

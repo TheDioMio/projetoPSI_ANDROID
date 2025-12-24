@@ -254,13 +254,20 @@
                         android:text="@string/txt_detail_criancas"
                         android:textSize="12sp"
                         android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tvChildren"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Não"
-                        android:textColor="#F44336"
-                        android:textStyle="bold"/>
+                        android:background="#4CAF50"
+                        android:paddingStart="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="2dp"
+                        android:text="Sim"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

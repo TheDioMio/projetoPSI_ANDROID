@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -104,23 +105,23 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
         lvAnimalsGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int idAnimal = animalsFiltrados.get(position-1).getId();
+                int idAnimal = animalsFiltrados.get(position).getId();
                 //Toast.makeText(getContext(), idAnimal, Toast.LENGTH_SHORT).show();
                 // Cria o fragmento de detalhes
                 AnimalDetailsFragment fragment = new AnimalDetailsFragment();
-
-
 
                 // Passa o ID do animal como argumento
                 Bundle args = new Bundle();
                 args.putInt("ID_ANIMAL", idAnimal);
                 fragment.setArguments(args);
 
+                ((MenuMainActivity) requireActivity())
+                        .abrirFragment(fragment, true);
                 // Faz a troca do fragmento
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.contentFragment, fragment) // o id do container dos fragments na tua MenuMaisActivity
-                        .addToBackStack(null) // permite voltar atrás com o botão "voltar"
-                        .commit();
+//                getParentFragmentManager().beginTransaction()
+//                        .replace(R.id.contentFragment, fragment) // o id do container dos fragments na tua MenuMaisActivity
+//                        .addToBackStack(null) // permite voltar atrás com o botão "voltar"
+//                        .commit();
             }
         });
 
@@ -169,6 +170,16 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
         adaptador.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppCompatActivity act = (AppCompatActivity) requireActivity();
+        if (act.getSupportActionBar() != null) {
+            act.getSupportActionBar().setTitle(R.string.txt_animais);
+            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
 
 

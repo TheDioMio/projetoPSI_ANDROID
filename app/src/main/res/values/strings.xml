@@ -96,4 +96,13 @@
     <string name="txt_detail_motivacao">💬 MOTIVAÇÃO</string>
     <string name="txt_btn_aprovar">Aprovar</string>
     <string name="txt_btn_rejeitar">Rejeitar</string>
+    <string name="txt_imagem_do_utilizador">Imagem do utilizador</string>
+    <string name="txt_escrever_comentario">Escrever comentário...</string>
+    <string name="txt_enviar">Enviar</string>
+    <string name="txt_localizacao">Localização</string>
+    <string name="txt_comentarios">Comentários</string>
+    <string name="txt_petpanion">Petpanion</string>
+    <string name="txt_animais">Animais</string>
+    <string name="txt_adotar">Adotar</string>
+    <string name="txt_enviar_mensagem">Enviar mensagem</string>
 </resources>

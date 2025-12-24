@@ -31,6 +31,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public static final String BREED = "breed";
     public static final String NEUTERED = "neutered";
     public static final String VACINATION = "vacination";
+    public static final String LOCATION = "location";
     public static final String OWNER_NAME = "owner_name";
     public static final String OWNER_ADDRESS = "owner_address";
     public static final String OWNER_EMAIL = "owner_email";
@@ -113,6 +114,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 BREED + " TEXT, " +
                 NEUTERED + " TEXT, " +
                 VACINATION + " TEXT, " +
+                LOCATION + " TEXT, " +
                 OWNER_NAME + " TEXT, " +
                 OWNER_ADDRESS + " TEXT, " +
                 OWNER_EMAIL + " TEXT, " +
@@ -186,7 +188,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 TABLE_ANIMALS,
                 new String[]{
                         ID, NAME, DESCRIPTION, CREATED_AT, AGE, SIZE, TYPE,
-                        BREED, NEUTERED, VACINATION,
+                        BREED, NEUTERED, VACINATION, LOCATION,
                         OWNER_NAME, OWNER_ADDRESS, OWNER_EMAIL, OWNER_AVATAR,
                         LISTING_DESCRIPTION, LISTING_VIEWS
                 },
@@ -212,14 +214,15 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         cursor.getString(7),  // BREED
                         cursor.getString(8),  // NEUTERED
                         cursor.getString(9),  // VACINATION
-                        cursor.getString(10), // OWNER_NAME
-                        cursor.getString(11), // OWNER_ADDRESS
-                        cursor.getString(12), // OWNER_EMAIL
-                        cursor.getString(13), // OWNER_AVATAR
-                        cursor.getString(14), // LISTING_DESCRIPTION
-                        cursor.getString(15),  // LISTING_VIEWS
-                        comments, // comments
-                        files  // animalfiles
+                        cursor.getString(10), // LOCATION
+                        cursor.getString(11), // OWNER_NAME
+                        cursor.getString(12), // OWNER_ADDRESS
+                        cursor.getString(13), // OWNER_EMAIL
+                        cursor.getString(14), // OWNER_AVATAR
+                        cursor.getString(15), // LISTING_DESCRIPTION
+                        cursor.getString(16), // LISTING_VIEWS
+                        comments,
+                        files
                 ));
 
             } while (cursor.moveToNext());
@@ -243,7 +246,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         values.put(BREED, animal.getBreed());
         values.put(NEUTERED, animal.getNeutered());
         values.put(VACINATION, animal.getVacination());
-
+        values.put(LOCATION, animal.getLocation());
         values.put(OWNER_NAME, animal.getOwnerName());
         values.put(OWNER_ADDRESS, animal.getOwnerAddress());
         values.put(OWNER_EMAIL, animal.getOwnerEmail());
@@ -288,6 +291,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndexOrThrow(BREED)),
                     cursor.getString(cursor.getColumnIndexOrThrow(NEUTERED)),
                     cursor.getString(cursor.getColumnIndexOrThrow(VACINATION)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(LOCATION)),
                     cursor.getString(cursor.getColumnIndexOrThrow(OWNER_NAME)),
                     cursor.getString(cursor.getColumnIndexOrThrow(OWNER_ADDRESS)),
                     cursor.getString(cursor.getColumnIndexOrThrow(OWNER_EMAIL)),

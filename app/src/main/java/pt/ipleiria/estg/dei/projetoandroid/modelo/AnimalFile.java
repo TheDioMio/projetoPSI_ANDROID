@@ -18,6 +18,10 @@ public class AnimalFile implements Serializable {
         return idFile;
     }
 
+    public void setIdFile(int idFile) {
+        this.idFile = idFile;
+    }
+
     public int getIdAnimal() {
         return idAnimal;
     }

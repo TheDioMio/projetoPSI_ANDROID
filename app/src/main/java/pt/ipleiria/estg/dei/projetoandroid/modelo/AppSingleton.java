@@ -50,7 +50,7 @@ public class AppSingleton {
     //-------------------------------------------
     // Endpoints da API
     //--------------------------------------------
-
+    //region ENDPOINTS
     public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
     public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
@@ -61,9 +61,24 @@ public class AppSingleton {
 
     private String getmUrlAPIAnimals = endereco+"/animals?expand=listing.comments.user.profileImage,user.profileImage";
 
+    //endregion
+
+
+
+
     public void setLoginListener(LoginListener loginListener) {
         this.loginListener = loginListener;
     }
+
+    public void setAnimalsListener(AnimalsListener animalsListener) {
+        this.animalsListener = animalsListener;
+    }
+
+    public void setMenuListener(MenuListener menuListener) {
+        this.menuListener = menuListener;
+    }
+
+
     private LoginListener loginListener;
     private MenuListener menuListener;
     private ApplicationListener applicationListener;
@@ -102,14 +117,6 @@ public class AppSingleton {
         return instance;
     }
 
-    public void setAnimalsListener(AnimalsListener animalsListener) {
-        this.animalsListener = animalsListener;
-    }
-
-    public void setMenuListener(MenuListener menuListener) {
-        this.menuListener = menuListener;
-    }
-
 
     public AppSingleton(Context context) {
         this.context = context.getApplicationContext();
@@ -132,39 +139,35 @@ public class AppSingleton {
 
 
 
-//    public ArrayList<Animal> getAnimals() {
-//
-//        return gestorAnimals.getAnimals();
-//    }
-
-
 //    /*--> MÉTODOS DE ANIMAIS <--*/
 //
 //    public void addAnimal(Animal animal) {
 //        gestorAnimals.addAnimal(animal);
 //    }
-//
+
 //    public ArrayList<Animal> getAnimalsByUser(int userId) {
 //        return gestorAnimals.getAnimalsByUser(userId);
 //    }
 
-    public Animal getAnimal(int id) {
 
-        for (Animal a : animals) {
-            if (a.getId() == id) {
-                return a;
-            }
-        }
 
-        // fallback BD
-        return AppDBHelper.getInstance(context).getAnimalById(id);
-    }
-
+    //--------------------------------------
+    //----------------ANIMALS BD
+    //--------------------------------------
     public void adicionarAnimalsBD(ArrayList<Animal> animals){
         AppDBHelper.getInstance(context).removerAllAnimalsBD();
         for (Animal a: animals){
             appBD.adicionarAnimalBD(a);
         }
+    }
+
+    public Animal getAnimalBD(int id) {
+        for (Animal a : animals) {
+            if (a.getId() == id) {
+                return a;
+            }
+        }
+        return AppDBHelper.getInstance(context).getAnimalById(id);
     }
 
     public ArrayList<Animal> getAllAnimalsBD() {

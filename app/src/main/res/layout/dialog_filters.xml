@@ -1,47 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <EditText
-            android:id="@+id/etNome"
+        <!-- TÍTULO -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pesquisa de Animais"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- NOME -->
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nome do animal" />
+            android:hint="Nome do animal">
 
-        <Spinner android:id="@+id/spTipo" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <Spinner android:id="@+id/spRaca" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <Spinner android:id="@+id/spTamanho" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <Spinner android:id="@+id/spIdade" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <Spinner android:id="@+id/spVacinacao" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-        <Spinner android:id="@+id/spDono" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- TIPO -->
+        <TextView
+            android:layout_marginTop="12dp"
+            android:text="Tipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+        <Spinner
+            android:id="@+id/spTipo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- RAÇA -->
+        <TextView
+            android:layout_marginTop="12dp"
+            android:text="Raça"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+        <Spinner
+            android:id="@+id/spRaca"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- TAMANHO -->
+        <TextView
+            android:layout_marginTop="12dp"
+            android:text="Tamanho"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+        <Spinner
+            android:id="@+id/spTamanho"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- IDADE -->
+        <TextView
+            android:layout_marginTop="12dp"
+            android:text="Idade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+        <Spinner
+            android:id="@+id/spIdade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- VACINAÇÃO -->
+        <TextView
+            android:layout_marginTop="12dp"
+            android:text="Vacinação"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+        <Spinner
+            android:id="@+id/spVacinacao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- DONO -->
+        <TextView
+            android:layout_marginTop="12dp"
+            android:text="Dono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Body2"/>
+
+        <Spinner
+            android:id="@+id/spDono"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- BOTÕES -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="24dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelar"
                 android:text="Cancelar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:backgroundTint="@color/secondary"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPesquisar"
                 android:text="Pesquisar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"/>
+                app:backgroundTint="@color/primary"
+                android:layout_marginStart="12dp"
+                style="@style/Widget.MaterialComponents.Button"/>
         </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content">-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding="16dp">-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/etNome"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Nome do animal" />-->
+
+<!--        <Spinner android:id="@+id/spTipo" android:layout_width="match_parent" android:layout_height="wrap_content"/>-->
+<!--        <Spinner android:id="@+id/spRaca" android:layout_width="match_parent" android:layout_height="wrap_content"/>-->
+<!--        <Spinner android:id="@+id/spTamanho" android:layout_width="match_parent" android:layout_height="wrap_content"/>-->
+<!--        <Spinner android:id="@+id/spIdade" android:layout_width="match_parent" android:layout_height="wrap_content"/>-->
+<!--        <Spinner android:id="@+id/spVacinacao" android:layout_width="match_parent" android:layout_height="wrap_content"/>-->
+<!--        <Spinner android:id="@+id/spDono" android:layout_width="match_parent" android:layout_height="wrap_content"/>-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:gravity="end"-->
+<!--            android:layout_marginTop="16dp">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/btnCancelar"-->
+<!--                android:text="Cancelar"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <Button-->
+<!--                android:id="@+id/btnPesquisar"-->
+<!--                android:text="Pesquisar"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"/>-->
+<!--        </LinearLayout>-->
+
+<!--    </LinearLayout>-->
+<!--</ScrollView>-->

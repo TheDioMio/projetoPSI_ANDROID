@@ -35,7 +35,13 @@ public class AnimalJsonParser {
                 String size = animalJson.getString("size");
                 String type = animalJson.getString("type");
                 String breed = animalJson.getString("breed");
-                String ownerAddress = animalJson.getString("location");;
+                String location = animalJson.isNull("location")
+                        ? null
+                        : animalJson.getString("location");
+
+                String ownerAddress = animalJson.isNull("location")                    //<- futuramente receber o address do dono do animal, mas para já fica com a localização do animal
+                        ? null
+                        : animalJson.getString("location");
 
                 String neutered = animalJson.getInt("neutered") == 1 ? "Sim" : "Não";
                 String vaccination = animalJson.getString("vaccination");
@@ -86,6 +92,7 @@ public class AnimalJsonParser {
                         breed,
                         neutered,
                         vaccination,
+                        location,
                         ownerName,
                         ownerAddress,
                         ownerEmail,

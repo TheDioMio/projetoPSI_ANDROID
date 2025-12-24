@@ -16,7 +16,7 @@ public class Animal implements Serializable {
     private String breed;
     private String neutered;
     private String vacination;
-
+    private String location;
     private String ownerName;
     private String ownerAddress;
     private String ownerEmail;
@@ -28,11 +28,11 @@ public class Animal implements Serializable {
     private ArrayList<Comment> comments;
     private ArrayList<AnimalFile> animalfiles;
 
-
-    public Animal(int id, String name, String description, String createdAt,
-                  String age, String size, String type, String breed, String neutered, String vacination,
-                  String ownerName, String ownerAddress, String ownerEmail, String ownerAvatar, String listingDescription,
-                  String listingViews, ArrayList<Comment> comments, ArrayList<AnimalFile> animalfiles) {
+    public Animal(int id, String name, String description, String createdAt, String age, String size,
+                  String type, String breed, String neutered, String vacination, String location,
+                  String ownerName, String ownerAddress, String ownerEmail, String ownerAvatar,
+                  String listingDescription, String listingViews,
+                  ArrayList<Comment> comments, ArrayList<AnimalFile> animalfiles) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -43,6 +43,7 @@ public class Animal implements Serializable {
         this.breed = breed;
         this.neutered = neutered;
         this.vacination = vacination;
+        this.location = location;
         this.ownerName = ownerName;
         this.ownerAddress = ownerAddress;
         this.ownerEmail = ownerEmail;
@@ -57,6 +58,9 @@ public class Animal implements Serializable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -128,6 +132,14 @@ public class Animal implements Serializable {
 
     public void setVacination(String vacination) {
         this.vacination = vacination;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getOwnerName() {

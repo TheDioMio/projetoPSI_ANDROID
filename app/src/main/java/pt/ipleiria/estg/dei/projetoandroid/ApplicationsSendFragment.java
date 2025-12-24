@@ -70,7 +70,7 @@ public class ApplicationsSendFragment extends Fragment implements ApplicationLis
         Bundle args = getArguments();
         if (args != null) {
             int idRecebido = args.getInt("ID_ANIMAL");
-            animal = singleton.getAnimal(idRecebido);
+            animal = singleton.getAnimalBD(idRecebido);
 
             if (animal != null) {
                 carregarAnimal(animal);

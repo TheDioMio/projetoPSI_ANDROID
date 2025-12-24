@@ -1,7 +1,10 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,17 +14,32 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.GoogleMap;
 
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class AnimalDetailsFragment extends Fragment {
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import pt.ipleiria.estg.dei.projetoandroid.adaptadores.AnimalImageAdaptador;
+import pt.ipleiria.estg.dei.projetoandroid.adaptadores.CommentAdaptador;
+
+public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
 //public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
@@ -30,88 +48,88 @@ public class AnimalDetailsFragment extends Fragment {
     private ImageView imgPrincipal;
     private LinearLayout layoutMiniaturas;
     private Button btnApplication;
-    private TextView tvNome, tvLocalizacao, tvDescricao, tvOwnerName, tvOwnerEmail, tvOwnerContact, tvSize, tvAge, tvVaccination, tvAnimalType, tvBreed, tvNeutered;
-
+    private TextView tvNome, tvLocalizacao, tvDescricao, tvOwnerName, tvOwnerEmail, tvListingDescription,tvViews,  tvOwnerContact, tvSize, tvAge, tvVaccination, tvAnimalType, tvBreed, tvNeutered;
+    private ImageView imgOwnerAvatar;
+    private TextView tvOwnerAddress;
+    private TextView tvAnimalExtraInfo;
     private Animal animal;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private RecyclerView rvAnimalImages, rvComments;
+    private AnimalImageAdaptador animalImageAdaptador;
+    private CommentAdaptador commentAdaptador;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+
 
     public AnimalDetailsFragment() {
         // Required empty public constructor
     }
 
-    public static AnimalDetailsFragment newInstance(String param1, String param2) {
-        AnimalDetailsFragment fragment = new AnimalDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_animal_show, container, false);
+        imgPrincipal = view.findViewById(R.id.imgAnimalMain);
 
-        imgPrincipal = view.findViewById(R.id.imgPrincipal);
-        layoutMiniaturas = view.findViewById(R.id.layoutMiniaturas);
         tvNome = view.findViewById(R.id.tvAnimalName);
-        tvLocalizacao = view.findViewById(R.id.tvLocalizacaoAnimal);
-
-        tvDescricao = view.findViewById(R.id.tvDescricaoAnimal);
-        btnApplication = view.findViewById(R.id.btnApplication);
-        tvAge = view.findViewById(R.id.tvAge);
-        tvVaccination = view.findViewById(R.id.tvVaccination);
-        tvNeutered = view.findViewById(R.id.tvNeutered);
-        tvBreed = view.findViewById(R.id.tvBreed);
-        tvAnimalType = view.findViewById(R.id.tvAnimalType);
-        tvSize = view.findViewById(R.id.tvSize);
+        tvDescricao = view.findViewById(R.id.tvAnimalDescription);
+        tvLocalizacao = view.findViewById(R.id.tvLocation);
+        rvAnimalImages = view.findViewById(R.id.rvAnimalImages);
+        rvComments = view.findViewById(R.id.rvComments);
+        tvAnimalExtraInfo = view.findViewById(R.id.tvAnimalExtraInfo);
+        imgOwnerAvatar = view.findViewById(R.id.imgOwnerAvatar);
         tvOwnerName = view.findViewById(R.id.tvOwnerName);
-        tvOwnerEmail = view.findViewById(R.id.tvEmail);
-        tvOwnerContact = view.findViewById(R.id.tvOwnerContact);
+        tvOwnerEmail = view.findViewById(R.id.tvOwnerEmail);
+        tvOwnerAddress = view.findViewById(R.id.tvOwnerAddress);
+        tvListingDescription = view.findViewById(R.id.tvListingDescription);
+        tvViews = view.findViewById(R.id.tvViews);
+        // LayoutManagers
+        rvAnimalImages.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
 
-        //obtém o animal passado pelo Bundle
-        Bundle args = getArguments();
-        if (args != null) {
-            int animalId = args.getInt("ID_ANIMAL");
-            animal = AppSingleton.getInstance(getContext()).getAnimal(animalId);
-            carregarDados(animal);
+        rvComments.setLayoutManager(
+                new LinearLayoutManager(getContext())
+        );
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager()
+                        .findFragmentById(R.id.map);
+
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
         }
 
 
-        //Botão para submeter a candidatura no animal em específico
-        btnApplication.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment = new ApplicationsSendFragment();
+        //obtém o animal da BD passado pelo Bundle
+        Bundle args = getArguments();
+        if (args != null) {
+            int animalId = args.getInt("ID_ANIMAL");
+            animal = AppSingleton.getInstance(getContext()).getAnimalBD(animalId);
+            carregarDados(animal);
+        }
 
-                Bundle args = new Bundle();
-                if (animal != null) {
-                    args.putInt("ID_ANIMAL", animal.getId());
-                }
-                fragment.setArguments(args);
-                getParentFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.contentFragment, fragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+//
+//        //Botão para submeter a candidatura no animal em específico
+//        btnApplication.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Fragment fragment = new ApplicationsSendFragment();
+//
+//                Bundle args = new Bundle();
+//                if (animal != null) {
+//                    args.putInt("ID_ANIMAL", animal.getId());
+//                }
+//                fragment.setArguments(args);
+//                getParentFragmentManager()
+//                        .beginTransaction()
+//                        .replace(R.id.contentFragment, fragment)
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
 //        mapView = view.findViewById(R.id.mapView);
 //        mapView.onCreate(savedInstanceState);
 //        mapView.getMapAsync(this);
@@ -119,75 +137,86 @@ public class AnimalDetailsFragment extends Fragment {
         return view;
     }
 
-    private void carregarImagem(String img, ImageView destino) {
+//    private void carregarImagem(String img, ImageView destino) {
+//
+//        if (img == null || img.isEmpty()) {
+//            destino.setImageResource(R.mipmap.placeholder);
+//            return;
+//        }
+//
+//        // URL → http/https
+//        if (img.startsWith("http")) {
+//            Glide.with(requireContext())
+//                    .load(img)
+//                    .placeholder(R.mipmap.placeholder)
+//                    .error(R.mipmap.placeholder)
+//                    .centerCrop()
+//                    .into(destino);
+//        }
+//        // Drawable pelo nome
+//        else {
+//            int resId = getResources().getIdentifier(img, "drawable", requireContext().getPackageName());
+//
+//            if (resId != 0) {
+//                Glide.with(requireContext())
+//                        .load(resId)
+//                        .placeholder(R.mipmap.placeholder)
+//                        .error(R.mipmap.placeholder)
+//                        .centerCrop()
+//                        .into(destino);
+//            } else {
+//                destino.setImageResource(R.mipmap.placeholder);
+//            }
+//        }
+//    }
 
-        if (img == null || img.isEmpty()) {
-            destino.setImageResource(R.mipmap.placeholder);
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        gMap = googleMap;
+
+        if (animal == null || animal.getLocation() == null || animal.getLocation().isEmpty()) {
             return;
         }
 
-        // URL → http/https
-        if (img.startsWith("http")) {
-            Glide.with(requireContext())
-                    .load(img)
-                    .placeholder(R.mipmap.placeholder)
-                    .error(R.mipmap.placeholder)
-                    .centerCrop()
-                    .into(destino);
-        }
-        // Drawable pelo nome
-        else {
-            int resId = getResources().getIdentifier(img, "drawable", requireContext().getPackageName());
+        String locationName = animal.getLocation(); // ex: "Leiria"
 
-            if (resId != 0) {
-                Glide.with(requireContext())
-                        .load(resId)
-                        .placeholder(R.mipmap.placeholder)
-                        .error(R.mipmap.placeholder)
-                        .centerCrop()
-                        .into(destino);
+        Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+
+        try {
+            List<Address> results = geocoder.getFromLocationName(locationName, 1);
+
+            if (results != null && !results.isEmpty()) {
+
+                Address address = results.get(0);
+                LatLng posicao = new LatLng(
+                        address.getLatitude(),
+                        address.getLongitude()
+                );
+
+                gMap.addMarker(new MarkerOptions()
+                        .position(posicao)
+                        .title(animal.getName()));
+
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicao, 13f));
+
             } else {
-                destino.setImageResource(R.mipmap.placeholder);
+                Toast.makeText(
+                        getContext(),
+                        "Localização não encontrada",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(
+                    getContext(),
+                    "Erro ao obter localização",
+                    Toast.LENGTH_SHORT
+            ).show();
         }
     }
 
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        gMap = googleMap;
-//
-//        if (animal == null) return;
-//
-//        String locationName = animal.getLocation();   // Ex: “Leiria”
-//
-//        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-//
-//        try {
-//            List<Address> results = geocoder.getFromLocationName(locationName, 1);
-//
-//            if (results != null && !results.isEmpty()) {
-//
-//                Address addr = results.get(0);
-//                double lat = addr.getLatitude();
-//                double lng = addr.getLongitude();
-//
-//                LatLng posicao = new LatLng(lat, lng);
-//
-//                gMap.addMarker(new MarkerOptions()
-//                        .position(posicao)
-//                        .title(animal.getName()));
-//
-//                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicao, 12));
-//
-//            } else {
-//                // Se não encontrou a cidade
-//                Toast.makeText(getContext(), "Localização não encontrada: " + locationName, Toast.LENGTH_SHORT).show();
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 
 
@@ -196,71 +225,87 @@ public class AnimalDetailsFragment extends Fragment {
     private void carregarDados(Animal animal) {
         if (animal == null) return;
 
-        // Alterar o modo como mostramos os dados para em vez de ser colocado aqui no código ser colocado no layout
         tvNome.setText(animal.getName());
-        tvAnimalType.setText(animal.getType());
-        tvBreed.setText(animal.getBreed());
-        tvAge.setText(animal.getAge());
-        tvSize.setText(animal.getSize());
-        tvVaccination.setText(animal.getVacination());
-
-        String txtNeutered = getString(R.string.txt_nao);
-        //if (animal.iNeutered()) txtNeutered = getString(R.string.txt_sim);
-        tvNeutered.setText(txtNeutered);
-        //tvLocalizacao.setText( animal.getLocation());
         tvDescricao.setText(animal.getDescription());
+        tvLocalizacao.setText(animal.getLocation());
+        tvListingDescription.setText(animal.getListingDescription());
+
+        if (animal.getListingViews() != null) {
+            tvViews.setText(animal.getListingViews() + " visualizações");
+            tvViews.setVisibility(View.VISIBLE);
+        } else {
+            tvViews.setVisibility(View.GONE);
+        }
+        String info =
+                "Tipo: " + animal.getType() + "\n" +
+                        "Raça: " + animal.getBreed() + "\n" +
+                        "Idade: " + animal.getAge() + "\n" +
+                        "Tamanho: " + animal.getSize() + "\n" +
+                        "Castrado: " + animal.getNeutered() + "\n" +
+                        "Vacinado: " + animal.getVacination();
+
+        tvAnimalExtraInfo.setText(info);
+
+        // ---------------- Dados do dono ----------------
         tvOwnerName.setText(animal.getOwnerName());
-        //tvOwnerEmail.setText(animal.getEmail());
+        tvOwnerEmail.setText(animal.getOwnerEmail());
+        tvOwnerAddress.setText(animal.getOwnerAddress());
 
+        String avatar = animal.getOwnerAvatar();
 
-       // List<String> imagens = animal.getImages();
+        if (avatar != null && !avatar.isEmpty()) {
 
-//        if (imagens != null && !imagens.isEmpty()) {
-//
-//            // ---- 1) Carregar a imagem principal ----
-//            carregarImagem(imagens.get(0), imgPrincipal);
-//
-//            // ---- 2) Criar miniaturas ----
-//            for (String img : imagens) {
-//
-//                ImageView mini = new ImageView(requireContext());
-//                LinearLayout.LayoutParams params =
-//                        new LinearLayout.LayoutParams(200, 200);
-//                params.setMargins(8, 0, 8, 0);
-//                mini.setLayoutParams(params);
-//                mini.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//
-//                carregarImagem(img, mini);
-//
-//                mini.setOnClickListener(v -> carregarImagem(img, imgPrincipal));
-//
-//                layoutMiniaturas.addView(mini);
-//            }
-//        }
+            String avatarUrl = avatar.startsWith("http")
+                    ? avatar
+                    : AppSingleton.getInstance(getContext()).FRONTEND_BASE_URL + avatar;
+
+            Glide.with(requireContext())
+                    .load(avatarUrl)
+                    .placeholder(R.mipmap.placeholder)
+                    .error(R.mipmap.placeholder)
+                    .circleCrop()
+                    .into(imgOwnerAvatar);
+
+        } else {
+            imgOwnerAvatar.setImageResource(R.mipmap.placeholder);
+        }
+
+        // imagem principal
+        if (!animal.getAnimalfiles().isEmpty()) {
+
+            String imgPath = animal.getAnimalfiles().get(0).getFileAddress();
+            String imageUrl;
+
+            if (imgPath.startsWith("http")) {
+                imageUrl = imgPath;
+            } else {
+                imageUrl = AppSingleton.getInstance(getContext()).FRONTEND_BASE_URL + imgPath;
+            }
+
+            Glide.with(requireContext())
+                    .load(imageUrl)
+                    .placeholder(R.mipmap.placeholder)
+                    .error(R.mipmap.placeholder)
+                    .centerCrop()
+                    .into(imgPrincipal);
+
+        } else {
+            imgPrincipal.setImageResource(R.mipmap.placeholder);
+        }
+
+        animalImageAdaptador = new AnimalImageAdaptador(
+                getContext(),
+                animal.getAnimalfiles(),
+                imgPrincipal
+        );
+        rvAnimalImages.setAdapter(animalImageAdaptador);
+
+        commentAdaptador = new CommentAdaptador(
+                getContext(),
+                animal.getComments()
+        );
+        rvComments.setAdapter(commentAdaptador);
     }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        if (mapView != null) mapView.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        if (mapView != null) mapView.onPause();
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        if (mapView != null) mapView.onDestroy();
-//    }
-//
-//    @Override
-//    public void onLowMemory() {
-//        super.onLowMemory();
-//        if (mapView != null) mapView.onLowMemory();
-//    }
+
 
 }

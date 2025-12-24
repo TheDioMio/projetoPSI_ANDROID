@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.R;
@@ -68,7 +66,7 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
 
         // 4. Ir buscar os dados do Animal associado através do Singleton
         int idAnimal = candidaturaAtual.getAnimalId();
-        Animal animal = AppSingleton.getInstance(context).getAnimal(idAnimal);
+        Animal animal = AppSingleton.getInstance(context).getAnimalBD(idAnimal);
 
         if (animal != null) {
             // Se o animal existir na lista local, mostramos os dados da lista local

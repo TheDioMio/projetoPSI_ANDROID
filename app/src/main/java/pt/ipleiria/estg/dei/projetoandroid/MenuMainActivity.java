@@ -17,6 +17,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -80,6 +81,24 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
 
 
+    public void abrirFragment(Fragment fragment, boolean addToBackStack) {
+        FragmentTransaction ft = getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.contentFragment, fragment);
+
+        if (addToBackStack) {
+            ft.addToBackStack(null);
+        }
+
+        ft.commit();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
 
 
     private void carregarFragmentoInicial() {
@@ -127,44 +146,97 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     }
 
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         Fragment fragment = null;
-        if (menuItem.getItemId() == R.id.navHome || menuItem.getItemId() == R.id.bottom_home){
+        boolean addToBackStack = true;
+
+        int id = menuItem.getItemId();
+
+        if (id == R.id.navHome || id == R.id.bottom_home) {
+
             fragment = new HomeFragment();
+            addToBackStack = false; // ⚠️ Home nunca entra na backstack
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Home");
-        } else if (menuItem.getItemId() == R.id.navDetalhesAnimal|| menuItem.getItemId() == R.id.bottom_animals){
+
+        } else if (id == R.id.navDetalhesAnimal || id == R.id.bottom_animals) {
+
             fragment = new AllAnimalsFragment();
             setTitle(menuItem.getTitle());
-        } else if (menuItem.getItemId() == R.id.navProfileDetails || menuItem.getItemId() == R.id.bottom_profile) {
+
+        } else if (id == R.id.navProfileDetails || id == R.id.bottom_profile) {
+
             fragment = ProfileFragment.newInstance(iduser, false);
             setTitle(menuItem.getTitle());
-        }else if (menuItem.getItemId() == R.id.navMyAnimals) {
+
+        } else if (id == R.id.navMyAnimals) {
+
             fragment = new MyAnimalsFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav MY Animals");
-        } else if (menuItem.getItemId()== R.id.navCandidaturas || menuItem.getItemId() == R.id.bottom_application) {
+
+        } else if (id == R.id.navCandidaturas || id == R.id.bottom_application) {
+
             fragment = new ApplicationMenuFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Listagem de Candidaturas");
-        } else if (menuItem.getItemId() == R.id.navMessage || menuItem.getItemId() == R.id.bottom_messages) {
-            fragment = new MessageListFragment(); // ou MessageListFragment.newInstance()
+
+        } else if (id == R.id.navMessage || id == R.id.bottom_messages) {
+
+            fragment = new MessageListFragment();
             setTitle(menuItem.getTitle());
             System.out.println("--> Nav Message List");
-            Toast.makeText(getApplicationContext(), "Mensagens", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Mensagens", Toast.LENGTH_SHORT).show();
         }
 
-        if (fragment != null){
-            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
-
+        if (fragment != null) {
+            abrirFragment(fragment, addToBackStack);
         }
 
         drawer.closeDrawer(GravityCompat.START);
-        return false;
+        return true;
     }
+
+
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+//
+//        Fragment fragment = null;
+//        if (menuItem.getItemId() == R.id.navHome || menuItem.getItemId() == R.id.bottom_home){
+//            fragment = new HomeFragment();
+//            setTitle(menuItem.getTitle());
+//            System.out.println("--> Nav Home");
+//        } else if (menuItem.getItemId() == R.id.navDetalhesAnimal|| menuItem.getItemId() == R.id.bottom_animals){
+//            fragment = new AllAnimalsFragment();
+//            setTitle(menuItem.getTitle());
+//        } else if (menuItem.getItemId() == R.id.navProfileDetails || menuItem.getItemId() == R.id.bottom_profile) {
+//            fragment = ProfileFragment.newInstance(iduser, false);
+//            setTitle(menuItem.getTitle());
+//        }else if (menuItem.getItemId() == R.id.navMyAnimals) {
+//            fragment = new MyAnimalsFragment();
+//            setTitle(menuItem.getTitle());
+//            System.out.println("--> Nav MY Animals");
+//        } else if (menuItem.getItemId()== R.id.navCandidaturas || menuItem.getItemId() == R.id.bottom_application) {
+//            fragment = new ApplicationMenuFragment();
+//            setTitle(menuItem.getTitle());
+//            System.out.println("--> Nav Listagem de Candidaturas");
+//        } else if (menuItem.getItemId() == R.id.navMessage || menuItem.getItemId() == R.id.bottom_messages) {
+//            fragment = new MessageListFragment(); // ou MessageListFragment.newInstance()
+//            setTitle(menuItem.getTitle());
+//            System.out.println("--> Nav Message List");
+//            Toast.makeText(getApplicationContext(), "Mensagens", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        if (fragment != null){
+//            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+//
+//        }
+//
+//        drawer.closeDrawer(GravityCompat.START);
+//        return false;
+//    }
 
 
     @Override

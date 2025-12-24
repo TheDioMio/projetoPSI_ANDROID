@@ -1,19 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
+
     <!-- Tema base -->
-    <style name="Base.Theme.ProjetoANDROID" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Garante que a app não ocupa o ecrã todo -->
+    <style name="Base.Theme.ProjetoANDROID"
+        parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!-- NÃO ocupar ecrã inteiro -->
         <item name="android:windowFullscreen">false</item>
+
+        <!-- Cores do sistema -->
         <item name="android:statusBarColor">?attr/colorSurfaceVariant</item>
         <item name="android:navigationBarColor">?attr/colorSurfaceVariant</item>
+
     </style>
 
-    <!-- Tema sem ActionBar -->
-    <style name="Theme.ProjetoANDROID.NoActionBar" parent="Base.Theme.ProjetoANDROID">
+    <!-- Tema sem ActionBar (se precisares) -->
+    <style name="Theme.ProjetoANDROID.NoActionBar"
+        parent="Base.Theme.ProjetoANDROID">
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">false</item>
+
     </style>
 
-    <!-- Tema padrão -->
-    <style name="Theme.ProjetoANDROID" parent="Base.Theme.ProjetoANDROID" />
+    <!-- Tema padrão da app -->
+    <style name="Theme.ProjetoANDROID"
+        parent="Base.Theme.ProjetoANDROID"/>
+
 </resources>

@@ -24,6 +24,9 @@ public class Comment implements Serializable {
         return idComment;
     }
 
+    public void setIdComment(int idComment) {
+        this.idComment = idComment;
+    }
 
     public int getIdAnimal() {
         return idAnimal;

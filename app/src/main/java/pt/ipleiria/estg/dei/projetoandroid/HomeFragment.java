@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -81,5 +82,15 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppCompatActivity act = (AppCompatActivity) requireActivity();
+        if (act.getSupportActionBar() != null) {
+            act.getSupportActionBar().setTitle(R.string.txt_petpanion);
+            act.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
 
 }

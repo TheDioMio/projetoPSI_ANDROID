@@ -39,6 +39,8 @@ public class MessageFragment extends Fragment {
     private int receiverId;
     private String defaultSubject;
     private static final String ARG_MESSAGE = "message";
+    private static final String ARG_MY_ID = "my_id";
+    private int myId = -1;
 
     // -------------------------------
     // VIEWS
@@ -71,11 +73,12 @@ public class MessageFragment extends Fragment {
         return fragment;
     }
 
-    public static MessageFragment newInstanceForRead(Message message){
+    public static MessageFragment newInstanceForRead(Message message, int myId){
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_MODE, MODE_READ);
         args.putSerializable(ARG_MESSAGE, message);
+        args.putInt(ARG_MY_ID, myId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,6 +98,7 @@ public class MessageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mode = getArguments().getInt(ARG_MODE, MODE_COMPOSE);
+            myId = getArguments().getInt(ARG_MY_ID, -1);
 
             if (mode == MODE_READ) {
                 messageId = getArguments().getInt(ARG_MESSAGE_ID);
@@ -103,6 +107,8 @@ public class MessageFragment extends Fragment {
                 defaultSubject = getArguments().getString(ARG_DEFAULT_SUBJECT);
             }
         }
+
+        System.out.println("DEBUG onCreate myId=" + myId);
     }
 
     @Override
@@ -152,21 +158,32 @@ public class MessageFragment extends Fragment {
         makeReadOnly(etMensagem);
 
         // botão passa a "Responder"
-        btnSend.setText("Responder");
+        boolean souSender = (msg.getSender_user_id() == myId);
 
-        btnSend.setOnClickListener(v -> {
+        System.out.println("DEBUG myId=" + myId
+                + " msgId=" + msg.getId()
+                + " sender=" + msg.getSender_user_id()
+                + " receiver=" + msg.getReciver_user_id());
 
-            MessageFragment frag = MessageFragment.newInstanceForCompose(
-                    msg.getSender_user_id(),
-                    "Re: " + msg.getSubject()
-            );
+        if (souSender) {
+            btnSend.setText("Editar");
+            btnSend.setOnClickListener(v -> enableEditMode(msg));
+        } else {
+            btnSend.setText("Responder");
+            btnSend.setOnClickListener(v -> {
 
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.contentFragment, frag)
-                    .addToBackStack(null)
-                    .commit();
-        });
+                MessageFragment frag = MessageFragment.newInstanceForCompose(
+                        msg.getSender_user_id(),
+                        "Re: " + msg.getSubject()
+                );
+
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contentFragment, frag)
+                        .addToBackStack(null)
+                        .commit();
+            });
+        }
     }
 
     // -------------------------------
@@ -220,6 +237,55 @@ public class MessageFragment extends Fragment {
                     }
             );
         });
+    }
+
+    private void enableEditMode(Message msg) {
+        // tornar editável
+        etSubject.setFocusableInTouchMode(true);
+        etSubject.setClickable(true);
+        etSubject.setCursorVisible(true);
+        etSubject.setKeyListener(new EditText(getContext()).getKeyListener());
+
+        etMensagem.setFocusableInTouchMode(true);
+        etMensagem.setClickable(true);
+        etMensagem.setCursorVisible(true);
+        etMensagem.setKeyListener(new EditText(getContext()).getKeyListener());
+
+        btnSend.setText("Guardar");
+        btnSend.setOnClickListener(v -> saveEdit(msg));
+    }
+
+    private void saveEdit(Message msg) {
+        String subject = etSubject.getText().toString().trim();
+        String text = etMensagem.getText().toString().trim();
+
+        if (subject.isEmpty()) {
+            etSubject.setError("Assunto obrigatório");
+            return;
+        }
+        if (text.isEmpty()) {
+            etMensagem.setError("Mensagem obrigatória");
+            return;
+        }
+
+        AppSingleton.getInstance(getContext()).editarMensagemAPI(
+                msg.getId(),
+                subject,
+                text,
+                getContext(),
+                new AppSingleton.SendMessageListener() {
+                    @Override
+                    public void onSuccess() {
+                        // volta atrás (ou podes voltar a readOnly)
+                        requireActivity().getSupportFragmentManager().popBackStack();
+                    }
+
+                    @Override
+                    public void onError(String erro) {
+                        // Toast opcional
+                    }
+                }
+        );
     }
 
 

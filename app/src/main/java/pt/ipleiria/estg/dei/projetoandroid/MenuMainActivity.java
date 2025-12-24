@@ -277,6 +277,9 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             nav_tvName.setText(me.getName());
             nav_tvEmail.setText(me.getEmail());
 
+        editor.putInt("USER_ID_INT", me.getId());
+        editor.apply();
+        iduser = me.getId();
 
         String avatar = me.getImgAvatar();
 
@@ -301,6 +304,12 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             nav_imgUser.setImageResource(R.mipmap.default_avatar);
         }
 
+
+
+        System.out.println("REFRESH MENU me.id=" + me.getId());
+
+        SharedPreferences sp = getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+        System.out.println("SP IDUSER=" + sp.getString(IDUSER, "null"));
 
         }
 

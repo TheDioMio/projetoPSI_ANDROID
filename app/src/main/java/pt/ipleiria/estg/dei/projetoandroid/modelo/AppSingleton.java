@@ -51,9 +51,9 @@ public class AppSingleton {
     // Endpoints da API
     //--------------------------------------------
     //region ENDPOINTS
-    public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
+    public String endereco = "http://10.0.2.2/PSI/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
+    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/PSI/projetoPSI_WEB/frontend/web";
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String getmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
@@ -557,11 +557,54 @@ public class AppSingleton {
         volleyQueue.add(request);
     }
 
+
+    public void editarMensagemAPI(int id, String subject, String text, Context context, SendMessageListener listener) {
+        String url = getMessageURL + "/" + id; // ex: /messages/9
+
+        StringRequest request = new StringRequest(
+                Request.Method.PUT,    // se o backend usar POST para update, troca para Request.Method.POST
+                url,
+                response -> {
+                    if (listener != null) listener.onSuccess();
+                },
+                error -> {
+                    String msg = (error.networkResponse != null)
+                            ? "Erro " + error.networkResponse.statusCode
+                            : "Erro de ligação ao servidor";
+                    if (listener != null) listener.onError(msg);
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("subject", subject);
+                params.put("text", text);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Accept", "application/json");
+                String token = getToken(context);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
     //*************************************** Fim Mensagens *************************************
 
 
     // FUNÇÃO UTILIZADA PARA FAZER O LOGIN, PARA DEPOIS GUARDAR O TOKEN NA SHARED PREFERENCES
     // RECEBE O TOKEN
+
+
+    /*
     public void loginAPI(final String username, final String password, final Context context){
         if(!isConnectionInternet(context)){
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
@@ -600,6 +643,96 @@ public class AppSingleton {
                     }
 
             }){
+                @Nullable
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+
+                    String credentials = username + ":" + password;
+                    String auth = "Basic " + Base64.encodeToString(
+                            credentials.getBytes(),
+                            Base64.NO_WRAP
+                    );
+
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", auth);
+                    headers.put("Accept", "application/json");
+
+                    return headers;
+                }
+            };
+            volleyQueue.add(request);
+        }
+    }
+
+
+     */
+
+
+    public void loginAPI(final String username, final String password, final Context context){
+        if(!isConnectionInternet(context)){
+            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+        }else{
+            StringRequest request = new StringRequest(
+                    Request.Method.POST,
+                    getmUrlAPILogin,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String s) {
+                            try {
+                                // s é o JSON: {"success":true,"token":"...","id":11}
+                                JSONObject json = new JSONObject(s);
+
+                                String token = json.optString("token", null);
+                                int userId   = json.optInt("id", -1);
+
+                                // se ainda quiseres usar o parser antigo do token:
+                                // String token = UserJsonParser.parserJsonLogin(s);
+
+                                if (token != null) {
+                                    SharedPreferences sp = context.getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+                                    sp.edit()
+                                            .putString(MenuMainActivity.TOKEN, token)
+                                            .putInt("USER_ID_INT", userId)   // <-- ADICIONADO
+                                            .apply();
+
+                                    System.out.println("DEBUG SP SAVE USER_ID_INT=" + userId);
+                                }
+
+                                if(loginListener != null) {
+                                    loginListener.onValidateLogin(token);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(context, "Erro a processar login", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                            int statusCode = -1;
+
+                            if (error.networkResponse != null) {
+                                statusCode = error.networkResponse.statusCode;
+                            }
+
+                            String msg = "Erro desconhecido";
+
+                            if (statusCode == 401) {
+                                msg = "Credenciais inválidas";
+                            } else if (statusCode == 404) {
+                                msg = "Endpoint não encontrado";
+                            } else if (statusCode == 500) {
+                                msg = "Erro interno do servidor";
+                            } else if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                                msg = "Sem ligação ao servidor";
+                            }
+
+                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+            ){
                 @Nullable
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {

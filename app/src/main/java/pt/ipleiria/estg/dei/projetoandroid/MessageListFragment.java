@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaMessagesAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Message;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
+import android.content.Context;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,6 +73,7 @@ public class MessageListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_message_list, container, false);
+
     }
 
     @Override
@@ -85,9 +88,15 @@ public class MessageListFragment extends Fragment {
         lvMessages.setAdapter(adaptador);
 
         lvMessages.setOnItemClickListener((parent, v, position, id) -> {
+
+            SharedPreferences sp = requireContext().getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+            int myId = sp.getInt("USER_ID_INT", -1);
+
             Message selecionada = (Message) parent.getItemAtPosition(position);
 
-            MessageFragment frag = MessageFragment.newInstanceForRead(selecionada);
+            MessageFragment frag = MessageFragment.newInstanceForRead(selecionada, myId);
+
+            System.out.println("CLICK myId=" + myId);
 
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()

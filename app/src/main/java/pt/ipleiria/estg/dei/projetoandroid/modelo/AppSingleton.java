@@ -374,7 +374,7 @@ public class AppSingleton {
     }
 
     public void getApplicationsAPI(final Context context, String type, final ApplicationListener listener) {
-        String url = endereco + "/applications/" + type;
+        String url = endereco + "/application/" + type;
 
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -438,11 +438,11 @@ public class AppSingleton {
     }
 
     public void adicionarApplicationBD(ArrayList<Application> applications){
-//        livrosBD.removerAllLivrosBD();
-//        for (Livro l: livros){
-//            livrosBD.adicionarLivroBD(l);
-//        }
+        appBD.removerAllApplicationsBD();
 
+        for (Application a : applications){
+            appBD.adicionarApplicationBD(a);
+        }
     }
     // -------------------------
     // FIM GESTOR Application

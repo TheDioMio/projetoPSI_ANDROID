@@ -19,11 +19,12 @@ public class ApplicationJsonParser {
                 Application app = new Application(
                         obj.getInt("id"),
                         obj.getInt("animal_id"),
-                        obj.getInt("status"),
+                        obj.getString("status"),
                         obj.getInt("type"),
                         obj.getString("description"),
                         obj.getString("candidate_name"),
                         obj.getString("animal_name"),
+                        obj.getString("animal_image"),
                         obj.getString("created_at"),
                         obj.getString("target_user_name"),
                         obj.getString("statusDate"),

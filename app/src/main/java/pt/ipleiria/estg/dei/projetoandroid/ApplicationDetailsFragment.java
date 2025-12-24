@@ -1,5 +1,7 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -21,7 +23,11 @@ public class ApplicationDetailsFragment extends Fragment {
             tvBills, tvFollowUp,tvMotive;
     private Button btnApprove, btnReject;
 
+    private static final String TYPE_SENT = "sent";
+    private static final String TYPE_RECEIVED = "received";
+
     private Application application;
+    private String type_sent_received;
 
     public ApplicationDetailsFragment() {
         // Required empty public constructor
@@ -34,13 +40,6 @@ public class ApplicationDetailsFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -69,8 +68,10 @@ public class ApplicationDetailsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             int applicationId = args.getInt("application_id");
+            String type_sent_received = args.getString("type_sent_received");
             application = AppSingleton.getInstance(getContext()).getApplication(applicationId);
             carregarDados(application);
+            configButtons(application.getStatus(), type_sent_received);
         }
 
         return view;
@@ -83,18 +84,85 @@ public class ApplicationDetailsFragment extends Fragment {
         if (application == null) return;
 
         //Todos os dados são carregados diretamente no layout
-        tvNomeCandidato.setText(application.getCandidateName());
+        tvNomeCandidato.setText(getString(R.string.txt_candidatura_de) + " " + application.getCandidateName());
         tvSubmissionDate.setText(application.getCreatedAt());
         tvAnimalName.setText(application.getAnimalName());
-        tvStatusBadge.setText(application.getStatusTexto());
         tvCandidateName.setText(application.getCandidateName());
-        tvCandidateAge.setText(application.getAge() + "");
+        //Para isto não rebentar:
+       tvCandidateAge.setText(String.valueOf(application.getAge()));
         tvContact.setText(application.getContact());
         tvHome.setText(application.getHome());
         tvTimeAlone.setText(application.getTimeAlone());
-        tvChildren.setText(application.getChildren());
-        tvBills.setText(application.getBills());
-        tvFollowUp.setText(application.getFollowUp());
         tvMotive.setText(application.getMotive());
+
+        //Para esconder os botões de aceitar/negar:
+
+        //FUNÇÕES ESPECIAIS
+        badgeYesNo(application.getChildren(), tvChildren);
+        badgeYesNo(application.getBills(), tvBills);
+        badgeYesNo(application.getFollowUp(), tvFollowUp);
+        badgeStatus(application.getStatus(), tvStatusBadge);
+    }
+
+    private void badgeYesNo(String value, TextView textview) {
+        textview.setText(value);
+        if (value != null && value.equalsIgnoreCase("Sim")) {
+            // SE FOR SIM -> VERDE (#4CAF50)
+            textview.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+        } else {
+            // SE FOR NÃO -> VERMELHO (#F44336)
+            textview.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
+        }
+    }
+
+    private void badgeStatus(String value, TextView textview)  {
+        textview.setText(value);
+
+        if(value != null){
+            switch (value) {
+                // --- ESTADOS PENDENTES (AMARELO) ---
+                case Application.STATUS_SENT:
+                case Application.STATUS_PENDING:
+                    textview.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFC107")));
+                break;
+                // --- ESTADO APROVADO (VERDE) ---
+                case Application.STATUS_APPROVED:
+                    textview.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4CAF50")));
+                break;
+
+                // --- ESTADO REJEITADO (VERMELHO) ---
+                case Application.STATUS_REJECTED:
+                    textview.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
+                break;
+
+                default:
+                    textview.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+                break;
+            }
+        }
+    }
+
+    private void configButtons(String status, String type) {
+        if (type == null) {
+            btnApprove.setVisibility(View.GONE);
+            btnReject.setVisibility(View.GONE);
+            return;
+        }
+
+        // Se for "sent" ou se o estado não for "Em Análise" ou "Enviado" (já foi decidida), escondemos os botões.
+        boolean candidate = type.equalsIgnoreCase(TYPE_SENT);
+        boolean alreadyDecided = !status.equalsIgnoreCase(Application.STATUS_PENDING)
+                && !status.equalsIgnoreCase(Application.STATUS_SENT) ;
+        if (candidate || alreadyDecided) {
+            btnApprove.setVisibility(View.GONE);
+            btnReject.setVisibility(View.GONE);
+        } else {
+            // Se recebi e está pendente, mostro os botões
+            btnApprove.setVisibility(View.VISIBLE);
+            btnReject.setVisibility(View.VISIBLE);
+
+        }
+
+
     }
 }

@@ -59,6 +59,7 @@ public class ApplicationListFragment extends Fragment implements ApplicationList
                 // Passo B: Preparar os dados para enviar (apenas o ID chega)
                 Bundle bundle = new Bundle();
                 bundle.putInt("application_id", selected.getId());
+                bundle.putString("type_sent_received", type);
 
                 // Passo C: Criar o fragmento de detalhes e dar-lhe os argumentos
                 ApplicationDetailsFragment detailsFragment = new ApplicationDetailsFragment();

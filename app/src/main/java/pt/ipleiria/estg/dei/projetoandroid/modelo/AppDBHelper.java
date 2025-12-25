@@ -94,6 +94,17 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public static final String NAME_USER = "name_user";
     public static final String AVATAR_USER = "avatar_user";
 
+    // TABELA MESSAGES
+    private static final String TABLE_MESSAGES = "messages";
+
+    public static final String MESSAGE_ID = "id";
+    public static final String MESSAGE_TEXT = "text";
+    public static final String MESSAGE_SENDER_ID = "sender_user_id";
+    public static final String MESSAGE_RECEIVER_ID = "receiver_user_id";
+    public static final String MESSAGE_CREATED_AT = "created_at";
+    public static final String MESSAGE_IS_READ = "isRead";
+    public static final String MESSAGE_SUBJECT = "subject";
+
 
 
     private AppDBHelper(Context context) {
@@ -168,6 +179,20 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 FOLLOW_UP + " TEXT" +
                 ");";
         db.execSQL(createApplicationsTable);
+
+        // criar tabela messages
+
+        String createMessagesTable = "CREATE TABLE " + TABLE_MESSAGES + " (" +
+                MESSAGE_ID + " INTEGER PRIMARY KEY, " +
+                MESSAGE_TEXT + " TEXT, " +
+                MESSAGE_SENDER_ID + " INTEGER, " +
+                MESSAGE_RECEIVER_ID + " INTEGER, " +
+                MESSAGE_CREATED_AT + " TEXT, " +
+                MESSAGE_IS_READ + " INTEGER, " +
+                MESSAGE_SUBJECT + " TEXT" +
+                ");";
+
+        db.execSQL(createMessagesTable);
     }
 
     @Override
@@ -176,6 +201,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMALS_COMMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMALS_FILES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APPLICATIONS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGES);
         this.onCreate(db);
     }
 
@@ -637,4 +663,72 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
     //FIM-----------------------------------------------APPLICATION---------------------------------------
+
+
+    //INICIO-------------------------------------------MESSAGES--------------------------------------------
+
+    public void removerAllMessagesBD() {
+        this.database.delete(TABLE_MESSAGES, null, null);
+    }
+
+    public Message adicionarMessageBD(Message message) {
+        ContentValues values = new ContentValues();
+
+        values.put(MESSAGE_ID, message.getId());
+        values.put(MESSAGE_TEXT, message.getText());
+        values.put(MESSAGE_SENDER_ID, message.getSender_user_id());
+        values.put(MESSAGE_RECEIVER_ID, message.getReciver_user_id());
+        values.put(MESSAGE_CREATED_AT, message.getCreated_at());
+        values.put(MESSAGE_IS_READ, 0); // por enquanto
+        values.put(MESSAGE_SUBJECT, message.getSubject());
+
+        long id = database.insert(TABLE_MESSAGES, null, values);
+
+        if (id > -1) {
+            return message;
+        }
+        return null;
+    }
+
+    public ArrayList<Message> getAllMessagesBD() {
+        ArrayList<Message> messages = new ArrayList<>();
+
+        Cursor cursor = database.query(
+                TABLE_MESSAGES,
+                new String[] {
+                        MESSAGE_ID,
+                        MESSAGE_TEXT,
+                        MESSAGE_SENDER_ID,
+                        MESSAGE_RECEIVER_ID,
+                        MESSAGE_CREATED_AT,
+                        MESSAGE_IS_READ,
+                        MESSAGE_SUBJECT
+                },
+                null, null, null, null,
+                MESSAGE_CREATED_AT + " DESC"
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                Message m = new Message(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MESSAGE_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MESSAGE_SENDER_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MESSAGE_RECEIVER_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(MESSAGE_SUBJECT)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(MESSAGE_TEXT)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(MESSAGE_CREATED_AT)),
+                        "", // sender_username
+                        ""  // receiver_username
+                );
+                messages.add(m);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return messages;
+    }
+
+//FIM-------------------------------------------MESSAGES--------------------------------------------
+
+
 }

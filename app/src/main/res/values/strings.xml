@@ -106,4 +106,8 @@
     <string name="txt_adotar">Adotar</string>
     <string name="txt_enviar_mensagem">Enviar mensagem</string>
     <string name="txt_candidatura_de">Candidatura de</string>
+    <string name="txt_sent">Enviadas</string>
+    <string name="txt_recieved">Recebidas</string>
+    <string name="txt_Send_Message_To">Enviar mensagem para</string>
+    <string name="txt_delete">Apagar Mensagem</string>
 </resources>

@@ -16,14 +16,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Recebidas" />
+            android:text="@string/txt_recieved" />
 
         <Button
             android:id="@+id/btnEnviadas"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Enviadas" />
+            android:text="@string/txt_sent" />
     </LinearLayout>
 
     <!-- Lista por baixo dos botões -->

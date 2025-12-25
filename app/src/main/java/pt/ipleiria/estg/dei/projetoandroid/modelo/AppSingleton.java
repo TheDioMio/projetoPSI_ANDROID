@@ -478,6 +478,11 @@ public class AppSingleton {
                     if (messagesListener != null) {
                         messagesListener.onRefreshListaMessages(lista);
                     }
+
+
+                    removerAllMessagesBD();
+                    adicionarMessagesBD(lista);
+
                 },
                 error -> {
                     String msg;
@@ -596,6 +601,25 @@ public class AppSingleton {
 
         volleyQueue.add(request);
     }
+
+
+
+    public void removerAllMessagesBD() {
+        AppDBHelper.getInstance(context).removerAllMessagesBD();
+    }
+
+    public void adicionarMessagesBD(ArrayList<Message> messages) {
+        AppDBHelper db = AppDBHelper.getInstance(context);
+        for (Message m : messages) {
+            db.adicionarMessageBD(m);
+        }
+    }
+
+    public ArrayList<Message> getAllMessagesBD() {
+        return AppDBHelper.getInstance(context).getAllMessagesBD();
+    }
+
+
 
     //*************************************** Fim Mensagens *************************************
 

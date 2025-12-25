@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Enviar mensagem para"
+            android:text="@string/txt_Send_Message_To"
             android:padding="8dp"
             android:textStyle="bold"
             android:background="#EEEEEE"
@@ -84,15 +84,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_marginTop="8dp">
 
         <Button
             android:id="@+id/btnSend"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/txt_send"
-            app:backgroundTint="@color/secondary"/>
+            app:backgroundTint="@color/secondary"
+            android:layout_marginEnd="8dp" />
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_delete_foreground"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/txt_delete"
+            app:tint="@android:color/holo_red_dark" />
     </LinearLayout>
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,12 @@ public class MessageListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private ArrayList<Message> todas = new ArrayList<>();
+    private ArrayList<Message> recebidas = new ArrayList<>();
+    private ArrayList<Message> enviadas = new ArrayList<>();
+    private ListaMessagesAdaptador adaptador;
+    private int myId = -1;
 
     public MessageListFragment() {
         // Required empty public constructor
@@ -82,21 +89,26 @@ public class MessageListFragment extends Fragment {
 
         ListView lvMessages = view.findViewById(R.id.lvMessages);
 
-        ListaMessagesAdaptador adaptador =
-                new ListaMessagesAdaptador(getContext(), new ArrayList<>());
+        SharedPreferences sp = requireContext().getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+        myId = sp.getInt("USER_ID_INT", -1);
 
+        Button btnRecebidas = view.findViewById(R.id.btnRecebidas);
+        Button btnEnviadas  = view.findViewById(R.id.btnEnviadas);
+
+        btnRecebidas.setOnClickListener(v -> mostrarRecebidas());
+        btnEnviadas.setOnClickListener(v -> mostrarEnviadas());
+
+
+        adaptador = new ListaMessagesAdaptador(getContext(), new ArrayList<>());
         lvMessages.setAdapter(adaptador);
 
         lvMessages.setOnItemClickListener((parent, v, position, id) -> {
-
-            SharedPreferences sp = requireContext().getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
-            int myId = sp.getInt("USER_ID_INT", -1);
 
             Message selecionada = (Message) parent.getItemAtPosition(position);
 
             MessageFragment frag = MessageFragment.newInstanceForRead(selecionada, myId);
 
-            System.out.println("CLICK myId=" + myId);
+            System.out.println("CLICK myId=" + myId); // debub
 
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
@@ -109,8 +121,9 @@ public class MessageListFragment extends Fragment {
 
         singleton.setMessageListener(new pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener() {
             @Override
-            public void onRefreshListaMessages(ArrayList<Message> lista) {
-                adaptador.atualizar(lista);
+            public void onRefreshListaMessages(ArrayList lista) {
+                atualizarListas(lista);
+                mostrarRecebidas();
             }
 
             @Override
@@ -124,6 +137,32 @@ public class MessageListFragment extends Fragment {
 
 
 
+    }
+
+    private void atualizarListas(ArrayList lista) {
+        todas.clear();
+        recebidas.clear();
+        enviadas.clear();
+
+        for (Object o : lista) {
+            Message m = (Message) o;
+            todas.add(m);
+
+            if (m.getReciver_user_id() == myId) {
+                recebidas.add(m);
+            }
+            if (m.getSender_user_id() == myId) {
+                enviadas.add(m);
+            }
+        }
+    }
+
+    private void mostrarRecebidas() {
+        adaptador.atualizar(recebidas);
+    }
+
+    private void mostrarEnviadas() {
+        adaptador.atualizar(enviadas);
     }
 
 

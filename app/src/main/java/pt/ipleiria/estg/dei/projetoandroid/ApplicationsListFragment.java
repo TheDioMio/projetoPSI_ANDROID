@@ -10,21 +10,21 @@ import android.widget.ListView; // MUDANÇA IMPORTANTE
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaApplicationsAdaptor; // Importa o nosso adaptador corrigido
-import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationsListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
 
-public class ApplicationListFragment extends Fragment implements ApplicationListener {
+public class ApplicationsListFragment extends Fragment implements ApplicationsListener {
 
     private static final String ARG_TYPE = "type";
     private String type; // "sent" ou "received", é isto que troca entre as listas
 
     private ListView lvApplications;
 
-    public ApplicationListFragment() { }
+    public ApplicationsListFragment() { }
 
-    public static ApplicationListFragment newInstance(String type) {
-        ApplicationListFragment fragment = new ApplicationListFragment();
+    public static ApplicationsListFragment newInstance(String type) {
+        ApplicationsListFragment fragment = new ApplicationsListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TYPE, type);
         fragment.setArguments(args);

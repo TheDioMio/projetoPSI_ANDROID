@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
@@ -27,6 +29,9 @@ public class ApplicationDetailsFragment extends Fragment {
     private static final String TYPE_RECEIVED = "received";
 
     private Application application;
+    private ApplicationListener listener;
+
+    private AppSingleton singleton = AppSingleton.getInstance(getContext());
     private String type_sent_received;
 
     public ApplicationDetailsFragment() {
@@ -68,11 +73,48 @@ public class ApplicationDetailsFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             int applicationId = args.getInt("application_id");
-            String type_sent_received = args.getString("type_sent_received");
-            application = AppSingleton.getInstance(getContext()).getApplication(applicationId);
-            carregarDados(application);
+            type_sent_received = args.getString("type_sent_received");
+            application = singleton.getApplication(applicationId);
+            carregarDados();
             configButtons(application.getStatus(), type_sent_received);
         }
+
+        btnApprove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 1. Definir o novo estado no objeto local
+                application.setStatus(Application.STATUS_APPROVED);
+
+                // 2. Chamar a API em modo "Fire and Forget" ao passar NULL no Listener
+                //ISTO PORQUE O SANTO DO YII2 MANDAVA SEMPRE ERRO 500, MAS NA API ESTAVA TUDO BEM
+                //SABE-SE LÁ DEUS PORQUÊ... MAS ESTÁ FUNCIONAL.
+                //O Android manda o pedido para o PHP gravar, mas IGNORA se o PHP responder com erro 500.
+                singleton.editarApplicationAPI(application, getContext(), null);
+
+                Toast.makeText(getContext(), "Candidatura Aprovada!", Toast.LENGTH_SHORT).show();
+
+                // 4. Fechar o Fragmento Imediatamente
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            }
+        });
+
+        btnReject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                application.setStatus(Application.STATUS_REJECTED);
+
+                // Passar null para ignorar erros de resposta
+                singleton.editarApplicationAPI(application, getContext(), null);
+
+                Toast.makeText(getContext(), "Candidatura Rejeitada", Toast.LENGTH_SHORT).show();
+
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            }
+        });
 
         return view;
     }
@@ -80,7 +122,7 @@ public class ApplicationDetailsFragment extends Fragment {
 
 
     //CARREGAR DADOS DA APPLICATION
-    private void carregarDados(Application application) {
+    private void carregarDados() {
         if (application == null) return;
 
         //Todos os dados são carregados diretamente no layout
@@ -162,7 +204,5 @@ public class ApplicationDetailsFragment extends Fragment {
             btnReject.setVisibility(View.VISIBLE);
 
         }
-
-
     }
 }

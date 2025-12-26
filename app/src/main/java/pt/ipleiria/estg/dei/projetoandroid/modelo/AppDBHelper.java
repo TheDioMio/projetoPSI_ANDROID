@@ -617,6 +617,24 @@ public class AppDBHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public boolean editarApplicationBD(Application application) {
+        ContentValues values = new ContentValues();
+
+        // Atualizamos os campos principais que podem mudar
+        values.put(STATUS, application.getStatus());
+        values.put(IS_READ, application.getIsRead());
+        values.put(STATUS_DATE, application.getStatusDate());
+
+        // O 'update' retorna o número de linhas afetadas. Se > 0, correu bem.
+        return this.database.update(TABLE_APPLICATIONS, values,
+                APPLICATION_ID + " = ?", new String[]{String.valueOf(application.getId())}) > 0;
+    }
+
+    public boolean removerApplicationBD(int idApplication) {
+        return this.database.delete(TABLE_APPLICATIONS,
+                APPLICATION_ID + " = ?", new String[]{String.valueOf(idApplication)}) > 0;
+    }
+
     public Application getApplicationById(int idApplication) {
         Application application = null;
 

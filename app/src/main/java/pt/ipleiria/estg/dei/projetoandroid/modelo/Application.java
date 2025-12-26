@@ -98,4 +98,8 @@ public class Application {
 
     // Setters
     public void setIsRead(int isRead) { this.isRead = isRead; }
+
+    public void setStatus(String status) {this.status = status;}
+
+    public void setStatusDate(String statusDate) {this.statusDate = statusDate;}
 }

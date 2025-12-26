@@ -21,14 +21,14 @@ import com.bumptech.glide.Glide;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationsListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
 
 import java.util.ArrayList;
 
-public class ApplicationsSendFragment extends Fragment implements ApplicationListener {
+public class ApplicationsSendFragment extends Fragment implements ApplicationsListener {
 
     private Button btnSubmit;
     private EditText etDescription, etNomeCompleto, etIdade, etContacto;

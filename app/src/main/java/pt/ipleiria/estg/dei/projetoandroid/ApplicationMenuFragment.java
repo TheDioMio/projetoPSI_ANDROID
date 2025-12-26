@@ -50,7 +50,7 @@ public class ApplicationMenuFragment extends Fragment {
 
     // Função auxiliar para trocar de fragmento
     private void navigateToApplicationList(String type) {
-        Fragment listFragment = ApplicationListFragment.newInstance(type);
+        Fragment listFragment = ApplicationsListFragment.newInstance(type);
 
         // Verifica se a Activity existe
         if (getActivity() != null) {

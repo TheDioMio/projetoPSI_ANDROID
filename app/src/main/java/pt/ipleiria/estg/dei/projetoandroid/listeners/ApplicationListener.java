@@ -1,16 +1,9 @@
 package pt.ipleiria.estg.dei.projetoandroid.listeners;
 
-import java.util.ArrayList;
-
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
-import pt.ipleiria.estg.dei.projetoandroid.modelo.Message;
 
 public interface ApplicationListener {
-    void onRefreshApplicationList(ArrayList<Application> list);
+    void onRefreshDetails(Application application);
 
-    void onError(String error);
-
-    void onRefreshList(Object o);
-
-    void onRefreshList(ArrayList<Application> listaCandidaturas);
+    void onError(String s);
 }

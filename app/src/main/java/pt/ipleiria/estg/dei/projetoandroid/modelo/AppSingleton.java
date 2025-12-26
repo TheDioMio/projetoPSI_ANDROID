@@ -32,6 +32,7 @@ import java.util.Map;
 import pt.ipleiria.estg.dei.projetoandroid.MenuMainActivity;
 import pt.ipleiria.estg.dei.projetoandroid.R;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationsListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalsListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.LoginListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MenuListener;
@@ -51,15 +52,24 @@ public class AppSingleton {
     // Endpoints da API
     //--------------------------------------------
     //region ENDPOINTS
-    public String endereco = "http://10.0.2.2/PSI/projetoPSI_WEB/backend/web/api";
+    public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/PSI/projetoPSI_WEB/frontend/web";
+    public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String getmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
     private String getSentApplications = endereco+"application/sent";
 
     private String getmUrlAPIAnimals = endereco+"/animals?expand=listing.comments.user.profileImage,user.profileImage";
+
+    public static boolean isConnectionInternet(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        //necessita de permissões de acesso a internet
+        //e acesso ao estado la ligação
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
 
     //endregion
 
@@ -81,6 +91,7 @@ public class AppSingleton {
 
     private LoginListener loginListener;
     private MenuListener menuListener;
+    private ApplicationsListener applicationsListener;
     private ApplicationListener applicationListener;
 
     private AnimalsListener animalsListener;
@@ -173,16 +184,6 @@ public class AppSingleton {
     public ArrayList<Animal> getAllAnimalsBD() {
         animals = appBD.getAllAnimalsBD();
         return new ArrayList<>(animals);
-    }
-
-
-
-
-    public void adicionarApplicationsBD(ArrayList<Application> applications){
-        AppDBHelper.getInstance(context).removerAllApplicationsBD();
-        for (Application a: applications){
-            appBD.adicionarApplicationBD(a);
-        }
     }
 
     public ArrayList<Application> getAllApplicationsBD() {
@@ -351,10 +352,6 @@ public class AppSingleton {
 //
 //
 
-
-
-
-
     // -------------------------
     // GESTOR Application
     // -------------------------
@@ -373,7 +370,7 @@ public class AppSingleton {
         return AppDBHelper.getInstance(context).getApplicationById(id);
     }
 
-    public void getApplicationsAPI(final Context context, String type, final ApplicationListener listener) {
+    public void getApplicationsAPI(final Context context, String type, final ApplicationsListener listener) {
         String url = endereco + "/application/" + type;
 
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -437,31 +434,146 @@ public class AppSingleton {
         volleyQueue.add(req);
     }
 
-    public void adicionarApplicationBD(ArrayList<Application> applications){
-        appBD.removerAllApplicationsBD();
+    public void adicionarApplicationBD(Application application) {
+        //Guarda na Base de Dados
+        Application auxApp = appBD.adicionarApplicationBD(application);
 
-        for (Application a : applications){
-            appBD.adicionarApplicationBD(a);
+        //Atualiza a lista em memória (Singleton)
+        if (auxApp != null) {
+            // Procura se já existe na lista para substituir (Update)
+            Application existente = getApplication(auxApp.getId());
+
+            if (existente != null) {
+                applications.remove(existente);
+                applications.add(auxApp);
+            } else {
+                applications.add(auxApp);
+            }
         }
     }
-    // -------------------------
-    // FIM GESTOR Application
-    // -------------------------
+    public void adicionarApplicationsBD(ArrayList<Application> listaApplications) {
+        appBD.removerAllApplicationsBD();
+        for (Application app : listaApplications) {
+            appBD.adicionarApplicationBD(app);
+        }
+        // Atualiza a memória
+        this.applications = new ArrayList<>(listaApplications);
+    }
+    public void editarApplicationAPI(final Application application, final Context context, final ApplicationListener listener) {
+        if (!isConnectionInternet(context)) {
+            Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        // A URL no SINGULAR (como configurámos no passo anterior)
+        String url = endereco + "/application/" + application.getId();
 
+        JSONObject jsonBody = new JSONObject();
+        try {
+            // converterStatusParaInt: Uma função auxiliar que vamos criar já a seguir
+            int statusInt = converterStatusParaInt(application.getStatus());
 
+            jsonBody.put("status", statusInt);
+            // Agora envia {"status": 2} em vez de {"status": "Aprovada"}
 
-    // -------------------------
-    // GESTOR Message
-    // -------------------------
-//    public ArrayList<Message> getMessagesForUser (int userId){
-//        return gestorMessage.getMessageForUser(userId);
-//    }
-//
-//
-//    public Message getMessage(int idMessage) {
-//        return gestorMessage.getMessageById(idMessage);
-//    }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, jsonBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        editarApplicationBD(application);
+                        if (listener != null) {
+                            listener.onRefreshDetails(application);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String message = "Erro desconhecido";
+
+                        if (error.networkResponse != null) {
+                            message = "Erro API: " + error.networkResponse.statusCode;
+
+                            // --- CÓDIGO NOVO PARA VER O ERRO 422 ---
+                            try {
+                                String responseBody = new String(error.networkResponse.data, "UTF-8");
+                                // ISTO VAI IMPRIMIR O MOTIVO EXATO NO LOGCAT (Ex: "Status cannot be blank")
+                                android.util.Log.e("ERRO_422_DETALHE", responseBody);
+
+                                // Opcional: Mostra no Toast também para ser mais fácil veres já
+                                message += " | " + responseBody;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            // ---------------------------------------
+                        }
+
+                        if (listener != null) listener.onError(message);
+                    }
+                }) { // <--- ABRIR CHAVETA AQUI PARA O OVERRIDE
+
+            // ESTA É A PARTE QUE FALTAVA: ENVIAR O TOKEN
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        }; // <--- FECHAR CHAVETA AQUI
+
+        volleyQueue.add(request);
+    }
+
+    private int converterStatusParaInt(String statusTexto) {
+        if (statusTexto == null) return 0; // Default (Pendente)
+
+        switch (statusTexto) {
+            case Application.STATUS_SENT:      // "Pendente"
+                return 0;
+            case Application.STATUS_PENDING:   // "Em análise"
+                return 1;
+            case Application.STATUS_APPROVED:  // "Aprovada"
+                return 2;
+            case Application.STATUS_REJECTED:  // "Rejeitada"
+                return 3;
+            case Application.STATUS_CANCELLED: // "Cancelada"
+                return 4;
+            default:
+                return 0; // Se não reconhecer, manda 0
+        }
+    }
+
+    public void editarApplicationBD(Application app) {
+        // Tenta editar na BD
+        if (appBD.editarApplicationBD(app)) {
+            // Se funcionou na BD, atualiza na lista em memória
+            Application auxApp = getApplication(app.getId());
+            if (auxApp != null) {
+                // Atualiza os campos necessários
+                auxApp.setStatus(app.getStatus());
+                auxApp.setIsRead(app.getIsRead());
+                auxApp.setStatusDate(app.getStatusDate());
+            }
+        }
+    }
+
+    public void removerApplicationBD(int idApplication) {
+        Application app = getApplication(idApplication);
+
+        if (app != null) {
+            appBD.removerApplicationBD(idApplication);
+
+            // Remove da lista em memória
+            applications.remove(app);
+        }
+    }
 
     public void setMessageListener(MessagesListener messageListener) {
         this.messagesListener = messageListener;
@@ -511,11 +623,6 @@ public class AppSingleton {
             }
         };
         volleyQueue.add(request);
-    }
-
-    public interface SendMessageListener {
-        void onSuccess();
-        void onError(String erro);
     }
 
     public void enviarMensagemAPI(final int receiverId,
@@ -781,7 +888,7 @@ public class AppSingleton {
 
     // FUNÇÃO QUE PEDE OS DADOS DO UTILIZADOR QUE ESTÁ LOGADO PARA DEPOIS GUARDAR NA SHARED PREFERENCES
     // ENVIA O TOKEN
-    // RECEBE OS DADOS DO UTILIZADOR  
+    // RECEBE OS DADOS DO UTILIZADOR
     public void getMe( final Context context){
         if(!isConnectionInternet(context)){
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
@@ -846,18 +953,8 @@ public class AppSingleton {
         return sharedPreferences.getString(MenuMainActivity.TOKEN, null);
     }
 
-    public static boolean isConnectionInternet(Context context){
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        //necessita de permissões de acesso a internet
-        //e acesso ao estado la ligação
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
-
     // FUNÇÃO PARA CRIAR UMA NOVA CANDIDATURA (POST)
-    public void addApplicationAPI(final Context context, int userId, int animalId, String description, String data, final ApplicationListener listener) {
+    public void addApplicationAPI(final Context context, int userId, int animalId, String description, String data, final ApplicationsListener listener) {
 
         // 1. Definir o Endpoint (URL)
         // Se o teu backend seguir o padrão REST, para criar é POST em /applications
@@ -921,6 +1018,30 @@ public class AppSingleton {
         volleyQueue.add(request);
     }
 
+    public interface SendMessageListener {
+        void onSuccess();
 
-
+        void onError(String msg);
+    }
 }
+
+// -------------------------
+    // FIM GESTOR Application
+    // -------------------------
+
+
+
+
+    // -------------------------
+    // GESTOR Message
+    // -------------------------
+//    public ArrayList<Message> getMessagesForUser (int userId){
+//        return gestorMessage.getMessageForUser(userId);
+//    }
+//
+//
+//    public Message getMessage(int idMessage) {
+//        return gestorMessage.getMessageById(idMessage);
+//    }
+
+//*************************************** Fim Mensagens *************************************

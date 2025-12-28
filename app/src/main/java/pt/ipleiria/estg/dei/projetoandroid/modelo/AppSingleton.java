@@ -58,6 +58,7 @@ public class AppSingleton {
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String getmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
+    private String getmUrlAPIApplication = endereco + "/application";
     private String getSentApplications = endereco+"application/sent";
 
     private String getmUrlAPIAnimals = endereco+"/animals?expand=listing.comments.user.profileImage,user.profileImage";
@@ -563,6 +564,48 @@ public class AppSingleton {
             }
         }
     }
+
+    public void removerApplicationAPI(final Application application, final Context context, final ApplicationListener listener) {
+        if (!isConnectionInternet(context)) {
+            Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // URL: .../api/application/5
+        String url = getmUrlAPIApplication + "/" + application.getId();
+
+        StringRequest request = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Remove da BD Local
+                        removerApplicationBD(application.getId());
+
+                        //AVISAR O ADAPTADOR QUE O DELETE FOI UM SUCESSO
+                        if (listener != null) {
+                            listener.onRefreshDetails(application);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Toast.makeText(context, volleyError.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+        volleyQueue.add(request);
+    }
+
 
     public void removerApplicationBD(int idApplication) {
         Application app = getApplication(idApplication);

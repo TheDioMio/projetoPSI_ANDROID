@@ -1,5 +1,9 @@
 package pt.ipleiria.estg.dei.projetoandroid.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import org.json.JSONArray;
 import org.json.JSONException; // Falta este import
 import org.json.JSONObject;
@@ -46,5 +50,15 @@ public class ApplicationJsonParser {
             e.printStackTrace();
         }
         return lista;
+    }
+
+    public static boolean isConnectionInternet(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //necessita de permissões de acesso a internet
+        //e acesso ao estado la ligação
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }

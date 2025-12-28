@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
@@ -24,10 +26,12 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private ArrayList<Application> candidaturas;
+    private AppSingleton singleton;
 
     public ListaApplicationsAdaptor(Context context, ArrayList<Application> candidaturas) {
         this.context = context;
         this.candidaturas = candidaturas;
+        this.singleton = AppSingleton.getInstance(context);
     }
 
     @Override
@@ -59,6 +63,8 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
         TextView tvNome = convertView.findViewById(R.id.tvNomeAnimalCandidatura);
         TextView tvDescricao = convertView.findViewById(R.id.tvDescricaoCandidatura);
         TextView tvStatusCandidatura = convertView.findViewById(R.id.tvStatusCandidatura);
+        ImageButton btnDelete = convertView.findViewById(R.id.btnDelete);
+
 
         // 2. Obter a candidatura atual
         Application candidaturaAtual = candidaturas.get(position);
@@ -71,6 +77,29 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
         //Dar load à imagem: tornado fácil porque o path já vem da API (NÃO DEPENDENTE DO ANIMAL)
         String imgPath = candidaturaAtual.getAnimalImage();
         animalImgLoad(imgPath, imgAnimal);
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Chamamos o método atualizado com o LISTENER
+                singleton.removerApplicationAPI(candidaturaAtual, context, new pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener() {
+                    @Override
+                    public void onRefreshDetails(Application app) {
+                        //Remover o item da lista interna do adaptador
+                        candidaturas.remove(candidaturaAtual); //
+
+                        //ISTO É IMPORTANTE! -> Notificar a ListView para se redesenhar (desaparece a linha)
+                        notifyDataSetChanged(); //
+
+                        Toast.makeText(context, "Candidatura eliminada!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                    }
+                });
+            }
+        });
 
         return convertView;
     }

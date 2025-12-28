@@ -23,7 +23,7 @@ public class ApplicationDetailsFragment extends Fragment {
     private TextView tvNomeCandidato, tvSubmissionDate, tvAnimalName, tvStatusBadge,
             tvCandidateName, tvCandidateAge, tvContact, tvHome, tvTimeAlone, tvChildren,
             tvBills, tvFollowUp,tvMotive;
-    private Button btnApprove, btnReject;
+    private Button btnApprove, btnReject, btnCancel;
 
     private static final String TYPE_SENT = "sent";
     private static final String TYPE_RECEIVED = "received";
@@ -67,6 +67,7 @@ public class ApplicationDetailsFragment extends Fragment {
         tvMotive = view.findViewById(R.id.tvMotive);
         btnReject = view.findViewById(R.id.btnReject);
         btnApprove = view.findViewById(R.id.btnApprove);
+        btnCancel = view.findViewById(R.id.btnCancel);
 
 
         //obtém a application passada pelo Bundle
@@ -75,8 +76,8 @@ public class ApplicationDetailsFragment extends Fragment {
             int applicationId = args.getInt("application_id");
             type_sent_received = args.getString("type_sent_received");
             application = singleton.getApplication(applicationId);
-            carregarDados();
-            configButtons(application.getStatus(), type_sent_received);
+            carregarDados(); //Para carregar todos os dados para view.
+            configButtons(application.getStatus(), type_sent_received); // Para configurar se os botões aparecem ou não
         }
 
         btnApprove.setOnClickListener(new View.OnClickListener() {
@@ -92,8 +93,8 @@ public class ApplicationDetailsFragment extends Fragment {
                 singleton.editarApplicationAPI(application, getContext(), null);
 
                 Toast.makeText(getContext(), "Candidatura Aprovada!", Toast.LENGTH_SHORT).show();
-
-                // 4. Fechar o Fragmento Imediatamente
+                
+                //Fechar o fragmento
                 if (getActivity() != null) {
                     getActivity().onBackPressed();
                 }
@@ -108,7 +109,23 @@ public class ApplicationDetailsFragment extends Fragment {
                 // Passar null para ignorar erros de resposta
                 singleton.editarApplicationAPI(application, getContext(), null);
 
-                Toast.makeText(getContext(), "Candidatura Rejeitada", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Candidatura rejeitada!", Toast.LENGTH_SHORT).show();
+
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            }
+        });
+        
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                application.setStatus(Application.STATUS_CANCELLED);
+                
+                //Passar null para ignorar erros de resposta
+                singleton.editarApplicationAPI(application, getContext(), null);
+
+                Toast.makeText(getContext(), "Candidatura cancelada!", Toast.LENGTH_SHORT).show();
 
                 if (getActivity() != null) {
                     getActivity().onBackPressed();
@@ -177,8 +194,15 @@ public class ApplicationDetailsFragment extends Fragment {
                     textview.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
                 break;
 
+                // --- ESTADO CANCELADO (CINZENTO) ---
+                case Application.STATUS_CANCELLED:
+                    textview.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#808080")));
+                break;
+
+
+                // --- ESTADO DESCONHECIDO (MAGENTA) ---
                 default:
-                    textview.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+                    textview.setBackgroundTintList(ColorStateList.valueOf(Color.MAGENTA));
                 break;
             }
         }
@@ -188,21 +212,32 @@ public class ApplicationDetailsFragment extends Fragment {
         if (type == null) {
             btnApprove.setVisibility(View.GONE);
             btnReject.setVisibility(View.GONE);
+            btnCancel.setVisibility(View.GONE);
             return;
         }
 
-        // Se for "sent" ou se o estado não for "Em Análise" ou "Enviado" (já foi decidida), escondemos os botões.
-        boolean candidate = type.equalsIgnoreCase(TYPE_SENT);
+        // Se for "sent" ou se o estado não for "Em Análise" ou "Enviado" (se já foi decidida), escondemos os botões.
         boolean alreadyDecided = !status.equalsIgnoreCase(Application.STATUS_PENDING)
-                && !status.equalsIgnoreCase(Application.STATUS_SENT) ;
-        if (candidate || alreadyDecided) {
+                && !status.equalsIgnoreCase(Application.STATUS_SENT);
+
+        if(type.equalsIgnoreCase(TYPE_SENT) && alreadyDecided) {
             btnApprove.setVisibility(View.GONE);
             btnReject.setVisibility(View.GONE);
-        } else {
-            // Se recebi e está pendente, mostro os botões
+            btnCancel.setVisibility(View.GONE);
+        } else if (type.equalsIgnoreCase(TYPE_SENT) && !alreadyDecided) {
+            btnApprove.setVisibility(View.GONE);
+            btnReject.setVisibility(View.GONE);
+            btnCancel.setVisibility(View.VISIBLE);
+        }
+
+        if(type.equalsIgnoreCase(TYPE_RECEIVED) && alreadyDecided) {
+            btnApprove.setVisibility(View.GONE);
+            btnReject.setVisibility(View.GONE);
+            btnCancel.setVisibility(View.GONE);
+        } else if (type.equalsIgnoreCase(TYPE_RECEIVED) && !alreadyDecided) {
             btnApprove.setVisibility(View.VISIBLE);
             btnReject.setVisibility(View.VISIBLE);
-
+            btnCancel.setVisibility(View.GONE);
         }
     }
 }

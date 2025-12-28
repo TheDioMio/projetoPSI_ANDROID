@@ -3,13 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Para Android ≤ 12 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
 
+    <!-- Para Android 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
 
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,17 +22,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ProjetoANDROID">
-
+        android:theme="@style/Theme.ProjetoANDROID"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
         <!-- GOOGLE MAPS API KEY -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA1cLsf-5np-zOKC4m6DUJygDOFaKwPpEw"/>
+            android:value="AIzaSyA1cLsf-5np-zOKC4m6DUJygDOFaKwPpEw" />
 
         <activity
             android:name=".AnimalDetailsActivity"
-            android:exported="false" />
-        <!-- <activity -->
+            android:exported="false" /> <!-- <activity -->
         <!-- android:name=".ProfileActivity" -->
         <!-- android:exported="false" /> -->
         <activity

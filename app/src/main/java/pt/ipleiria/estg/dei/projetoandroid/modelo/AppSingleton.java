@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.util.Base64;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import pt.ipleiria.estg.dei.projetoandroid.listeners.AvatarUploadListener;
+import pt.ipleiria.estg.dei.projetoandroid.utils.FileUtils;
 import pt.ipleiria.estg.dei.projetoandroid.MenuMainActivity;
 import pt.ipleiria.estg.dei.projetoandroid.R;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;
@@ -37,10 +41,12 @@ import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalsListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.LoginListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MenuListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.UserUpdateListener;
 import pt.ipleiria.estg.dei.projetoandroid.utils.ApplicationJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.AnimalJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.MessageJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.UserJsonParser;
+import pt.ipleiria.estg.dei.projetoandroid.utils.VolleyMultipartRequest;
 
 public class AppSingleton {
 
@@ -59,6 +65,7 @@ public class AppSingleton {
     private String getmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
     private String getmUrlAPIApplication = endereco + "/application";
+    private String postAvatarURL = endereco+"/file/update-avatar";
     private String getSentApplications = endereco+"application/sent";
 
     private String getmUrlAPIAnimals = endereco+"/animals?expand=listing.comments.user.profileImage,user.profileImage";
@@ -75,7 +82,9 @@ public class AppSingleton {
     //endregion
 
 
-
+    public void setAvatarUploadListener(AvatarUploadListener avatarUploadListener) {
+        this.avatarUploadListener = avatarUploadListener;
+    }
 
     public void setLoginListener(LoginListener loginListener) {
         this.loginListener = loginListener;
@@ -91,7 +100,10 @@ public class AppSingleton {
 
 
     private LoginListener loginListener;
+
+    private AvatarUploadListener avatarUploadListener;
     private MenuListener menuListener;
+    private UserUpdateListener userUpdateListener;
     private ApplicationsListener applicationsListener;
     private ApplicationListener applicationListener;
 
@@ -988,6 +1000,183 @@ public class AppSingleton {
             volleyQueue.add(request);
         }
     }
+
+
+    // METODO UTILIZADO PARA ALTERAR OS DADOS DO USER
+    public void updateMe(final Context context, Me me, final UserUpdateListener listener) {
+
+        if (!isConnectionInternet(context)) {
+            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("name", me.getName());
+            body.put("username", me.getUsername());
+            body.put("email", me.getEmail());
+            body.put("address", me.getAddress());
+        } catch (JSONException e) {
+            listener.onUpdateError("Dados inválidos");
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.PUT,
+                getmUrlAPIMe,
+                body,
+                response -> {
+
+                    // Atualiza o singleton com os dados do servidor
+                    this.me = UserJsonParser.parserJsonMe(response);
+
+                    // Atualiza menu / UI
+                    if (menuListener != null) {
+                        menuListener.onRefreshMenu(this.me);
+                    }
+
+                    listener.onUpdateSuccess(this.me);
+                },
+                error -> {
+
+                    String msg;
+
+                    if (error.networkResponse != null) {
+                        int statusCode = error.networkResponse.statusCode;
+
+                        if (statusCode == 401) {
+                            msg = "Sessão expirada ou não autorizado";
+                        } else if (statusCode == 422) {
+                            msg = "Dados inválidos";
+                        } else if (statusCode == 500) {
+                            msg = "Erro interno do servidor";
+                        } else {
+                            msg = "Erro HTTP: " + statusCode;
+                        }
+
+                    } else if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                        msg = "Sem ligação ao servidor";
+                    } else {
+                        msg = "Erro desconhecido";
+                    }
+
+                    listener.onUpdateError(msg);
+                }
+        ) {
+            @Nullable
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                    headers.put("Content-Type", "application/json");
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
+    // UTILIZADO PARA EDITAR O AVATAR DO USER
+    public void uploadAvatar(
+            Context context,
+            Uri avatarUri,
+            AvatarUploadListener listener
+    ) {
+
+        byte[] imageBytes = FileUtils.readBytes(context, avatarUri);
+
+        Map<String, VolleyMultipartRequest.DataPart> file = new HashMap<>();
+        file.put("file", new VolleyMultipartRequest.DataPart(
+                "avatar.jpg",
+                imageBytes,
+                "image/jpeg"
+        ));
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Bearer " + getToken(context));
+
+        VolleyMultipartRequest request = new VolleyMultipartRequest(
+                Request.Method.POST,
+                postAvatarURL,
+                headers,
+                file,
+                response -> {
+                    try {
+                        String json = new String(response.data);
+                        JSONObject resp = new JSONObject(json);
+
+                        if (resp.getBoolean("success")) {
+
+                            String avatarPath = resp.getString("path");
+
+                            // ✅ guardar avatar localmente
+                            saveAvatarPath(context, avatarPath);
+
+                            // ✅ notificar quem chamou
+                            listener.onSuccess(avatarPath);
+
+                        } else {
+                            listener.onError("Erro ao atualizar avatar");
+                        }
+
+                    } catch (Exception e) {
+                        listener.onError("Resposta inválida do servidor");
+                    }
+                },
+                error -> listener.onError("Erro de comunicação com o servidor")
+        );
+
+        volleyQueue.add(request);
+    }
+
+
+    private void saveAvatarPath(Context context, String path) {
+        SharedPreferences sp =
+                context.getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+
+        sp.edit()
+                .putString(MenuMainActivity.IMGAVATAR, path)
+                .apply();
+    }
+//    public void uploadAvatar(Context context, Uri avatarUri, Response.Listener<NetworkResponse> onSuccess, Response.ErrorListener onError) {
+//
+//        byte[] imageBytes = FileUtils.readBytes(context, avatarUri);
+//
+//        Map<String, VolleyMultipartRequest.DataPart> file = new HashMap<>();
+//        file.put("file", new VolleyMultipartRequest.DataPart(
+//                "avatar.jpg",
+//                imageBytes,
+//                "image/jpeg"
+//        ));
+//
+//        Map<String, String> headers = new HashMap<>();
+//        headers.put("Authorization", "Bearer " + getToken(context));
+//
+//        VolleyMultipartRequest request = new VolleyMultipartRequest(
+//                Request.Method.POST,
+//                postAvatarURL,
+//                headers,
+//                file,
+//                onSuccess,
+//                onError
+//        );
+//
+//        volleyQueue.add(request);
+//    }
+
+
+    public void notifyMenuRefresh(Me me) {
+        this.me = me;
+
+        if (menuListener != null) {
+            menuListener.onRefreshMenu(me);
+        }
+    }
+
 
     public String getToken(Context context) {
         SharedPreferences sharedPreferences =

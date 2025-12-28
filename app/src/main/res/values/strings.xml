@@ -110,5 +110,7 @@
     <string name="txt_recieved">Recebidas</string>
     <string name="txt_Send_Message_To">Enviar mensagem para</string>
     <string name="txt_delete">Apagar Mensagem</string>
+    <string name="txt_cancelar">Cancelar</string>
+    <string name="txt_utilizador_atualizado_com_sucesso">Utilizador atualizado com sucesso.</string>
     <string name="btn_cancelar">Cancelar</string>
 </resources>

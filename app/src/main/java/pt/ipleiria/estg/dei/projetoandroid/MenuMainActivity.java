@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,6 +33,8 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
 public class MenuMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnItemSelectedListener,MenuListener {
 
+    public static final int VIEW = 100;
+    public static final int EDIT = 200;
     public static final String TOKEN = "token";
 
     public static final String NAME = "name";
@@ -168,8 +173,12 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
         } else if (id == R.id.navProfileDetails || id == R.id.bottom_profile) {
 
-            fragment = ProfileFragment.newInstance(iduser, false);
-            setTitle(menuItem.getTitle());
+//            fragment = ProfileFragment.newInstance(iduser, false);
+//            setTitle(menuItem.getTitle());
+
+            Intent intent = new Intent (getApplicationContext(), ProfileActivity.class);
+//            intent.putExtra(DetalhesLivroActivity.IDLIVRO, (int) id);
+            startActivityForResult(intent, MenuMainActivity.EDIT);
 
         } else if (id == R.id.navMyAnimals) {
 
@@ -313,5 +322,45 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
         }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (resultCode == Activity.RESULT_OK){
+            atualizarMenuFromSharedPreferences();
+//          ATUALIZAR O MENU COM OS DADOS DA SHAREDPREFERENCES
+            if (requestCode == MenuMainActivity.EDIT){
+                Toast.makeText(getApplicationContext(), "Dados atualizados", Toast.LENGTH_LONG).show();
+            } else if (requestCode == MenuMainActivity.VIEW){
+                Toast.makeText(getApplicationContext(), "aqui vem do view do user", Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+    }
+
+    private void atualizarMenuFromSharedPreferences() {
+        SharedPreferences sp = getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
+
+        String name = sp.getString(NAME, "");
+        String email = sp.getString(EMAIL, "");
+        String avatar = sp.getString(IMGAVATAR, "");
+
+        nav_tvName.setText(name);
+        nav_tvEmail.setText(email);
+
+        if (avatar != null && !avatar.isEmpty()) {
+            String imageUrl = avatar.startsWith("http")
+                    ? avatar
+                    : AppSingleton.getInstance(this).FRONTEND_BASE_URL + avatar;
+
+            Glide.with(this)
+                    .load(imageUrl)
+                    .placeholder(R.mipmap.default_avatar)
+                    .circleCrop()
+                    .into(nav_imgUser);
+        }
+    }
 
 }

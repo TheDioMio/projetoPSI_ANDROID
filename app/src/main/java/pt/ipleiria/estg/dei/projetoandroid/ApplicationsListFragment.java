@@ -84,7 +84,7 @@ public class ApplicationsListFragment extends Fragment implements ApplicationsLi
         // Este é o método que o AppSingleton chama quando os dados chegam
         if (listaCandidaturas != null && getContext() != null) {
             // Criar o adaptador e ligá-lo à ListView
-            ListaApplicationsAdaptor adapter = new ListaApplicationsAdaptor(getContext(), listaCandidaturas);
+            ListaApplicationsAdaptor adapter = new ListaApplicationsAdaptor(getContext(), listaCandidaturas, type);
             lvApplications.setAdapter(adapter);
         }
     }

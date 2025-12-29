@@ -39,7 +39,7 @@ import java.util.Locale;
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.AnimalImageAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.CommentAdaptador;
 
-public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
+public class AnimalDetailsFragment extends Fragment {
 //public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
@@ -47,7 +47,7 @@ public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallbac
 
     private ImageView imgPrincipal;
     private LinearLayout layoutMiniaturas;
-    private Button btnApplication;
+    private Button btnAdopt;
     private TextView tvNome, tvLocalizacao, tvDescricao, tvOwnerName, tvOwnerEmail, tvListingDescription,tvViews,  tvOwnerContact, tvSize, tvAge, tvVaccination, tvAnimalType, tvBreed, tvNeutered;
     private ImageView imgOwnerAvatar;
     private TextView tvOwnerAddress;
@@ -85,6 +85,8 @@ public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallbac
         tvOwnerAddress = view.findViewById(R.id.tvOwnerAddress);
         tvListingDescription = view.findViewById(R.id.tvListingDescription);
         tvViews = view.findViewById(R.id.tvViews);
+        btnAdopt = view.findViewById(R.id.btnAdopt);
+
         // LayoutManagers
         rvAnimalImages.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -94,13 +96,13 @@ public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallbac
                 new LinearLayoutManager(getContext())
         );
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager()
-                        .findFragmentById(R.id.map);
-
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
+//        SupportMapFragment mapFragment =
+//                (SupportMapFragment) getChildFragmentManager()
+//                        .findFragmentById(R.id.map);
+//
+//        if (mapFragment != null) {
+//            mapFragment.getMapAsync(this);
+//        }
 
 
         //obtém o animal da BD passado pelo Bundle
@@ -111,29 +113,25 @@ public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallbac
             carregarDados(animal);
         }
 
-//
-//        //Botão para submeter a candidatura no animal em específico
-//        btnApplication.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Fragment fragment = new ApplicationsSendFragment();
-//
-//                Bundle args = new Bundle();
-//                if (animal != null) {
-//                    args.putInt("ID_ANIMAL", animal.getId());
-//                }
-//                fragment.setArguments(args);
-//                getParentFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.contentFragment, fragment)
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-//        });
-//        mapView = view.findViewById(R.id.mapView);
-//        mapView.onCreate(savedInstanceState);
-//        mapView.getMapAsync(this);
 
+        //Botão para submeter a candidatura no animal em específico
+        btnAdopt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new ApplicationCreateFragment();
+
+                Bundle args = new Bundle();
+                if (animal != null) {
+                    args.putInt("ID_ANIMAL", animal.getId());
+                }
+                fragment.setArguments(args);
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contentFragment, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         return view;
     }
 
@@ -170,52 +168,56 @@ public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallbac
 //        }
 //    }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        gMap = googleMap;
 
-        if (animal == null || animal.getLocation() == null || animal.getLocation().isEmpty()) {
-            return;
-        }
-
-        String locationName = animal.getLocation(); // ex: "Leiria"
-
-        Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
-
-        try {
-            List<Address> results = geocoder.getFromLocationName(locationName, 1);
-
-            if (results != null && !results.isEmpty()) {
-
-                Address address = results.get(0);
-                LatLng posicao = new LatLng(
-                        address.getLatitude(),
-                        address.getLongitude()
-                );
-
-                gMap.addMarker(new MarkerOptions()
-                        .position(posicao)
-                        .title(animal.getName()));
-
-                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicao, 13f));
-
-            } else {
-                Toast.makeText(
-                        getContext(),
-                        "Localização não encontrada",
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(
-                    getContext(),
-                    "Erro ao obter localização",
-                    Toast.LENGTH_SHORT
-            ).show();
-        }
-    }
+    //Igor, tive que comentar isto por agora porque consome muitos recursos para a aplicação
+    //como ela corre no thread principal, todas as outras funções ficas obsfuscadas por ela, e a app
+    //fica constantemente em Application Not Responding.
+//    @Override
+//    public void onMapReady(@NonNull GoogleMap googleMap) {
+//        gMap = googleMap;
+//
+//        if (animal == null || animal.getLocation() == null || animal.getLocation().isEmpty()) {
+//            return;
+//        }
+//
+//        String locationName = animal.getLocation(); // ex: "Leiria"
+//
+//        Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+//
+//        try {
+//            List<Address> results = geocoder.getFromLocationName(locationName, 1);
+//
+//            if (results != null && !results.isEmpty()) {
+//
+//                Address address = results.get(0);
+//                LatLng posicao = new LatLng(
+//                        address.getLatitude(),
+//                        address.getLongitude()
+//                );
+//
+//                gMap.addMarker(new MarkerOptions()
+//                        .position(posicao)
+//                        .title(animal.getName()));
+//
+//                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicao, 13f));
+//
+//            } else {
+//                Toast.makeText(
+//                        getContext(),
+//                        "Localização não encontrada",
+//                        Toast.LENGTH_SHORT
+//                ).show();
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Toast.makeText(
+//                    getContext(),
+//                    "Erro ao obter localização",
+//                    Toast.LENGTH_SHORT
+//            ).show();
+//        }
+//    }
 
 
 

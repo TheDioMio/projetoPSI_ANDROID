@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.projetoandroid.adaptadores;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.R;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AnimalFile;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
@@ -27,11 +30,34 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
     private LayoutInflater inflater;
     private ArrayList<Application> candidaturas;
     private AppSingleton singleton;
+    private ApplicationListener listener;
 
-    public ListaApplicationsAdaptor(Context context, ArrayList<Application> candidaturas) {
+
+    private String type; //Este type é "sent" ou "received", para dar para esconder o botão delete no listview.
+
+    public ListaApplicationsAdaptor(Context context, ArrayList<Application> candidaturasDoFragmento, String type) {
         this.context = context;
-        this.candidaturas = candidaturas;
         this.singleton = AppSingleton.getInstance(context);
+        this.type = type;
+
+        // 1. AQUI ESTÁ O TRUQUE:
+        // Em vez de fazermos "this.candidaturas = candidaturasDoFragmento" (que copiava o lixo todo),
+        // nós inicializamos a NOSSA lista interna vazia. É como se limpássemos a mesa.
+        this.candidaturas = new ArrayList<>();
+        // 2. Agora vamos percorrer a lista que veio de fora...
+        boolean isCandidate = type != null && type.equalsIgnoreCase("sent");
+        if (candidaturasDoFragmento != null) {
+            for (Application app : candidaturasDoFragmento) {
+                //Se for candidato, mostrar todas as applications
+                if (isCandidate) {
+                    this.candidaturas.add(app);
+
+                //Se não for candidato, esconder as applications que tenham status_cancelled.
+                } else if (!isCandidate && !app.getStatus().equals(Application.STATUS_CANCELLED)) {
+                    this.candidaturas.add(app);
+                }
+            }
+        }
     }
 
     @Override
@@ -78,28 +104,57 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
         String imgPath = candidaturaAtual.getAnimalImage();
         animalImgLoad(imgPath, imgAnimal);
 
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Chamamos o método atualizado com o LISTENER
-                singleton.removerApplicationAPI(candidaturaAtual, context, new pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener() {
-                    @Override
-                    public void onRefreshDetails(Application app) {
-                        //Remover o item da lista interna do adaptador
-                        candidaturas.remove(candidaturaAtual); //
+        boolean isCandidate = type != null && type.equalsIgnoreCase("sent");
+        boolean isNotDecided = candidaturaAtual.getStatus().equals(Application.STATUS_SENT) ||
+                candidaturaAtual.getStatus().equals(Application.STATUS_PENDING)
+                || candidaturaAtual.getStatus().equals(Application.STATUS_CANCELLED);
 
-                        //ISTO É IMPORTANTE! -> Notificar a ListView para se redesenhar (desaparece a linha)
-                        notifyDataSetChanged(); //
 
-                        Toast.makeText(context, "Candidatura eliminada!", Toast.LENGTH_SHORT).show();
-                    }
+        //Se a candidatura for enviada pelo user e se ainda não estiver decidida, mostrar o btn e fazer o onClickListener
+        if (isCandidate && isNotDecided) {
+            btnDelete.setVisibility(View.VISIBLE);
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                    @Override
-                    public void onError(String error) {
-                    }
-                });
-            }
-        });
+                    //ESTE BUILDER É PARA A CAIXA DE DIÁLOGO, DE CONFIRMAÇÃO DE APAGAR!
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Eliminar Candidatura");
+                    builder.setMessage("Tem a certeza que deseja eliminar esta candidatura? Esta ação é permanente e não pode ser desfeita!");
+                    builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            singleton.removerApplicationAPI(candidaturaAtual, context, new pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationListener() {
+                                @Override
+                                public void onRefreshDetails(Application app) {
+                                    //Remover o item da lista interna do adaptador
+                                    candidaturas.remove(candidaturaAtual); //
+                                    //ISTO É IMPORTANTE! -> Notificar a ListView para se redesenhar (desaparece a linha)
+                                    notifyDataSetChanged(); //
+                                    Toast.makeText(context, "Candidatura eliminada!", Toast.LENGTH_SHORT).show();
+                                }
+                                @Override
+                                public void onError(String error) {
+                                }
+                            });
+                        }
+                    });
+
+                    builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+            });
+
+        } else {
+            // Se for recebida ou já não estiver pendente, escondemos o botão
+            btnDelete.setVisibility(View.GONE);
+        }
+
 
         return convertView;
     }
@@ -147,4 +202,6 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
             }
         }
     }
+
+
 }

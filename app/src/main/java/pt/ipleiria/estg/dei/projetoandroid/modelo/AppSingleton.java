@@ -447,6 +447,94 @@ public class AppSingleton {
         volleyQueue.add(req);
     }
 
+
+    public void addApplicationAPI(final Context context, int userId,int animalId, String motive, String dataJsonString, final ApplicationsListener listener) {
+
+        if (!isConnectionInternet(context)) {
+            Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = endereco + "/application";
+
+        JSONObject jsonBody;
+        try {
+            // 1. O SEGREDO: Pegar na string que vem do fragmento e torná-la no objeto raiz
+            // Assim "age", "home", etc. ficam na raiz, como o PHP quer.
+            jsonBody = new JSONObject(dataJsonString);
+
+            // 2. Adicionar o que falta
+            jsonBody.put("animal_id", animalId);
+            jsonBody.put("user_id", userId);
+            jsonBody.put("motive", motive);
+            jsonBody.put("description", motive);
+
+            if (jsonBody.has("age")) {
+                int idadeInt = jsonBody.optInt("age");
+                jsonBody.put("age", String.valueOf(idadeInt)); // Força "25" em vez de 25
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Erro ao processar dados", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (listener != null) {
+                            listener.onRefreshList(null);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String message = "Erro ao enviar candidatura";
+
+                        // LOG DE DEBUG PARA VERES O ERRO REAL NO LOGCAT
+                        if (error.networkResponse != null) {
+                            message += " (" + error.networkResponse.statusCode + ")";
+                            try {
+                                String data = new String(error.networkResponse.data, "UTF-8");
+                                android.util.Log.e("ERRO_PHP", data); // <--- Procura por isto no Logcat se falhar
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else if (error instanceof com.android.volley.ParseError) {
+                        message += " (Erro de Leitura)";
+
+                        // TENTA LER O HTML QUE VEIO NO ERRO (NOVO)
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            try {
+                                String htmlErro = new String(error.networkResponse.data, "UTF-8");
+                                android.util.Log.e("HTML_DO_ERRO", htmlErro);
+                            } catch (Exception e) {}
+                        }
+
+                        android.util.Log.e("DEBUG_ERRO", "ParseError: O servidor devolveu HTML.");
+                    }
+                        error.printStackTrace();
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
     public void adicionarApplicationBD(Application application) {
         //Guarda na Base de Dados
         Application auxApp = appBD.adicionarApplicationBD(application);
@@ -477,17 +565,14 @@ public class AppSingleton {
             Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        // A URL no SINGULAR (como configurámos no passo anterior)
         String url = endereco + "/application/" + application.getId();
 
         JSONObject jsonBody = new JSONObject();
         try {
-            // converterStatusParaInt: Uma função auxiliar que vamos criar já a seguir
             int statusInt = converterStatusParaInt(application.getStatus());
 
             jsonBody.put("status", statusInt);
-            // Agora envia {"status": 2} em vez de {"status": "Aprovada"}
+            //Envia {"status": 2} em vez de {"status": "Aprovada"}
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -511,25 +596,20 @@ public class AppSingleton {
                         if (error.networkResponse != null) {
                             message = "Erro API: " + error.networkResponse.statusCode;
 
-                            // --- CÓDIGO NOVO PARA VER O ERRO 422 ---
                             try {
                                 String responseBody = new String(error.networkResponse.data, "UTF-8");
                                 // ISTO VAI IMPRIMIR O MOTIVO EXATO NO LOGCAT (Ex: "Status cannot be blank")
                                 android.util.Log.e("ERRO_422_DETALHE", responseBody);
-
-                                // Opcional: Mostra no Toast também para ser mais fácil veres já
-                                message += " | " + responseBody;
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            // ---------------------------------------
                         }
 
                         if (listener != null) listener.onError(message);
                     }
-                }) { // <--- ABRIR CHAVETA AQUI PARA O OVERRIDE
+                }) {
 
-            // ESTA É A PARTE QUE FALTAVA: ENVIAR O TOKEN
+            //ISTO AQUI ENVIA O TOKEN
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -539,7 +619,7 @@ public class AppSingleton {
                 }
                 return headers;
             }
-        }; // <--- FECHAR CHAVETA AQUI
+        };
 
         volleyQueue.add(request);
     }
@@ -617,8 +697,6 @@ public class AppSingleton {
         };
         volleyQueue.add(request);
     }
-
-
     public void removerApplicationBD(int idApplication) {
         Application app = getApplication(idApplication);
 
@@ -629,6 +707,10 @@ public class AppSingleton {
             applications.remove(app);
         }
     }
+
+    // -------------------------
+    // FIM GESTOR Application
+    // -------------------------
 
     public void setMessageListener(MessagesListener messageListener) {
         this.messagesListener = messageListener;
@@ -1183,71 +1265,6 @@ public class AppSingleton {
                 context.getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
 
         return sharedPreferences.getString(MenuMainActivity.TOKEN, null);
-    }
-
-    // FUNÇÃO PARA CRIAR UMA NOVA CANDIDATURA (POST)
-    public void addApplicationAPI(final Context context, int userId, int animalId, String description, String data, final ApplicationsListener listener) {
-
-        // 1. Definir o Endpoint (URL)
-        // Se o teu backend seguir o padrão REST, para criar é POST em /applications
-        String url = endereco + "/applications";
-
-        // 2. Criar o Objeto JSON com os dados para enviar
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("user_id", userId);
-            jsonBody.put("animal_id", animalId);
-            jsonBody.put("description", description);
-
-            // "data" contém aquele JSON extra (idade, habitação, etc.) convertido em String
-            jsonBody.put("data", data);
-
-            // Opcional: Se o backend exigir, podes enviar o status inicial (0 = pendente)
-            // jsonBody.put("status", 0);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        // 3. Criar o Pedido Volley
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Sucesso! O backend respondeu que criou a candidatura.
-                        if (listener != null) {
-                            // Chamamos o listener para avisar o Fragmento que correu tudo bem
-                            listener.onRefreshList(null);
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Erro
-                        String mensagem = "Erro ao enviar candidatura";
-                        if (error.networkResponse != null) {
-                            mensagem += " (Código: " + error.networkResponse.statusCode + ")";
-                        }
-                        Toast.makeText(context, mensagem, Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-
-            // 4. Autenticação (Enviar o Token no cabeçalho)
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = getToken(context); // Usamos o método auxiliar que já tens no Singleton
-                if (token != null && !token.isEmpty()) {
-                    headers.put("Authorization", "Bearer " + token);
-                }
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-        };
-
-        // 5. Adicionar à fila de pedidos
-        volleyQueue.add(request);
     }
 
     public interface SendMessageListener {

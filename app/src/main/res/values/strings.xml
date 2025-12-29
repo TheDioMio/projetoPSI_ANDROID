@@ -113,4 +113,6 @@
     <string name="txt_cancelar">Cancelar</string>
     <string name="txt_utilizador_atualizado_com_sucesso">Utilizador atualizado com sucesso.</string>
     <string name="btn_cancelar">Cancelar</string>
+    <string name="txt_conte_nos_sobre_si">Conte-nos sobre si</string>
+    <string name="txt_o_que_o_levou_aquerer_adotar_este_animal">O que o levou a querer adotar este animal?</string>
 </resources>

@@ -30,7 +30,9 @@ public class ApplicationCreateFragment extends Fragment {
     private Button btnSubmit;
 
     private int candidateAge;
-    private String candidateName, candidateContact, candidateMotive, homeType, timeAlone, children, bills, followup;
+    private String candidateName, candidateContact, candidateMotive;
+    // Variáveis auxiliares para os spinners
+    private String homeTypeStr, timeAloneStr, childrenStr, billsStr, followupStr;
 
     public ApplicationCreateFragment() {
         // Required empty public constructor
@@ -45,13 +47,16 @@ public class ApplicationCreateFragment extends Fragment {
         etCandidateAge = view.findViewById(R.id.etCandidateAge);
         etContact = view.findViewById(R.id.etContact);
         etMotive = view.findViewById(R.id.etMotive);
+
         spHomeType = view.findViewById(R.id.spHomeType);
         spTimeAlone = view.findViewById(R.id.spTimeAlone);
         spBills = view.findViewById(R.id.spBills);
         spChildren = view.findViewById(R.id.spChildren);
         spFollowUp = view.findViewById(R.id.spFollowUp);
+
         btnSubmit = view.findViewById(R.id.btnSubmit);
 
+        //Configurar as Listas dos Spinners
         ArrayList<String> listaSimNao = new ArrayList<>();
         listaSimNao.add("Sim");
         listaSimNao.add("Não");
@@ -66,6 +71,7 @@ public class ApplicationCreateFragment extends Fragment {
         listaTempoSozinho.add("Entre 4 a 8 Horas");
         listaTempoSozinho.add("Mais de 8 Horas");
 
+        //Configurar os Adaptadores ---
         ArrayAdapter<String> adapterSimNao = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listaSimNao);
         adapterSimNao.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -75,16 +81,18 @@ public class ApplicationCreateFragment extends Fragment {
         ArrayAdapter<String> adapterTempo = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, listaTempoSozinho);
         adapterTempo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+        //Associar Adaptadores aos Spinners ---
         spChildren.setAdapter(adapterSimNao);
         spBills.setAdapter(adapterSimNao);
         spFollowUp.setAdapter(adapterSimNao);
         spHomeType.setAdapter(adapterHabitacao);
         spTimeAlone.setAdapter(adapterTempo);
 
+        //Botão Enviar ---
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //VALIDAR IDADE
+                //Validar Idade (Converter String para Int)
                 try {
                     String ageString = etCandidateAge.getText().toString();
                     if (ageString.isEmpty()) throw new NumberFormatException();
@@ -94,7 +102,7 @@ public class ApplicationCreateFragment extends Fragment {
                     return;
                 }
 
-                //LER TEXTOS
+                //Ler campos obrigatórios
                 candidateName = etCandidateName.getText().toString();
                 candidateContact = etContact.getText().toString();
                 candidateMotive = etMotive.getText().toString();
@@ -104,71 +112,65 @@ public class ApplicationCreateFragment extends Fragment {
                     return;
                 }
 
-                //LER SPINNERS (DROPDOWNS)
-                homeType = spHomeType.getSelectedItem().toString();
-                timeAlone = spTimeAlone.getSelectedItem().toString();
-                children = spChildren.getSelectedItem().toString();
-                bills = spBills.getSelectedItem().toString();
-                followup = spFollowUp.getSelectedItem().toString();
+                //Ler o valor selecionado nos spinners
+                homeTypeStr = spHomeType.getSelectedItem().toString();
+                timeAloneStr = spTimeAlone.getSelectedItem().toString();
+                childrenStr = spChildren.getSelectedItem().toString();
+                billsStr = spBills.getSelectedItem().toString();
+                followupStr = spFollowUp.getSelectedItem().toString();
 
-                //CRIAR O JSON
-                JSONObject dataJson = new JSONObject();
-                try {
-                    dataJson.put("age", candidateAge);
-                    dataJson.put("contact", candidateContact);
-                    // O "motive" também vai aqui, mas o AppSingleton vai garantir que ele é enviado na raiz também
-                    dataJson.put("motive", candidateMotive);
-
-                    dataJson.put("home", homeType);
-                    dataJson.put("timeAlone", timeAlone);
-                    dataJson.put("children", children);
-                    dataJson.put("bills", bills);
-                    dataJson.put("followUp", followup);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), "Erro ao criar dados da candidatura", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //OBTER ID DO ANIMAL
+                //Obter IDs
                 int animalId = 0;
                 if (getArguments() != null) {
                     animalId = getArguments().getInt("ID_ANIMAL", 0);
                 }
 
-                if (animalId == 0) {
-                    Toast.makeText(getContext(), "Erro: Animal não identificado.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
                 int userId = sharedPreferences.getInt("USER_ID_INT", -1);
 
-                if (userId == -1) {
-                    Toast.makeText(getContext(), "Erro: Dados em falta em relação com o user.", Toast.LENGTH_SHORT).show();
+                if (animalId == 0 || userId == -1) {
+                    Toast.makeText(getContext(), "Erro: Animal ou Utilizador não identificado.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                //CHAMAR A API
+                //Criar o JSON com as CONVERSÕES para Inteiros
+                JSONObject dataJson = new JSONObject();
+                try {
+                    // Campos de Texto/Numéricos diretos
+                    dataJson.put("age", candidateAge);
+                    dataJson.put("name", candidateName);
+                    dataJson.put("contact", candidateContact);
+                    dataJson.put("motive", candidateMotive);
+
+                    // Campos convertidos (String -> Int)
+                    //Enviamos 0, 1, 2 em vez de "Sim", "Não"
+                    dataJson.put("home", converterHabitacao(homeTypeStr));
+                    dataJson.put("timeAlone", converterTempo(timeAloneStr));
+                    dataJson.put("children", converterSimNao(childrenStr));
+                    dataJson.put("bills", converterSimNao(billsStr));
+                    dataJson.put("followUp", converterSimNao(followupStr));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Erro ao criar JSON", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                //Enviar para a API
                 AppSingleton.getInstance(getContext()).addApplicationAPI(
                         getContext(),
                         userId,
                         animalId,
-                        candidateMotive,     // Motivo
-                        dataJson.toString(), // JSON com os detalhes
+                        candidateMotive,
+                        dataJson.toString(), //Envia o JSON com números
                         new ApplicationsListener() {
                             @Override
                             public void onRefreshList(ArrayList<Application> listaCandidaturas) {
-                                // SUCESSO!
                                 Toast.makeText(getContext(), "Candidatura enviada com sucesso!", Toast.LENGTH_LONG).show();
-
-                                // Fecha o formulário e volta atrás
                                 if (getActivity() != null) {
                                     getActivity().onBackPressed();
                                 }
                             }
-                            
                             @Override public void onRefreshApplicationList(ArrayList<Application> list) {}
                             @Override public void onError(String error) {}
                             @Override public void onRefreshList(Object o) {}
@@ -177,5 +179,34 @@ public class ApplicationCreateFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    // =========================================================================
+    // FUNÇÕES AUXILIARES DE CONVERSÃO (Igualam o Android ao PHP)
+    // =========================================================================
+
+    // Converte: Sim -> 1, Não -> 0
+    private int converterSimNao(String valor) {
+        if (valor != null && (valor.equalsIgnoreCase("Sim") || valor.equalsIgnoreCase("Yes"))) {
+            return 1;
+        }
+        return 0;
+    }
+
+    // Converte Habitação baseada no índice ou texto
+    private int converterHabitacao(String valor) {
+        if (valor == null) return 1;
+        if (valor.startsWith("Própria")) return 1;
+        if (valor.contains("autoriza") && !valor.contains("não")) return 2; // Arrendada com animais
+        if (valor.contains("não autoriza")) return 3; // Arrendada sem animais
+        return 1; // Default
+    }
+
+    // Converte Tempo Sozinho baseada nos índices do array do PHP (0, 1, 2)
+    private int converterTempo(String valor) {
+        if (valor == null) return 0;
+        if (valor.contains("Menos")) return 0; // ID 0 no PHP
+        if (valor.contains("Entre")) return 1; // ID 1 no PHP
+        return 2;                              // ID 2 no PHP ("Mais de 8")
     }
 }

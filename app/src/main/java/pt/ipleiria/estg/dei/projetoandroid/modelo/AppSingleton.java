@@ -448,92 +448,183 @@ public class AppSingleton {
     }
 
 
-    public void addApplicationAPI(final Context context, int userId,int animalId, String motive, String dataJsonString, final ApplicationsListener listener) {
+//    public void addApplicationAPI(final Context context, int userId,int animalId, String motive, String dataJsonString, final ApplicationsListener listener) {
+//
+//        if (!isConnectionInternet(context)) {
+//            Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        String url = endereco + "/application";
+//
+//        JSONObject jsonBody;
+//        try {
+//            // 1. O SEGREDO: Pegar na string que vem do fragmento e torná-la no objeto raiz
+//            // Assim "age", "home", etc. ficam na raiz, como o PHP quer.
+//            jsonBody = new JSONObject(dataJsonString);
+//
+//            // 2. Adicionar o que falta
+//            jsonBody.put("animal_id", animalId);
+//            jsonBody.put("user_id", userId);
+//            jsonBody.put("motive", motive);
+//            jsonBody.put("description", motive);
+//
+//            if (jsonBody.has("age")) {
+//                int idadeInt = jsonBody.optInt("age");
+//                jsonBody.put("age", String.valueOf(idadeInt)); // Força "25" em vez de 25
+//            }
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            Toast.makeText(context, "Erro ao processar dados", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        if (listener != null) {
+//                            listener.onRefreshList(null);
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        String message = "Erro ao enviar candidatura";
+//
+//                        // LOG DE DEBUG PARA VERES O ERRO REAL NO LOGCAT
+//                        if (error.networkResponse != null) {
+//                            message += " (" + error.networkResponse.statusCode + ")";
+//                            try {
+//                                String data = new String(error.networkResponse.data, "UTF-8");
+//                                android.util.Log.e("ERRO_PHP", data); // <--- Procura por isto no Logcat se falhar
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        } else if (error instanceof com.android.volley.ParseError) {
+//                        message += " (Erro de Leitura)";
+//
+//                        // TENTA LER O HTML QUE VEIO NO ERRO (NOVO)
+//                        if (error.networkResponse != null && error.networkResponse.data != null) {
+//                            try {
+//                                String htmlErro = new String(error.networkResponse.data, "UTF-8");
+//                                android.util.Log.e("HTML_DO_ERRO", htmlErro);
+//                            } catch (Exception e) {}
+//                        }
+//
+//                        android.util.Log.e("DEBUG_ERRO", "ParseError: O servidor devolveu HTML.");
+//                    }
+//                        error.printStackTrace();
+//                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+//                    }
+//                }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> headers = new HashMap<>();
+//                String token = getToken(context);
+//                if (token != null) {
+//                    headers.put("Authorization", "Bearer " + token);
+//                }
+//                return headers;
+//            }
+//        };
+//
+//        volleyQueue.add(request);
+//    }
+public void addApplicationAPI(final Context context, int userId, int animalId, String motive, String dataJsonString, final ApplicationsListener listener) {
 
-        if (!isConnectionInternet(context)) {
-            Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
-            return;
+    if (!isConnectionInternet(context)) {
+        Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    String url = endereco + "/application";
+
+    JSONObject jsonBody;
+    try {
+        //Pegar na string que vem do fragmento e torná-la no objeto raiz
+        jsonBody = new JSONObject(dataJsonString);
+
+        // 2. Adicionar IDs obrigatórios
+        jsonBody.put("animal_id", animalId);
+        jsonBody.put("user_id", userId);
+
+        // 3. Preencher textos
+        jsonBody.put("motive", motive);
+        jsonBody.put("description", motive);
+
+        //VALORES FORÇADOS
+        jsonBody.put("type", 1);
+        jsonBody.put("status", 0);
+        // -----------------------------
+
+        // 4. Converter idade para String (para o validador do PHP não reclamar)
+        if (jsonBody.has("age")) {
+            int idadeInt = jsonBody.optInt("age");
+            jsonBody.put("age", String.valueOf(idadeInt));
         }
 
-        String url = endereco + "/application";
+    } catch (JSONException e) {
+        e.printStackTrace();
+        Toast.makeText(context, "Erro ao processar dados", Toast.LENGTH_SHORT).show();
+        return;
+    }
 
-        JSONObject jsonBody;
-        try {
-            // 1. O SEGREDO: Pegar na string que vem do fragmento e torná-la no objeto raiz
-            // Assim "age", "home", etc. ficam na raiz, como o PHP quer.
-            jsonBody = new JSONObject(dataJsonString);
-
-            // 2. Adicionar o que falta
-            jsonBody.put("animal_id", animalId);
-            jsonBody.put("user_id", userId);
-            jsonBody.put("motive", motive);
-            jsonBody.put("description", motive);
-
-            if (jsonBody.has("age")) {
-                int idadeInt = jsonBody.optInt("age");
-                jsonBody.put("age", String.valueOf(idadeInt)); // Força "25" em vez de 25
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(context, "Erro ao processar dados", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (listener != null) {
-                            listener.onRefreshList(null);
-                        }
+    JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+            new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    if (listener != null) {
+                        // Sucesso!
+                        listener.onRefreshList(null);
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        String message = "Erro ao enviar candidatura";
+                }
+            },
+            new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    String message = "Erro ao enviar candidatura";
 
-                        // LOG DE DEBUG PARA VERES O ERRO REAL NO LOGCAT
-                        if (error.networkResponse != null) {
-                            message += " (" + error.networkResponse.statusCode + ")";
-                            try {
-                                String data = new String(error.networkResponse.data, "UTF-8");
-                                android.util.Log.e("ERRO_PHP", data); // <--- Procura por isto no Logcat se falhar
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else if (error instanceof com.android.volley.ParseError) {
+                    // LOG DE DEBUG PARA VER O ERRO REAL NO LOGCAT
+                    if (error.networkResponse != null) {
+                        message += " (" + error.networkResponse.statusCode + ")";
+                        try {
+                            String data = new String(error.networkResponse.data, "UTF-8");
+                            android.util.Log.e("ERRO_PHP", data);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else if (error instanceof com.android.volley.ParseError) {
                         message += " (Erro de Leitura)";
-
-                        // TENTA LER O HTML QUE VEIO NO ERRO (NOVO)
+                        // TENTA LER O HTML QUE VEIO NO ERRO
                         if (error.networkResponse != null && error.networkResponse.data != null) {
                             try {
                                 String htmlErro = new String(error.networkResponse.data, "UTF-8");
                                 android.util.Log.e("HTML_DO_ERRO", htmlErro);
                             } catch (Exception e) {}
                         }
-
                         android.util.Log.e("DEBUG_ERRO", "ParseError: O servidor devolveu HTML.");
                     }
-                        error.printStackTrace();
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                String token = getToken(context);
-                if (token != null) {
-                    headers.put("Authorization", "Bearer " + token);
+
+                    error.printStackTrace();
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                 }
-                return headers;
+            }) {
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            Map<String, String> headers = new HashMap<>();
+            String token = getToken(context);
+            if (token != null) {
+                headers.put("Authorization", "Bearer " + token);
             }
-        };
+            return headers;
+        }
+    };
 
-        volleyQueue.add(request);
-    }
-
+    volleyQueue.add(request);
+}
 
     public void adicionarApplicationBD(Application application) {
         //Guarda na Base de Dados

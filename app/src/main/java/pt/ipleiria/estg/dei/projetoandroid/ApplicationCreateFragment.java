@@ -121,8 +121,10 @@ public class ApplicationCreateFragment extends Fragment {
 
                 //Obter IDs
                 int animalId = 0;
+                int target_user_id = 0;
                 if (getArguments() != null) {
                     animalId = getArguments().getInt("ID_ANIMAL", 0);
+                    target_user_id = getArguments().getInt("TARGET_USER_ID", 0);
                 }
 
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
@@ -132,7 +134,6 @@ public class ApplicationCreateFragment extends Fragment {
                     Toast.makeText(getContext(), "Erro: Animal ou Utilizador não identificado.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 //Criar o JSON com as CONVERSÕES para Inteiros
                 JSONObject dataJson = new JSONObject();
                 try {

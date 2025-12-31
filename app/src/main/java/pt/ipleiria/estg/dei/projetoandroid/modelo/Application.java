@@ -102,4 +102,6 @@ public class Application {
     public void setStatus(String status) {this.status = status;}
 
     public void setStatusDate(String statusDate) {this.statusDate = statusDate;}
+
+    public void setCreatedAt(String createdAt) {this.createdAt = createdAt;}
 }

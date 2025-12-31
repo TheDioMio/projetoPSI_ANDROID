@@ -124,6 +124,7 @@ public class AnimalJsonParser {
 
                 int idComment = commentJson.getInt("id");
                 int idAnimal = commentJson.getInt("animal_id");
+                int idUser = commentJson.getInt("user_id");
 
                 String text = commentJson.getString("comment_text");
 
@@ -136,6 +137,7 @@ public class AnimalJsonParser {
                 Comment comment = new Comment(
                         idComment,
                         idAnimal,
+                        idUser,
                         text,
                         date,
                         userName,

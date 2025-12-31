@@ -47,7 +47,7 @@
                 android:layout_marginHorizontal="8dp"
                 android:background="@color/white"
                 android:padding="8dp"
-                android:text="userFront2" />
+                android:text="userFront" />
         </TableRow>
 
         <TableRow
@@ -72,7 +72,7 @@
                 android:background="@color/white"
                 android:inputType="textPassword"
                 android:padding="8dp"
-                android:text="123456789" />
+                android:text="12345678" />
         </TableRow>
 
         <TableRow

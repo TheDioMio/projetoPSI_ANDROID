@@ -86,6 +86,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     //TABELA DOS COMENTÁRIOS
     private static final String TABLE_ANIMALS_COMMENTS = "animal_comments";
+    private static final String ID_USER = "id_user";
     public static final String ID_COMMENT = "id_comment";
     //VAI CONTER O ID DO ANIMAL MAS A CONSTANTE JÁ SE ENCONTRA DECLARADA
     //public static final String ID_ANIMAL = "id_animal";
@@ -147,6 +148,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         String createCommentsTable = "CREATE TABLE "+ TABLE_ANIMALS_COMMENTS + " (" +
                 ID_COMMENT + " INTEGER PRIMARY KEY, " +
                 ID_ANIMAL + " INTEGER, " +
+                ID_USER + " INTEGER, " +
                 COMMENT_TEXT + " TEXT, " +
                 COMMENT_DATE + " TEXT, " +
                 NAME_USER + " TEXT, " +
@@ -428,7 +430,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         Cursor cursor = database.query(
                 TABLE_ANIMALS_COMMENTS,
                 new String[]{
-                        ID_COMMENT, ID_ANIMAL,
+                        ID_COMMENT, ID_ANIMAL, ID_USER,
                         COMMENT_TEXT, COMMENT_DATE,
                         NAME_USER, AVATAR_USER
                 },
@@ -442,10 +444,11 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 comments.add(new Comment(
                         cursor.getInt(0),    // ID_COMMENT
                         cursor.getInt(1),    // ID_ANIMAL
-                        cursor.getString(2), // COMMENT_TEXT
-                        cursor.getString(3), // COMMENT_DATE
-                        cursor.getString(4), // NAME_USER
-                        cursor.getString(5)  // AVATAR_USER
+                        cursor.getInt(2),    // ID_ANIMAL
+                        cursor.getString(3), // COMMENT_TEXT
+                        cursor.getString(4), // COMMENT_DATE
+                        cursor.getString(5), // NAME_USER
+                        cursor.getString(6)  // AVATAR_USER
                 ));
             } while (cursor.moveToNext());
         }
@@ -459,6 +462,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ID_COMMENT, comment.getIdComment());
         values.put(ID_ANIMAL, comment.getIdAnimal());
+        values.put(ID_USER, comment.getUserId());
         values.put(COMMENT_TEXT, comment.getText());
         values.put(COMMENT_DATE, comment.getDate());
         values.put(NAME_USER, comment.getUserName());
@@ -491,6 +495,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 comments.add(new Comment(
                         cursor.getInt(cursor.getColumnIndexOrThrow(ID_COMMENT)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(ID_ANIMAL)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID_USER)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COMMENT_TEXT)),
                         cursor.getString(cursor.getColumnIndexOrThrow(COMMENT_DATE)),
                         cursor.getString(cursor.getColumnIndexOrThrow(NAME_USER)),

@@ -1,68 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="8dp"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="14dp"
+    app:cardElevation="6dp"
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="@android:color/white">
 
-    <!-- Conteúdo do card -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="8dp">
 
-        <!-- Imagem à esquerda -->
+        <!-- IMAGEM -->
         <ImageView
-            android:id="@+id/imgCapa"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginEnd="12dp"
-            android:contentDescription="@string/app_name"
+            android:id="@+id/imgAnimal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:scaleType="centerCrop"
-            android:src="@mipmap/img_teste" />
+            android:src="@mipmap/img_teste"
+            android:contentDescription="@string/app_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!-- Texto à direita -->
-        <LinearLayout
+        <!-- NOME -->
+        <TextView
+            android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:text="Bobi"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toEndOf="@id/imgAnimal"
+            app:layout_constraintEnd_toStartOf="@id/btnDelete"
+            app:layout_constraintTop_toTopOf="@id/imgAnimal"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"/>
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="@string/txt_name_test"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+        <!-- RAÇA -->
+        <TextView
+            android:id="@+id/tvBreed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Beagle"
+            android:textSize="14sp"
+            android:textColor="#555555"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintEnd_toEndOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvName"/>
 
-            <TextView
-                android:id="@+id/tvBreed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/txt_breed_test"
-                android:textColor="#444444"
-                android:textSize="14sp" />
+        <!-- IDADE -->
+        <TextView
+            android:id="@+id/tvAge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="2 anos"
+            android:textSize="13sp"
+            android:textColor="#777777"
+            app:layout_constraintStart_toStartOf="@id/tvName"
+            app:layout_constraintEnd_toEndOf="@id/tvName"
+            app:layout_constraintTop_toBottomOf="@id/tvBreed"/>
 
-            <TextView
-                android:id="@+id/tvAge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/txt_age_test"
-                android:textColor="#444444"
-                android:textSize="14sp" />
+        <!-- BOTÃO APAGAR -->
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_delete_vector"
+            android:contentDescription="Apagar"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.cardview.widget.CardView>
+
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_margin="8dp"-->
+<!--    app:cardCornerRadius="12dp"-->
+<!--    app:cardElevation="8dp"-->
+<!--    app:cardUseCompatPadding="true"-->
+<!--    app:cardBackgroundColor="@android:color/white">-->
+
+<!--    &lt;!&ndash; Conteúdo do card &ndash;&gt;-->
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="8dp">-->
+
+<!--        &lt;!&ndash; Imagem à esquerda &ndash;&gt;-->
+<!--        <ImageView-->
+<!--            android:id="@+id/imgCapa"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:layout_marginEnd="12dp"-->
+<!--            android:contentDescription="@string/app_name"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:src="@mipmap/img_teste" />-->
+
+<!--        &lt;!&ndash; Texto à direita &ndash;&gt;-->
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:orientation="vertical"-->
+<!--            android:gravity="center_vertical">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tvName"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/txt_name_test"-->
+<!--                android:textColor="#000000"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tvBreed"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/txt_breed_test"-->
+<!--                android:textColor="#444444"-->
+<!--                android:textSize="14sp" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/tvAge"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@string/txt_age_test"-->
+<!--                android:textColor="#444444"-->
+<!--                android:textSize="14sp" />-->
+
+<!--        </LinearLayout>-->
+<!--    </LinearLayout>-->
+<!--</androidx.cardview.widget.CardView>-->

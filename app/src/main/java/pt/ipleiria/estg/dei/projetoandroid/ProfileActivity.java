@@ -220,26 +220,4 @@ public class ProfileActivity extends AppCompatActivity {
         );
     }
 
-
-
-
-//    private void uploadAvatar() {
-//
-//        AppSingleton.getInstance(this).uploadAvatar(
-//                this,
-//                avatarUri,
-//                response -> {
-//                    Toast.makeText(ProfileActivity.this, "Avatar atualizado", Toast.LENGTH_SHORT).show();
-//
-//
-//
-//                    setResult(Activity.RESULT_OK);
-////                    finish();
-//                },
-//                error -> {
-//                    Toast.makeText(ProfileActivity.this, "Erro ao enviar avatar", Toast.LENGTH_SHORT).show();
-//                }
-//        );
-//    }
-
 }

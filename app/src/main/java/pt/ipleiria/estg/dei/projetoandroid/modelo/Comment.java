@@ -6,14 +6,16 @@ public class Comment implements Serializable {
 
     private int idComment;
     private int idAnimal;
+    private int userId;
     private String text;
     private String date;
     private String userName;
     private String userAvatar;
 
-    public Comment(int idComment, int idAnimal, String text, String date, String userName, String userAvatar) {
+    public Comment(int idComment, int idAnimal, int userId, String text, String date, String userName, String userAvatar) {
         this.idComment = idComment;
         this.idAnimal = idAnimal;
+        this.userId = userId;
         this.text = text;
         this.date = date;
         this.userName = userName;
@@ -26,6 +28,14 @@ public class Comment implements Serializable {
 
     public void setIdComment(int idComment) {
         this.idComment = idComment;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public int getIdAnimal() {

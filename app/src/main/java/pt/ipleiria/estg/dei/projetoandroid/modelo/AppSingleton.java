@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,11 +26,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalDeleteListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.AvatarUploadListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.MetaListener;
 import pt.ipleiria.estg.dei.projetoandroid.utils.FileUtils;
 import pt.ipleiria.estg.dei.projetoandroid.MenuMainActivity;
 import pt.ipleiria.estg.dei.projetoandroid.R;
@@ -45,8 +48,10 @@ import pt.ipleiria.estg.dei.projetoandroid.listeners.UserUpdateListener;
 import pt.ipleiria.estg.dei.projetoandroid.utils.ApplicationJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.AnimalJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.MessageJsonParser;
+import pt.ipleiria.estg.dei.projetoandroid.utils.MetaJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.UserJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.VolleyMultipartRequest;
+import pt.ipleiria.estg.dei.projetoandroid.utils.AnimalEditJsonParser;
 
 public class AppSingleton {
 
@@ -66,9 +71,15 @@ public class AppSingleton {
     private String getMessageURL = endereco+"/messages";
     private String getmUrlAPIApplication = endereco + "/application";
     private String postAvatarURL = endereco+"/file/update-avatar";
-    private String getSentApplications = endereco+"application/sent";
-
+    private String postmUrlAPIFilesDelete = endereco+"/files/delete";
+    private String postmUrlAPIFilesCreate = endereco+"/file/create";
+    private String getSentApplications = endereco+"application/sent"; // <- Diogo penso que o link deve começar por / não quis alterar pois podes estar a tratar isto de outra forma
     private String getmUrlAPIAnimals = endereco+"/animals?expand=listing.comments.user.profileImage,user.profileImage";
+    private String putmUrlAPIAnimalUpdate = endereco+"/animals/";
+    private String postmUrlAPIAnimalCreate = endereco+"/animals";
+    private String getmUrlAPIMyAnimals = endereco+"/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
+    private String getmUrlAPIMeta = endereco+"/animals/meta";
+    private String getmUrlAPIAnimalEdit = endereco+"/animals/edit/";
 
     public static boolean isConnectionInternet(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -81,6 +92,22 @@ public class AppSingleton {
 
     //endregion
 
+
+
+    private LoginListener loginListener;
+    private AvatarUploadListener avatarUploadListener;
+    private MenuListener menuListener;
+    private MetaListener metaListener;
+    private UserUpdateListener userUpdateListener;
+    private ApplicationsListener applicationsListener;
+    private ApplicationListener applicationListener;
+
+    private AnimalsListener animalsListener;
+    private AnimalDeleteListener animalDeleteListener;
+
+    public void setAnimalDeleteListener(AnimalDeleteListener listener) {
+        this.animalDeleteListener = listener;
+    }
 
     public void setAvatarUploadListener(AvatarUploadListener avatarUploadListener) {
         this.avatarUploadListener = avatarUploadListener;
@@ -98,16 +125,9 @@ public class AppSingleton {
         this.menuListener = menuListener;
     }
 
-
-    private LoginListener loginListener;
-
-    private AvatarUploadListener avatarUploadListener;
-    private MenuListener menuListener;
-    private UserUpdateListener userUpdateListener;
-    private ApplicationsListener applicationsListener;
-    private ApplicationListener applicationListener;
-
-    private AnimalsListener animalsListener;
+    public void setMetaListener(MetaListener metaListener) {
+        this.metaListener = metaListener;
+    }
 
     private AppDBHelper appBD = null;
 
@@ -124,13 +144,6 @@ public class AppSingleton {
     private static AppSingleton instance = null;
 //    private GestorAnimals gestorAnimals = new GestorAnimals();
     private GestorUsers gestorUsers = new GestorUsers();
-//    private GestorAnimalType gestorAnimalType = new GestorAnimalType();
-//    private GestorAnimalBreed gestorAnimalBreed = new GestorAnimalBreed();
-//    private GestorAnimalAge gestorAnimalAge = new GestorAnimalAge();
-//    private GestorAnimalSize gestorAnimalSize = new GestorAnimalSize();
-//    private GestorVaccination gestorVaccination = new GestorVaccination();
-    //private GestorApplication gestorApplication = new GestorApplication();
-//    private GestorMessage gestorMessage = new GestorMessage();
 
 
     public static synchronized AppSingleton getInstance(Context context){
@@ -218,7 +231,324 @@ public class AppSingleton {
         }
     }
 
+    public void deleteAnimalAPI(Context context, int animalId) {
 
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                endereco + "/animals/" + animalId,
+                null,
+                response -> {
+                    if (animalDeleteListener != null) {
+                        animalDeleteListener.onDeleteAnimalSuccess(animalId);
+                    }
+                },
+                error -> {
+                    if (animalDeleteListener != null) {
+                        String msg = "Erro ao apagar animal";
+
+                        if (error.networkResponse != null) {
+                            msg += " (" + error.networkResponse.statusCode + ")";
+                        }
+
+                        animalDeleteListener.onDeleteAnimalError(msg);
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + getToken(context));
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
+    public void createAnimalAPI(Context context,
+                                AnimalEdit animal,
+                                Response.Listener<Integer> listener,
+                                Response.ErrorListener errorListener) {
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("name", animal.getName());
+            body.put("description", animal.getDescription());
+            body.put("location", animal.getLocation());
+
+            body.put("animal_type_id", animal.getTypeId());
+            body.put("breed_id", animal.getBreedId());
+            body.put("age_id", animal.getAgeId());
+            body.put("size_id", animal.getSizeId());
+            body.put("vaccination_id", animal.getVaccinationId());
+            body.put("neutered", animal.getNeutered());
+
+            // listing
+            body.put("listing_description", animal.getListingDescription());
+            body.put("listing_status", animal.getListingStatus());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                postmUrlAPIAnimalCreate,
+                body,
+                response -> {
+                    int animalId = response.optInt("animal_id", -1);
+                    listener.onResponse(animalId);
+                },
+                errorListener
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + getToken(context));
+                headers.put("Accept", "application/json");
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+    public void updateAnimalAPI(Context context,
+                                int animalId,
+                                AnimalEdit animal,
+                                Response.Listener<Void> listener,
+                                Response.ErrorListener errorListener) {
+
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("name", animal.getName());
+            body.put("description", animal.getDescription());
+            body.put("location", animal.getLocation());
+
+            body.put("animal_type_id", animal.getTypeId());
+            body.put("breed_id", animal.getBreedId());
+            body.put("age_id", animal.getAgeId());
+            body.put("size_id", animal.getSizeId());
+            body.put("vaccination_id", animal.getVaccinationId());
+            body.put("neutered", animal.getNeutered());
+
+            body.put("listing_description", animal.getListingDescription());
+            body.put("listing_status", animal.getListingStatus());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.PUT,
+                putmUrlAPIAnimalUpdate+animalId,
+                body,
+                response -> listener.onResponse(null),
+                errorListener
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + getToken(context));
+                headers.put("Accept", "application/json");
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+    // Na tua AppSingleton (ou onde crias o pedido)
+    public void uploadAnimalPhotosAPI(Context context,
+                                      int animalId,
+                                      ArrayList<Uri> photos,
+                                      Response.Listener<Void> listener,
+                                      Response.ErrorListener errorListener) {
+
+        Map<String, String> stringParams = new HashMap<>();
+        stringParams.put("animal_id", String.valueOf(animalId));
+
+        Map<String, VolleyMultipartRequest.DataPart> fileParams = new HashMap<>();
+
+        for (int i = 0; i < photos.size(); i++) {
+            byte[] bytes = getBytesFromUri(context, photos.get(i));
+
+            if (bytes == null) continue;
+
+            fileParams.put(
+                    "files[" + i + "]",
+                    new VolleyMultipartRequest.DataPart(
+                            "photo_" + i + ".jpg",
+                            bytes,
+                            "image/jpeg"
+                    )
+            );
+        }
+
+        VolleyMultipartRequest request =
+                new VolleyMultipartRequest(
+                        Request.Method.POST,
+                        postmUrlAPIFilesCreate,
+                        stringParams,
+                        fileParams,
+                        response -> listener.onResponse(null),
+                        errorListener
+                ) {
+
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("Authorization", "Bearer " + getToken(context));
+                        return headers;
+                    }
+                };
+
+        volleyQueue.add(request);
+    }
+
+    private byte[] getBytesFromUri(Context context, Uri uri) {
+        try {
+            InputStream inputStream =
+                    context.getContentResolver().openInputStream(uri);
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] data = new byte[4096];
+
+            while ((nRead = inputStream.read(data)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+
+            return buffer.toByteArray();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
+    public void deleteAnimalPhotosAPI(Context context,
+                                      ArrayList<Integer> removedPhotoIds,
+                                      Response.Listener<Void> listener,
+                                      Response.ErrorListener errorListener) {
+
+
+
+        JSONObject body = new JSONObject();
+        JSONArray ids = new JSONArray();
+
+        for (int id : removedPhotoIds) {
+            ids.put(id);
+        }
+
+        try {
+            body.put("photo_ids", ids);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                postmUrlAPIFilesDelete,
+                body,
+                response -> listener.onResponse(null),
+                errorListener
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + getToken(context));
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
+
+    public void getMyAnimalsAPI(final Context context) {
+
+        //esta tarefa fica para o gestor
+        if (!isConnectionInternet(context)) {
+            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                getmUrlAPIMyAnimals,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        //atualiza o singleton
+                        animals = AnimalJsonParser.parserJsonAnimals(response);
+
+                        //Guardar na BD local
+                        appBD.removerAllAnimalsBD();          // limpa dados antigos dos animais dos comments e dos files
+                        adicionarAnimalsBD(animals);
+                        for (Animal a: animals){
+                            adicionarCommentsBD(a.getComments());
+                            adicionarFilesBD(a.getAnimalfiles());
+                        }
+
+                        // 4️⃣ Notificar UI (RecyclerView, etc.)
+                        if (animalsListener != null) {
+                            animalsListener.onRefreshAnimalsList(animals);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        String msg;
+
+                        if (error.networkResponse != null) {
+                            int statusCode = error.networkResponse.statusCode;
+
+                            if (statusCode == 401) {
+                                msg = "Sessão expirada ou não autorizado";
+                            } else if (statusCode == 404) {
+                                msg = "Endpoint não encontrado";
+                            } else if (statusCode == 500) {
+                                msg = "Erro interno do servidor";
+                            } else {
+                                msg = "Erro HTTP: " + statusCode;
+                            }
+                        } else if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            msg = "Sem ligação ao servidor";
+                        } else {
+                            msg = "Erro desconhecido";
+                        }
+
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
 
     public void getAnimalsAPI(final Context context) {
 
@@ -295,6 +625,89 @@ public class AppSingleton {
 
         volleyQueue.add(request);
     }
+
+
+    //recebe o animal que vamos editar
+    public void getAnimalEditAPI(Context context, int animalId,
+                                 Response.Listener<AnimalEdit> listener,
+                                 Response.ErrorListener errorListener) {
+
+        if (!isConnectionInternet(context)) {
+            errorListener.onErrorResponse(null);
+            return;
+        }
+
+        String url = getmUrlAPIAnimalEdit + animalId;
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    AnimalEdit animal = AnimalEditJsonParser.parse(response);
+                    listener.onResponse(animal);
+                },
+                errorListener
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+
+                if (token != null) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+    //recebe os dados para carreagar nos spinners da form do animal
+    public void getAnimalMetaAPI(final Context context, final MetaListener listener) {
+
+        if (!isConnectionInternet(context)) {
+            listener.onMetaError("Sem ligação à internet");
+            return;
+        }
+
+
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                getmUrlAPIMeta,
+                null,
+                response -> {
+                    try {
+                        HashMap<String, ArrayList<MetaItem>> meta =
+                                MetaJsonParser.parserMeta(response);
+                        listener.onMetaLoaded(meta);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        listener.onMetaError("Erro a processar meta");
+                    }
+                },
+                error -> {
+                    listener.onMetaError("Erro ao carregar dados");
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                String token = getToken(context);
+
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
 
 
     // -------------------------
@@ -1315,32 +1728,6 @@ public void addApplicationAPI(final Context context, int userId, int animalId, S
                 .putString(MenuMainActivity.IMGAVATAR, path)
                 .apply();
     }
-//    public void uploadAvatar(Context context, Uri avatarUri, Response.Listener<NetworkResponse> onSuccess, Response.ErrorListener onError) {
-//
-//        byte[] imageBytes = FileUtils.readBytes(context, avatarUri);
-//
-//        Map<String, VolleyMultipartRequest.DataPart> file = new HashMap<>();
-//        file.put("file", new VolleyMultipartRequest.DataPart(
-//                "avatar.jpg",
-//                imageBytes,
-//                "image/jpeg"
-//        ));
-//
-//        Map<String, String> headers = new HashMap<>();
-//        headers.put("Authorization", "Bearer " + getToken(context));
-//
-//        VolleyMultipartRequest request = new VolleyMultipartRequest(
-//                Request.Method.POST,
-//                postAvatarURL,
-//                headers,
-//                file,
-//                onSuccess,
-//                onError
-//        );
-//
-//        volleyQueue.add(request);
-//    }
-
 
     public void notifyMenuRefresh(Me me) {
         this.me = me;

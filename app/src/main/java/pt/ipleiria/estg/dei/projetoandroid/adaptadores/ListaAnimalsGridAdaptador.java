@@ -83,7 +83,7 @@ public class ListaAnimalsGridAdaptador extends BaseAdapter
         public void update(Animal animal) {
             tvName.setText(animal.getName());
             tvAge.setText(animal.getAge());
-            tvBreed.setText(animal.getBreed());
+            tvBreed.setText(animal.getBreed()+" ("+animal.getType()+")");
 
             String imgPath = null;
 

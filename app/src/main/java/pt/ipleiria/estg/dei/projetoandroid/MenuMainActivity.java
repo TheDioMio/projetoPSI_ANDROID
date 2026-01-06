@@ -82,6 +82,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         bottomNav.setOnItemSelectedListener(this);
         fragmentManager = getSupportFragmentManager();
         carregarFragmentoInicial();
+
     }
 
 
@@ -313,12 +314,13 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             nav_imgUser.setImageResource(R.mipmap.default_avatar);
         }
 
-
-
-        System.out.println("REFRESH MENU me.id=" + me.getId());
-
         SharedPreferences sp = getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
-        System.out.println("SP IDUSER=" + sp.getString(IDUSER, "null"));
+
+//        int myId = sp.getInt("USER_ID_INT", -1);
+//        if (myId != -1) {
+//            String topic = "users/" + myId + "/NEW_MESSAGE";
+//            MqttManager.getInstance(this).connectAndSubscribe(topic);
+//        }
 
         }
 

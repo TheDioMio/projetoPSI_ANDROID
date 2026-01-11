@@ -1,9 +1,12 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +19,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -56,6 +61,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     private BottomNavigationView  bottomNav;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    private static final int REQ_NOTIF = 1001;
 
 
 
@@ -66,6 +72,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         super.onCreate(savedInstanceState);
        // EdgeToEdge.enable(this);
         setContentView(R.layout.activity_menu_main);
+        requestNotificationPermissionIfNeeded();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawer = findViewById(R.id.drawerLayout);
@@ -83,6 +90,33 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         fragmentManager = getSupportFragmentManager();
         carregarFragmentoInicial();
 
+    }
+
+    private void requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQ_NOTIF
+                );
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQ_NOTIF) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Notificações ativadas", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Notificações desativadas (não vais receber alertas)", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 
@@ -316,11 +350,16 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
         SharedPreferences sp = getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
 
-//        int myId = sp.getInt("USER_ID_INT", -1);
-//        if (myId != -1) {
-//            String topic = "users/" + myId + "/NEW_MESSAGE";
-//            MqttManager.getInstance(this).connectAndSubscribe(topic);
-//        }
+        int myId = sp.getInt("USER_ID_INT", -1);
+        if (myId > 0) {
+            String topic = "users/" + myId + "/NEW_MESSAGE";
+            try {
+                MqttManager.getInstance(getApplicationContext()).connectAndSubscribe(topic);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Erro ao iniciar MQTT: " + e, Toast.LENGTH_LONG).show();
+            }
+        }
 
         }
 

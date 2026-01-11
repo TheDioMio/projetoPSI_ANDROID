@@ -1,96 +1,198 @@
-//package pt.ipleiria.estg.dei.projetoandroid;
-//
-//import android.content.Context;
-//
-//import org.eclipse.paho.android.service.MqttAndroidClient;
-//import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-//import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-//import org.eclipse.paho.client.mqttv3.IMqttToken;
-//import org.eclipse.paho.client.mqttv3.MqttCallback;
-//import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-//import org.eclipse.paho.client.mqttv3.MqttException;
-//import org.eclipse.paho.client.mqttv3.MqttMessage;
-//
-//import java.util.UUID;
-//
-//import pt.ipleiria.estg.dei.projetoandroid.utils.NotificationUtils;
-//
-//public class MqttManager {
-//
-//    private static MqttManager instance;
-//    private final Context appContext;
-//    private MqttAndroidClient client;
-//
-//    // Mosquitto no host da máquina (emulador usa 10.0.2.2)
-//    private static final String SERVER_URI = "tcp://10.0.2.2:1883";
-//
-//    private MqttManager(Context context) {
-//        this.appContext = context.getApplicationContext();
-//    }
-//
-//    public static synchronized MqttManager getInstance(Context context) {
-//        if (instance == null) {
-//            instance = new MqttManager(context);
-//        }
-//        return instance;
-//    }
-//
-//    public void connectAndSubscribe(String topic) {
-//        if (client != null && client.isConnected()) {
-//            subscribe(topic);
-//            return;
-//        }
-//
-//        String clientId = "android-" + UUID.randomUUID();
-//        client = new MqttAndroidClient(appContext, SERVER_URI, clientId);
-//
-//        MqttConnectOptions options = new MqttConnectOptions();
-//        options.setAutomaticReconnect(true);
-//        options.setCleanSession(true);
-//
-//        client.setCallback(new MqttCallback() {
-//            @Override
-//            public void connectionLost(Throwable cause) { }
-//
-//            @Override
-//            public void messageArrived(String topic, MqttMessage message) {
-//                String payload = new String(message.getPayload());
-//                System.out.println("MQTT MESSAGE ARRIVED: topic=" + topic + " payload=" + payload);
-//                // Aqui podes fazer parse ao JSON se quiseres
-//                NotificationUtils.showNotification(
-//                        appContext,
-//                        "Nova mensagem",
-//                        "Recebeste uma nova mensagem"
-//                );
-//            }
-//
-//            @Override
-//            public void deliveryComplete(IMqttDeliveryToken token) { }
-//        });
-//
-//        try {
-//            client.connect(options, null, new IMqttActionListener() {
-//                @Override
-//                public void onSuccess(IMqttToken asyncActionToken) {
-//                    subscribe(topic);
-//                }
-//
-//                @Override
-//                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-//                    exception.printStackTrace();
-//                }
-//            });
-//        } catch (MqttException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void subscribe(String topic) {
-//        try {
-//            if (client != null && client.isConnected()) {
-//                client.subscribe(topic, 1);
-//            }
-//        } catch (MqttException e) {
-//        }
-//    }
-//}
+package pt.ipleiria.estg.dei.projetoandroid;
+
+import android.content.Context;
+
+import info.mqtt.android.service.Ack;
+import info.mqtt.android.service.MqttAndroidClient;
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+
+import pt.ipleiria.estg.dei.projetoandroid.utils.NotificationUtils;
+
+public class MqttManager {
+
+    private static MqttManager instance;
+
+    private final Context appContext;
+    private MqttAndroidClient client;
+
+    // ✅ Tablet / dispositivo físico: IP do teu PC na rede
+    // (No emulador Android Studio seria tcp://10.0.2.2:1883)
+    private static final String SERVER_URI = "tcp://172.20.10.2:1883";
+
+    private static final int QOS = 1;
+
+    // Guarda o último tópico para resubscrever após reconnect
+    private String lastTopic;
+
+    private MqttManager(Context context) {
+        this.appContext = context.getApplicationContext();
+    }
+
+    public static synchronized MqttManager getInstance(Context context) {
+        if (instance == null) {
+            instance = new MqttManager(context);
+        }
+        return instance;
+    }
+
+    /**
+     * Conecta (se necessário) e subscreve ao tópico.
+     * Re-subscreve automaticamente em reconnects.
+     */
+    public synchronized void connectAndSubscribe(String topic) {
+        if (topic == null || topic.trim().isEmpty()) {
+            System.out.println("MQTT connectAndSubscribe: topic vazio, ignorado");
+            return;
+        }
+
+        lastTopic = topic.trim();
+        System.out.println("MQTT connectAndSubscribe topic=" + lastTopic);
+
+        // Se já estiver ligado, só subscreve
+        if (client != null && client.isConnected()) {
+            System.out.println("MQTT already connected, subscribing...");
+            subscribe(lastTopic);
+            return;
+        }
+
+        String clientId = "android-" + UUID.randomUUID();
+        client = new MqttAndroidClient(
+                appContext,
+                SERVER_URI,
+                clientId,
+                Ack.AUTO_ACK
+        );
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+
+        // ✅ Melhor para reconnects: mantém sessão no broker e reduz perdas de subscrição
+        options.setCleanSession(false);
+
+        // (Opcional) Timeout do connect (segundos)
+        options.setConnectionTimeout(10);
+
+        // (Opcional) Keep alive (segundos)
+        options.setKeepAliveInterval(30);
+
+        client.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+                System.out.println("MQTT connectComplete reconnect=" + reconnect + " serverURI=" + serverURI);
+                // ✅ Sempre que liga/reconecta, garante que está subscrito
+                if (lastTopic != null) {
+                    subscribe(lastTopic);
+                }
+            }
+
+            @Override
+            public void connectionLost(Throwable cause) {
+                System.out.println("MQTT connectionLost: " + (cause != null ? cause.toString() : "null"));
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) {
+                String payload;
+                try {
+                    payload = new String(message.getPayload(), StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    payload = "(payload inválido)";
+                }
+
+                System.out.println("MQTT MESSAGE ARRIVED: topic=" + topic + " payload=" + payload);
+
+                // ✅ Notificação (vai respeitar permissões no NotificationUtils)
+                NotificationUtils.showNotification(
+                        appContext,
+                        "Nova mensagem",
+                        "Recebeste uma nova mensagem"
+                );
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+                // só relevante se publicares mensagens a partir do Android
+            }
+        });
+
+        try {
+            System.out.println("MQTT connecting to " + SERVER_URI + " clientId=" + clientId);
+
+            client.connect(options, null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    System.out.println("MQTT connected OK");
+                    // subscribe é também chamado no connectComplete(), mas não faz mal repetir
+                    subscribe(lastTopic);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    System.out.println("MQTT connect FAIL: " + (exception != null ? exception.toString() : "null"));
+                    if (exception != null) exception.printStackTrace();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private synchronized void subscribe(String topic) {
+        if (topic == null || topic.trim().isEmpty()) return;
+
+        try {
+            if (client != null && client.isConnected()) {
+                System.out.println("MQTT subscribing to " + topic);
+
+                client.subscribe(topic, QOS, null, new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        System.out.println("MQTT subscribed OK: " + topic);
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        System.out.println("MQTT subscribe FAIL: " + (exception != null ? exception.toString() : "null"));
+                        if (exception != null) exception.printStackTrace();
+                    }
+                });
+
+            } else {
+                System.out.println("MQTT can't subscribe, not connected");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Opcional: chamar no logout/saída para libertar recursos.
+     */
+    public synchronized void disconnect() {
+        try {
+            if (client != null) {
+                if (client.isConnected()) {
+                    client.disconnect();
+                }
+                client.unregisterResources();
+                client.close();
+            }
+        } catch (Exception e) {
+            System.out.println("MQTT disconnect exception: " + e);
+        } finally {
+            client = null;
+            lastTopic = null;
+        }
+    }
+}

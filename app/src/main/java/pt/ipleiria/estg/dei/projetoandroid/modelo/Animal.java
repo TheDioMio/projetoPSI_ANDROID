@@ -15,7 +15,7 @@ public class Animal implements Serializable {
     private String type;
     private String breed;
     private String neutered;
-    private String vacination;
+    private String vacination ;
     private String location;
     private String ownerName;
     private String ownerAddress;
@@ -23,16 +23,20 @@ public class Animal implements Serializable {
     private String ownerAvatar;
 
     private String listingDescription;
-    private String listingViews;
+    private int listingViews;
+
+    private int status;
+    private int userId;
+    private int userRole;
 
     private ArrayList<Comment> comments;
     private ArrayList<AnimalFile> animalfiles;
 
-    public Animal(int id, String name, String description, String createdAt, String age, String size,
-                  String type, String breed, String neutered, String vacination, String location,
-                  String ownerName, String ownerAddress, String ownerEmail, String ownerAvatar,
-                  String listingDescription, String listingViews,
-                  ArrayList<Comment> comments, ArrayList<AnimalFile> animalfiles) {
+    public Animal(int id, String name, String description, String createdAt, String age, String size, String type,
+                  String breed, String neutered, String vacination, String location, String ownerName,
+                  String ownerAddress, String ownerEmail, String ownerAvatar, String listingDescription,
+                  int listingViews, int status, int userId, int userRole, ArrayList<Comment> comments,
+                  ArrayList<AnimalFile> animalfiles) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -50,8 +54,43 @@ public class Animal implements Serializable {
         this.ownerAvatar = ownerAvatar;
         this.listingDescription = listingDescription;
         this.listingViews = listingViews;
+        this.status = status;
+        this.userId = userId;
+        this.userRole = userRole;
         this.comments = (comments != null) ? comments : new ArrayList<>();
         this.animalfiles = (animalfiles != null) ? animalfiles : new ArrayList<>();
+    }
+
+    public int getListingViews() {
+        return listingViews;
+    }
+
+    public void setListingViews(int listingViews) {
+        this.listingViews = listingViews;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(int userRole) {
+        this.userRole = userRole;
     }
 
     public int getId() {
@@ -182,13 +221,6 @@ public class Animal implements Serializable {
         this.listingDescription = listingDescription;
     }
 
-    public String getListingViews() {
-        return listingViews;
-    }
-
-    public void setListingViews(String listingViews) {
-        this.listingViews = listingViews;
-    }
 
     public ArrayList<Comment> getComments() {
         return comments;

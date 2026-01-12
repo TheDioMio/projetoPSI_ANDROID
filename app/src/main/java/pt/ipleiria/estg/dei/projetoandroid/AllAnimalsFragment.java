@@ -55,7 +55,7 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_filter) {
-            FilterDialog dialog = new FilterDialog();
+            FilterDialog dialog = FilterDialog.newInstance(animals);
             dialog.show(getParentFragmentManager(), "FILTER_DIALOG");
             return true;
         }
@@ -115,13 +115,11 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
                 args.putInt("ID_ANIMAL", idAnimal);
                 fragment.setArguments(args);
 
-                ((MenuMainActivity) requireActivity())
-                        .abrirFragment(fragment, true);
-                // Faz a troca do fragmento
-//                getParentFragmentManager().beginTransaction()
-//                        .replace(R.id.contentFragment, fragment) // o id do container dos fragments na tua MenuMaisActivity
-//                        .addToBackStack(null) // permite voltar atrás com o botão "voltar"
-//                        .commit();
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contentFragment, fragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -201,4 +199,11 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
     public void onErro(String erro) {
         //tratamos o erro que devolva da API
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        AppSingleton.getInstance(getContext()).setAnimalsListener(null);
+    }
+
 }

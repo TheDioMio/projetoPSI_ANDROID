@@ -4,7 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.R;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.CommentActionListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Comment;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 
@@ -23,11 +26,15 @@ public class CommentAdaptador
 
     private Context context;
     private ArrayList<Comment> comments;
+    private CommentActionListener listener;
+    private boolean isEditMode;
     private LayoutInflater inflater;
 
-    public CommentAdaptador(Context context, ArrayList<Comment> comments) {
+    public CommentAdaptador(Context context, ArrayList<Comment> comments, CommentActionListener listener, boolean isEditMode) {
         this.context = context;
         this.comments = comments;
+        this.listener = listener;
+        this.isEditMode = isEditMode;
         this.inflater = LayoutInflater.from(context);
     }
 
@@ -41,12 +48,21 @@ public class CommentAdaptador
     @Override
     public void onBindViewHolder(@NonNull ViewHolderComment holder, int position) {
         Comment comment = comments.get(position);
-        holder.update(comment);
+        holder.update(comment, position);
     }
 
     @Override
     public int getItemCount() {
         return comments == null ? 0 : comments.size();
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        this.comments = comments != null ? comments : new ArrayList<>();
+        notifyDataSetChanged();
+    }
+
+    public ArrayList<Comment> getComments() {
+        return comments;
     }
 
     /* ---------------- ViewHolder ---------------- */
@@ -55,6 +71,8 @@ public class CommentAdaptador
 
         ImageView imgUserAvatar;
         TextView tvUserName, tvDate, tvCommentText;
+        ImageButton btnEdit, btnDelete;
+        LinearLayout layoutActions;
 
         public ViewHolderComment(@NonNull View itemView) {
             super(itemView);
@@ -63,9 +81,14 @@ public class CommentAdaptador
             tvUserName = itemView.findViewById(R.id.tvUserName);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvCommentText = itemView.findViewById(R.id.tvCommentText);
+            btnEdit = itemView.findViewById(R.id.btnEditComment);
+            btnDelete = itemView.findViewById(R.id.btnDeleteComment);
+            layoutActions = itemView.findViewById(R.id.layoutActions);
         }
 
-        public void update(Comment comment) {
+
+
+        public void update(Comment comment, int position) {
 
             tvUserName.setText(comment.getUserName());
             tvDate.setText(comment.getDate());
@@ -80,8 +103,7 @@ public class CommentAdaptador
                 if (avatar.startsWith("http")) {
                     imageUrl = avatar;
                 } else {
-                    imageUrl = AppSingleton.getInstance(context)
-                            .FRONTEND_BASE_URL + avatar;
+                    imageUrl = AppSingleton.getInstance(context).FRONTEND_BASE_URL + avatar;
                 }
 
                 Glide.with(context)
@@ -94,6 +116,34 @@ public class CommentAdaptador
             } else {
                 imgUserAvatar.setImageResource(R.mipmap.default_avatar);
             }
+
+            if (isEditMode) {
+                layoutActions.setVisibility(View.VISIBLE);
+                btnDelete.setVisibility(View.VISIBLE);
+
+                int userId = AppSingleton.getInstance(context).getUserLoggedId();
+                if (comment.getUserId() == userId) {
+                    btnEdit.setVisibility(View.VISIBLE);
+                } else {
+                    btnEdit.setVisibility(View.GONE);
+                }
+
+            }else {
+                layoutActions.setVisibility(View.GONE);
+            }
+
+
+            // EDITAR
+            btnEdit.setOnClickListener(v -> {
+                if (listener != null)
+                    listener.onEditComment(comment, position);
+            });
+
+            // APAGAR
+            btnDelete.setOnClickListener(v -> {
+                if (listener != null)
+                    listener.onDeleteComment(comment, position);
+            });
         }
     }
 }

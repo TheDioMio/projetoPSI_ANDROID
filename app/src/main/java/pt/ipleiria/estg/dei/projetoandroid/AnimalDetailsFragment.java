@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.app.AlertDialog;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -26,7 +27,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.textfield.TextInputEditText;
 
+import pt.ipleiria.estg.dei.projetoandroid.listeners.CommentActionListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.CommentCreateListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,8 +42,10 @@ import java.util.Locale;
 
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.AnimalImageAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.CommentAdaptador;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Comment;
 
-public class AnimalDetailsFragment extends Fragment {
+public class AnimalDetailsFragment extends Fragment implements CommentCreateListener {
+
 //public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
 
     private MapView mapView;
@@ -47,24 +53,22 @@ public class AnimalDetailsFragment extends Fragment {
 
     private ImageView imgPrincipal;
     private LinearLayout layoutMiniaturas;
-    private Button btnAdopt;
-    private TextView tvNome, tvLocalizacao, tvDescricao, tvOwnerName, tvOwnerEmail, tvListingDescription,tvViews,  tvOwnerContact, tvSize, tvAge, tvVaccination, tvAnimalType, tvBreed, tvNeutered;
+    private Button btnAdopt, btnSendComment;
+    private TextView tvNome, tvLocalizacao, tvDescricao, tvOwnerName, tvOwnerEmail, tvListingDescription, tvViews, tvOwnerContact, tvSize, tvAge, tvVaccination, tvAnimalType, tvBreed, tvNeutered;
     private ImageView imgOwnerAvatar;
     private TextView tvOwnerAddress;
     private TextView tvAnimalExtraInfo;
     private Animal animal;
 
+    private TextInputEditText etNewComment;
     private RecyclerView rvAnimalImages, rvComments;
     private AnimalImageAdaptador animalImageAdaptador;
     private CommentAdaptador commentAdaptador;
 
 
-
-
     public AnimalDetailsFragment() {
         // Required empty public constructor
     }
-
 
 
     @Override
@@ -86,7 +90,9 @@ public class AnimalDetailsFragment extends Fragment {
         tvListingDescription = view.findViewById(R.id.tvListingDescription);
         tvViews = view.findViewById(R.id.tvViews);
         btnAdopt = view.findViewById(R.id.btnAdopt);
-
+        btnSendComment = view.findViewById(R.id.btnSendComment);
+        etNewComment = view.findViewById(R.id.etNewComment);
+        AppSingleton.getInstance(getContext()).setCommentCreateListener(this);
         // LayoutManagers
         rvAnimalImages.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -96,23 +102,30 @@ public class AnimalDetailsFragment extends Fragment {
                 new LinearLayoutManager(getContext())
         );
 
-//        SupportMapFragment mapFragment =
-//                (SupportMapFragment) getChildFragmentManager()
-//                        .findFragmentById(R.id.map);
-//
-//        if (mapFragment != null) {
-//            mapFragment.getMapAsync(this);
-//        }
-
 
         //obtém o animal da BD passado pelo Bundle
         Bundle args = getArguments();
         if (args != null) {
             int animalId = args.getInt("ID_ANIMAL");
+            //colocar a ir buscar o animal ao singleton
             animal = AppSingleton.getInstance(getContext()).getAnimalBD(animalId);
             carregarDados(animal);
         }
 
+        btnSendComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = etNewComment.getText().toString().trim();
+                if (text.isEmpty()) {
+                    Toast.makeText(getContext(), R.string.txt_comentario_vazio, Toast.LENGTH_SHORT).show();
+                    etNewComment.setError(getString(R.string.txt_obrigatorio));
+                    return;
+                }
+                //vamos chamar a API para fazer o create comment
+                int animalId = args.getInt("ID_ANIMAL");
+                AppSingleton.getInstance(getContext()).createCommentAPI(getContext(), animalId, text);
+            }
+        });
 
         //Botão para submeter a candidatura no animal em específico
         btnAdopt.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +145,7 @@ public class AnimalDetailsFragment extends Fragment {
                         .commit();
             }
         });
+
         return view;
     }
 
@@ -220,10 +234,6 @@ public class AnimalDetailsFragment extends Fragment {
 //    }
 
 
-
-
-// A CLASS ANIMAL MUDOU LOGO TEMOS DE ADAPTAR
-
     private void carregarDados(Animal animal) {
         if (animal == null) return;
 
@@ -232,7 +242,7 @@ public class AnimalDetailsFragment extends Fragment {
         tvLocalizacao.setText(animal.getLocation());
         tvListingDescription.setText(animal.getListingDescription());
 
-        if (animal.getListingViews() != null) {
+        if (animal.getListingViews() > 0) {
             tvViews.setText(animal.getListingViews() + " visualizações");
             tvViews.setVisibility(View.VISIBLE);
         } else {
@@ -304,10 +314,57 @@ public class AnimalDetailsFragment extends Fragment {
 
         commentAdaptador = new CommentAdaptador(
                 getContext(),
-                animal.getComments()
-        );
+                animal.getComments(),
+                null,
+                false);
         rvComments.setAdapter(commentAdaptador);
     }
 
 
+    //Metodos implementados do listener do create comment
+    @Override
+    public void onCreateCommentSuccess(Comment comment) {
+        // adiciona o comment a variavel local e atualiza
+
+        Toast.makeText(getContext(), R.string.txt_comentario_adicionado_com_sucesso, Toast.LENGTH_SHORT).show();
+        //agora atualizamos a lista dos comentários
+       // animal.getComments().add(0, comment);   // 0 = adiciona no topo (mais recente primeiro)
+
+        // Notifica o adapter
+        commentAdaptador.notifyItemInserted(0);
+
+        // Faz scroll para o novo comentário
+        rvComments.scrollToPosition(0);
+
+        // Limpa a caixa de texto
+        etNewComment.setText("");
+
+    }
+
+    @Override
+    public void onCreateCommentError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
 }
+
+//
+//    //Metodoso do Listener do Comments
+//    @Override
+//    public void onEditComment(Comment comment) {
+//
+//
+//    }
+//
+//    @Override
+//    public void onDeleteComment(Comment comment) {
+//        new AlertDialog.Builder(requireContext())
+//                .setTitle("Apagar comentário")
+//                .setMessage("Tens a certeza que queres apagar este comentário?")
+//                .setPositiveButton("Apagar", (dialog, which) -> {
+//                    AppSingleton.getInstance(getContext())
+//                            .deleteCommentAPI(getContext(), comment.getId(), this);
+//                })
+//                .setNegativeButton("Cancelar", null)
+//                .show();
+//    }
+//}

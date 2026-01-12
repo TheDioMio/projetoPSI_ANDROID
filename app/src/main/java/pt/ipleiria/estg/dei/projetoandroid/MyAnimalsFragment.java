@@ -28,15 +28,16 @@ import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaAnimalsAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaAnimalsGridAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalDeleteListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalsListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.MyAnimalsListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AnimalFilter;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
 
-public class MyAnimalsFragment extends Fragment implements AnimalsListener, AnimalDeleteListener {
+public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, AnimalDeleteListener {
     private ListView lvMyAnimals;
 
-    private ArrayList<Animal> animals;
+    private ArrayList<Animal> myAnimals;
     private ArrayList<Animal> animalsFiltrados; //os que ficam visiveis quando é filtrado
 
     private ListaAnimalsAdaptador adaptador;
@@ -61,7 +62,7 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_filter) {
-            FilterDialog dialog = new FilterDialog();
+            FilterDialog dialog = FilterDialog.newInstance(myAnimals);
             dialog.show(getParentFragmentManager(), "FILTER_DIALOG");
             return true;
         }
@@ -86,16 +87,21 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_animals, container, false);
         lvMyAnimals = view.findViewById(R.id.lvMyAnimals);
-        AppSingleton.getInstance(getContext()).getMyAnimalsAPI(getContext());  // ALterar para ir buscar apenas os Animals do user logado
-        AppSingleton.getInstance(getContext()).setAnimalsListener(this);
-        AppSingleton.getInstance(getContext()).setAnimalDeleteListener(this);
-        animals = new ArrayList<>();
+
+        myAnimals = new ArrayList<>();
         animalsFiltrados = new ArrayList<>();
 
         adaptador = new ListaAnimalsAdaptador(getContext(), animalsFiltrados);
         lvMyAnimals.setAdapter(adaptador);
 
         fabAddAnimal =view.findViewById(R.id.fabAddAnimal);
+
+        AppSingleton.getInstance(getContext()).setMyAnimalsListener(this);
+        AppSingleton.getInstance(getContext()).setAnimalDeleteListener(this);
+
+        AppSingleton.getInstance(getContext()).getMyAnimalsAPI(getContext());
+
+
 
 
         getParentFragmentManager().setFragmentResultListener(
@@ -116,7 +122,7 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
                         intent.putExtra(AnimalFormActivity.EXTRA_MODE,
                         AnimalFormActivity.MODE_CREATE);
                 startActivity(intent);
-
+                //colocar for result
 
             }
         });
@@ -132,6 +138,7 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
                         AnimalFormActivity.MODE_EDIT);
                 intent.putExtra(AnimalFormActivity.EXTRA_ANIMAL_ID, idAnimal);
                 startActivity(intent);
+                //colocar for result
             }
         });
 
@@ -143,7 +150,7 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
 
         animalsFiltrados.clear();
 
-        for (Animal a : animals) {
+        for (Animal a : myAnimals) {
 
             if (!filtro.isDefault(filtro.tipo)
                     && (a.getType() == null || !a.getType().equalsIgnoreCase(filtro.tipo)))
@@ -180,31 +187,44 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
         adaptador.notifyDataSetChanged();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        AppCompatActivity act = (AppCompatActivity) requireActivity();
-        if (act.getSupportActionBar() != null) {
-            act.getSupportActionBar().setTitle(R.string.txt_animais);
-            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        AppCompatActivity act = (AppCompatActivity) requireActivity();
+//        if (act.getSupportActionBar() != null) {
+//            act.getSupportActionBar().setTitle(R.string.txt_animais);
+//            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        }
+//    }
 
 
     //METODOS IMPLEMENADOS DO LISTENER DOS ANIMAIS
+//    @Override
+//    public void onRefreshMyAnimalsList(ArrayList<Animal> animalsFromSingleton) {
+//        //lvAnimalsGrid.setAdapter(new ListaAnimalsGridAdaptador(getContext(), animals));
+//
+//        animals.clear();
+//        animals.addAll(animalsFromSingleton);
+//
+//        animalsFiltrados.clear();
+//        animalsFiltrados.addAll(animalsFromSingleton);
+//
+//        adaptador.notifyDataSetChanged();
+//
+//    }
+
     @Override
-    public void onRefreshAnimalsList(ArrayList<Animal> animalsFromSingleton) {
+    public void onRefreshMyAnimals(ArrayList<Animal> Animals) {
         //lvAnimalsGrid.setAdapter(new ListaAnimalsGridAdaptador(getContext(), animals));
 
-        animals.clear();
-        animals.addAll(animalsFromSingleton);
+        myAnimals.clear();
+        myAnimals.addAll(Animals);
 
         animalsFiltrados.clear();
-        animalsFiltrados.addAll(animalsFromSingleton);
+        animalsFiltrados.addAll(myAnimals);
 
         adaptador.notifyDataSetChanged();
-
     }
 
     @Override
@@ -215,17 +235,17 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
 
     //METODOS IMPLEMENTADOS DO DELETE lISTENER
     @Override
-    public void onDeleteAnimalSuccess(int animalId) {
+    public void onDeleteAnimalSuccess(int animalId) {   //alterar isto para atualizar no singleton e não aqui (atualiza a lista no singleton e aqui faz refresh da lista toda não retira da lista daqui diretamente)
         // remover localmente
-        for (int i = 0; i < animals.size(); i++) {
-            if (animals.get(i).getId() == animalId) {
-                animals.remove(i);
+        for (int i = 0; i < myAnimals.size(); i++) {
+            if (myAnimals.get(i).getId() == animalId) {
+                myAnimals.remove(i);
                 break;
             }
         }
 
         animalsFiltrados.clear();
-        animalsFiltrados.addAll(animals);
+        animalsFiltrados.addAll(myAnimals);
 
         adaptador.notifyDataSetChanged();
 
@@ -238,4 +258,13 @@ public class MyAnimalsFragment extends Fragment implements AnimalsListener, Anim
     public void onDeleteAnimalError(String error) {
         Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        AppSingleton.getInstance(getContext()).setMyAnimalsListener(null);
+        AppSingleton.getInstance(getContext()).setAnimalDeleteListener(null);
+    }
+
 }

@@ -72,25 +72,40 @@ public class HomeFragment extends Fragment {
                 fragment.setArguments(args);
 
                 // Faz a troca do fragmento
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.contentFragment, fragment) // o id do container dos fragments na tua MenuMaisActivity
-                        .addToBackStack(null) // permite voltar atrás com o botão "voltar"
-                        .commit();
+//                getParentFragmentManager().beginTransaction()
+//                        .replace(R.id.contentFragment, fragment) // o id do container dos fragments na tua MenuMaisActivity
+//                        .addToBackStack(null) // permite voltar atrás com o botão "voltar"
+//                        .commit();
+                ((MenuMainActivity) requireActivity())
+                        .navegarPara(fragment);
             }
         });
 
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//
+//        AppCompatActivity act = (AppCompatActivity) requireActivity();
+//        if (act.getSupportActionBar() != null) {
+//            act.getSupportActionBar().setTitle(R.string.txt_petpanion);
+//            //act.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        }
+//    }
+@Override
+public void onResume() {
+    super.onResume();
 
-        AppCompatActivity act = (AppCompatActivity) requireActivity();
-        if (act.getSupportActionBar() != null) {
-            act.getSupportActionBar().setTitle(R.string.txt_petpanion);
-            act.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }
+    AppCompatActivity act = (AppCompatActivity) requireActivity();
+    if (act.getSupportActionBar() != null) {
+        act.getSupportActionBar().setTitle(R.string.txt_petpanion);
     }
+
+    if (act instanceof MenuMainActivity) {
+        ((MenuMainActivity) act).showHamburger(); // <-- aqui
+    }
+}
 
 }

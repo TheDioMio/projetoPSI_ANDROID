@@ -116,4 +116,7 @@
     <string name="txt_conte_nos_sobre_si">Conte-nos sobre si</string>
     <string name="txt_o_que_o_levou_aquerer_adotar_este_animal">O que o levou a querer adotar este animal?</string>
     <string name="txt_obrigatorio_selecionar">Obrigatório selecionar uma opção.</string>
+    <string name="txt_comentario_vazio">O texto do comentário não pode estar vazio.</string>
+    <string name="txt_obrigatorio">Obrigatório</string>
+    <string name="txt_comentario_adicionado_com_sucesso">Comentário adicionado com sucesso.</string>
 </resources>

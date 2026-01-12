@@ -1,26 +1,22 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
-
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
-
-        import androidx.annotation.NonNull;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-
 import java.util.*;
-
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AnimalFilter;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 
 public class FilterDialog extends DialogFragment {
 
+    private static final String ARG_ANIMALS = "ARG_ANIMALS";
     private ArrayList<Animal> animals;
 
     private EditText etNome;
@@ -31,13 +27,26 @@ public class FilterDialog extends DialogFragment {
         //animals = AppSingleton.getInstance(requireContext()).getAnimals();
     }
 
+    public static FilterDialog newInstance(ArrayList<Animal> animals) {
+        FilterDialog dialog = new FilterDialog();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_ANIMALS, animals);
+        dialog.setArguments(args);
+        return dialog;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        animals = AppSingleton
-                .getInstance(requireContext())
-                .getAnimals();
+        if (getArguments() != null) {
+            animals = (ArrayList<Animal>) getArguments().getSerializable(ARG_ANIMALS);
+        } else {
+            animals = new ArrayList<>();
+        }
+//        animals = AppSingleton
+//                .getInstance(requireContext())
+//                .getAnimals();
     }
 
     @NonNull

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Comment implements Serializable {
 
+    private int id;
     private int idComment;
     private int idAnimal;
     private int userId;
@@ -20,6 +21,14 @@ public class Comment implements Serializable {
         this.date = date;
         this.userName = userName;
         this.userAvatar = userAvatar;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getIdComment() {

@@ -56,6 +56,37 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/layoutActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:paddingTop="4dp">
+
+            <ImageButton
+                android:id="@+id/btnEditComment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_edit"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Editar"
+                app:tint="@color/primary"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/btnDeleteComment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_delete_vector"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Apagar"
+                app:tint="@color/secondary"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

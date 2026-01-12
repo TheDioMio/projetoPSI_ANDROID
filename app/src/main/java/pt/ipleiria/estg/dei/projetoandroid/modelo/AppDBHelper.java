@@ -21,11 +21,13 @@ public class AppDBHelper extends SQLiteOpenHelper {
     // VAMOS RECEBER OS IDs DAS CHAVES ESTRANGEIRAS POIS VAMOS QUERER EDITAR O ANIMAL E TAMBÉM VAMOS QUERER FILTRAR
 
     private static final String TABLE_ANIMALS = "animals";
+    public static final String TABLE_MY_ANIMALS = "my_animals";
+
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
     public static final String CREATED_AT = "created_at";
-    public static final String AGE = "capa";
+    public static final String AGE = "age";
     public static final String SIZE = "size";
     public static final String TYPE = "type";
     public static final String BREED = "breed";
@@ -36,6 +38,9 @@ public class AppDBHelper extends SQLiteOpenHelper {
     public static final String OWNER_ADDRESS = "owner_address";
     public static final String OWNER_EMAIL = "owner_email";
     public static final String OWNER_AVATAR = "owner_avatar";
+    public static final String STATUS = "status";
+    public static final String USER_ID = "user_id";
+    public static final String USER_ROLE = "user_role";
 
     //DADOS QUE VEM DOS LISTING
     public static final String LISTING_DESCRIPTION = "listing_description";
@@ -53,7 +58,6 @@ public class AppDBHelper extends SQLiteOpenHelper {
     //TABELA DAS APPLICATIONS
     private static final String TABLE_APPLICATIONS = "applications";
     public static final String APPLICATION_ID = "id";
-    public static final String STATUS = "status";
     public static final String APPLICATION_TYPE = "type";
     public static final String APPLICATION_CREATED_AT = "created_at";
     public static final String STATUS_DATE = "statusDate";
@@ -133,10 +137,37 @@ public class AppDBHelper extends SQLiteOpenHelper {
                 OWNER_EMAIL + " TEXT, " +
                 OWNER_AVATAR + " TEXT, " +
                 LISTING_DESCRIPTION + " TEXT, " +
-                LISTING_VIEWS + " TEXT" +
+                LISTING_VIEWS + " INTEGER, " +
+                STATUS + " INTEGER, " +
+                USER_ID + " INTEGER, " +
+                USER_ROLE + " INTEGER" +
                 ");";
         db.execSQL(createAnimalsTable);
 
+        String createMyAnimalsTable = "CREATE TABLE " + TABLE_MY_ANIMALS + " (" +
+                ID + " INTEGER PRIMARY KEY, " +
+                NAME + " TEXT, " +
+                DESCRIPTION + " TEXT, " +
+                CREATED_AT + " TEXT, " +
+                AGE + " TEXT, " +
+                SIZE + " TEXT, " +
+                TYPE + " TEXT, " +
+                BREED + " TEXT, " +
+                NEUTERED + " TEXT, " +
+                VACINATION + " TEXT, " +
+                LOCATION + " TEXT, " +
+                OWNER_NAME + " TEXT, " +
+                OWNER_ADDRESS + " TEXT, " +
+                OWNER_EMAIL + " TEXT, " +
+                OWNER_AVATAR + " TEXT, " +
+                LISTING_DESCRIPTION + " TEXT, " +
+                LISTING_VIEWS + " INTEGER, " +
+                STATUS + " INTEGER, " +
+                USER_ID + " INTEGER, " +
+                USER_ROLE + " INTEGER" +
+                ");";
+
+        db.execSQL(createMyAnimalsTable);
 
         String createFilesTable = "CREATE TABLE "+ TABLE_ANIMALS_FILES +" (" +
                 ID_FILE + " INTEGER PRIMARY KEY, " +
@@ -146,7 +177,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
         db.execSQL(createFilesTable);
 
         String createCommentsTable = "CREATE TABLE "+ TABLE_ANIMALS_COMMENTS + " (" +
-                ID_COMMENT + " INTEGER PRIMARY KEY, " +
+                ID + " INTEGER PRIMARY KEY, " +
+                ID_COMMENT + " INTEGER, " +
                 ID_ANIMAL + " INTEGER, " +
                 ID_USER + " INTEGER, " +
                 COMMENT_TEXT + " TEXT, " +
@@ -200,6 +232,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMALS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MY_ANIMALS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMALS_COMMENTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMALS_FILES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_APPLICATIONS);
@@ -210,7 +243,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
 
     //INICIO-----------------------------------------------ANIMAIS-------------------------------------------------------------
-
+    //region ANIMALS
     public ArrayList<Animal> getAllAnimalsBD() {
         ArrayList<Animal> animals = new ArrayList<>();
 
@@ -220,7 +253,8 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         ID, NAME, DESCRIPTION, CREATED_AT, AGE, SIZE, TYPE,
                         BREED, NEUTERED, VACINATION, LOCATION,
                         OWNER_NAME, OWNER_ADDRESS, OWNER_EMAIL, OWNER_AVATAR,
-                        LISTING_DESCRIPTION, LISTING_VIEWS
+                        LISTING_DESCRIPTION, LISTING_VIEWS,
+                        STATUS, USER_ID, USER_ROLE
                 },
                 null, null, null, null, null
         );
@@ -250,7 +284,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
                         cursor.getString(13), // OWNER_EMAIL
                         cursor.getString(14), // OWNER_AVATAR
                         cursor.getString(15), // LISTING_DESCRIPTION
-                        cursor.getString(16), // LISTING_VIEWS
+                        cursor.getInt(16), // LISTING_VIEWS,
+                        cursor.getInt(17),    // status
+                        cursor.getInt(18),    // user_id
+                        cursor.getInt(19),    // user_role
                         comments,
                         files
                 ));
@@ -285,11 +322,13 @@ public class AppDBHelper extends SQLiteOpenHelper {
         values.put(LISTING_DESCRIPTION, animal.getListingDescription());
         values.put(LISTING_VIEWS, animal.getListingViews());
 
+        values.put(STATUS, animal.getStatus());
+        values.put(USER_ID, animal.getUserId());
+        values.put(USER_ROLE, animal.getUserRole());
+
         long id = database.insert(TABLE_ANIMALS, null, values);
 
         if (id > -1) {
-            // se quiseres guardar o id no objeto
-            // animal.setId((int) id);
             return animal;
         }
 
@@ -327,7 +366,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndexOrThrow(OWNER_EMAIL)),
                     cursor.getString(cursor.getColumnIndexOrThrow(OWNER_AVATAR)),
                     cursor.getString(cursor.getColumnIndexOrThrow(LISTING_DESCRIPTION)),
-                    cursor.getString(cursor.getColumnIndexOrThrow(LISTING_VIEWS)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(LISTING_VIEWS)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(STATUS)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(USER_ID)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(USER_ROLE)),
                     new ArrayList<>(), // comments
                     new ArrayList<>()  // animalfiles
             );
@@ -340,13 +382,179 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
     public void removerAllAnimalsBD() {
+        database.execSQL(
+                "DELETE FROM " + TABLE_ANIMALS_FILES +
+                        " WHERE id_animal IN (SELECT id FROM " + TABLE_ANIMALS + ")"
+        );
+
+        database.execSQL(
+                "DELETE FROM " + TABLE_ANIMALS_COMMENTS +
+                        " WHERE id_animal IN (SELECT id FROM " + TABLE_ANIMALS + ")"
+        );
         this.database.delete(TABLE_ANIMALS, null, null);
-        this.database.delete(TABLE_ANIMALS_FILES, null, null);
-        this.database.delete(TABLE_ANIMALS_COMMENTS, null, null);
     }
 
+    //endregion
+    //FIM--------------------------------------------------ANIMAIS-----------------------------------------------------
 
-    //FIM-----------------------------------------------ANIMAIS-----------------------------------------------------
+
+    //INICIO-----------------------------------------------MY-ANIMAIS-------------------------------------------------------------
+    //region MY-ANIMALS
+    public ArrayList<Animal> getAllMyAnimalsBD() {
+        ArrayList<Animal> animals = new ArrayList<>();
+
+        Cursor cursor = database.query(
+                TABLE_MY_ANIMALS,
+                new String[]{
+                        ID, NAME, DESCRIPTION, CREATED_AT, AGE, SIZE, TYPE,
+                        BREED, NEUTERED, VACINATION, LOCATION,
+                        OWNER_NAME, OWNER_ADDRESS, OWNER_EMAIL, OWNER_AVATAR,
+                        LISTING_DESCRIPTION, LISTING_VIEWS,
+                        STATUS, USER_ID, USER_ROLE
+                },
+                null, null, null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                int animalId = cursor.getInt(0);
+
+                ArrayList<Comment> comments = getCommentsByAnimalId(animalId);
+
+                ArrayList<AnimalFile> files = getFilesByAnimalId(animalId);
+
+                animals.add(new Animal(
+                        animalId,
+                        cursor.getString(1),  // NAME
+                        cursor.getString(2),  // DESCRIPTION
+                        cursor.getString(3),  // CREATED_AT
+                        cursor.getString(4),  // AGE
+                        cursor.getString(5),  // SIZE
+                        cursor.getString(6),  // TYPE
+                        cursor.getString(7),  // BREED
+                        cursor.getString(8),  // NEUTERED
+                        cursor.getString(9),  // VACINATION
+                        cursor.getString(10), // LOCATION
+                        cursor.getString(11), // OWNER_NAME
+                        cursor.getString(12), // OWNER_ADDRESS
+                        cursor.getString(13), // OWNER_EMAIL
+                        cursor.getString(14), // OWNER_AVATAR
+                        cursor.getString(15), // LISTING_DESCRIPTION
+                        cursor.getInt(16), // LISTING_VIEWS,
+                        cursor.getInt(17),    // status
+                        cursor.getInt(18),    // user_id
+                        cursor.getInt(19),    // user_role
+                        comments,
+                        files
+                ));
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return animals;
+    }
+
+    public Animal adicionarMyAnimalBD(Animal animal) {
+
+        ContentValues values = new ContentValues();
+
+        values.put(ID, animal.getId());
+        values.put(NAME, animal.getName());
+        values.put(DESCRIPTION, animal.getDescription());
+        values.put(CREATED_AT, animal.getCreatedAt());
+        values.put(AGE, animal.getAge());
+        values.put(SIZE, animal.getSize());
+        values.put(TYPE, animal.getType());
+        values.put(BREED, animal.getBreed());
+        values.put(NEUTERED, animal.getNeutered());
+        values.put(VACINATION, animal.getVacination());
+        values.put(LOCATION, animal.getLocation());
+        values.put(OWNER_NAME, animal.getOwnerName());
+        values.put(OWNER_ADDRESS, animal.getOwnerAddress());
+        values.put(OWNER_EMAIL, animal.getOwnerEmail());
+        values.put(OWNER_AVATAR, animal.getOwnerAvatar());
+
+        values.put(LISTING_DESCRIPTION, animal.getListingDescription());
+        values.put(LISTING_VIEWS, animal.getListingViews());
+
+        values.put(STATUS, animal.getStatus());
+        values.put(USER_ID, animal.getUserId());
+        values.put(USER_ROLE, animal.getUserRole());
+
+        long id = database.insert(TABLE_MY_ANIMALS, null, values);
+
+        if (id > -1) {
+            return animal;
+        }
+
+        return null;
+    }
+
+    public Animal getMyAnimalById(int idAnimal) {
+
+        Animal animal = null;
+
+        Cursor cursor = database.query(
+                TABLE_MY_ANIMALS, // animals
+                null,
+                ID + " = ?",
+                new String[]{String.valueOf(idAnimal)},
+                null, null, null
+        );
+
+        if (cursor.moveToFirst()) {
+
+            animal = new Animal(
+                    cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(CREATED_AT)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(AGE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(SIZE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(TYPE)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(BREED)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(NEUTERED)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(VACINATION)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(LOCATION)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(OWNER_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(OWNER_ADDRESS)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(OWNER_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(OWNER_AVATAR)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(LISTING_DESCRIPTION)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(LISTING_VIEWS)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(STATUS)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(USER_ID)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(USER_ROLE)),
+                    new ArrayList<>(), // comments
+                    new ArrayList<>()  // animalfiles
+            );
+            animal.setAnimalfiles(getFilesByAnimalId(animal.getId()));
+            animal.setComments(getCommentsByAnimalId(animal.getId()));
+        }
+
+        cursor.close();
+        return animal;
+    }
+
+    public void removerAllMyAnimalsBD() {
+        //vou apagar só os dos myanimals senão os animals ficam sem ficheiros e sem comentários
+        database.execSQL(
+                "DELETE FROM " + TABLE_ANIMALS_FILES +
+                        " WHERE id_animal IN (SELECT id FROM " + TABLE_MY_ANIMALS + ")"
+        );
+
+        database.execSQL(
+                "DELETE FROM " + TABLE_ANIMALS_COMMENTS +
+                        " WHERE id_animal IN (SELECT id FROM " + TABLE_MY_ANIMALS + ")"
+        );
+
+        this.database.delete(TABLE_MY_ANIMALS, null, null);
+    }
+
+    //endregion
+    //FIM--------------------------------------------------MY-ANIMAIS-----------------------------------------------------
+
 
 
     //INICIO----------------------------------------------FOTOS-----------------------------------------------------
@@ -458,9 +666,10 @@ public class AppDBHelper extends SQLiteOpenHelper {
     }
 
     public Comment adicionarCommentBD(Comment comment) {
-
         ContentValues values = new ContentValues();
-        values.put(ID_COMMENT, comment.getIdComment());
+
+        // SEMPRE guarda ID da API (pode ser 0 para novos)
+        values.put("id_comment", comment.getIdComment());
         values.put(ID_ANIMAL, comment.getIdAnimal());
         values.put(ID_USER, comment.getUserId());
         values.put(COMMENT_TEXT, comment.getText());
@@ -468,13 +677,61 @@ public class AppDBHelper extends SQLiteOpenHelper {
         values.put(NAME_USER, comment.getUserName());
         values.put(AVATAR_USER, comment.getUserAvatar());
 
-        long id = database.insert(TABLE_ANIMALS_COMMENTS, null, values);
+        // BD gera o "id" automaticamente
+        long localId = database.insert(TABLE_ANIMALS_COMMENTS, null, values);
 
-        if (id > -1) {
+        if (localId > -1) {
+            comment.setId((int) localId);  // Novo método no Comment
             return comment;
         }
-
         return null;
+    }
+//    public Comment adicionarCommentBD(Comment comment) {
+//
+//        ContentValues values = new ContentValues();
+//        values.put(ID_COMMENT, comment.getIdComment());
+//        values.put(ID_ANIMAL, comment.getIdAnimal());
+//        values.put(ID_USER, comment.getUserId());
+//        values.put(COMMENT_TEXT, comment.getText());
+//        values.put(COMMENT_DATE, comment.getDate());
+//        values.put(NAME_USER, comment.getUserName());
+//        values.put(AVATAR_USER, comment.getUserAvatar());
+//
+//        long id = database.insertWithOnConflict(
+//                TABLE_ANIMALS_COMMENTS,
+//                null,
+//                values,
+//                SQLiteDatabase.CONFLICT_REPLACE  // Substitui se já existir
+//        );
+//
+//
+//        return comment;
+//    }
+
+    public boolean deleteCommentBD(int idComment) {
+        int rows = database.delete(
+                TABLE_ANIMALS_COMMENTS,
+                ID_COMMENT + " = ?",
+                new String[]{ String.valueOf(idComment) }
+        );
+
+        return rows > 0;
+    }
+
+    public boolean updateCommentBD(Comment comment) {
+
+        ContentValues values = new ContentValues();
+        values.put(COMMENT_TEXT, comment.getText());
+        values.put(COMMENT_DATE, comment.getDate());
+
+        int rows = database.update(
+                TABLE_ANIMALS_COMMENTS,
+                values,
+                ID_COMMENT + " = ?",
+                new String[]{ String.valueOf(comment.getIdComment()) }
+        );
+
+        return rows > 0;
     }
 
     public ArrayList<Comment> getCommentsByAnimalId(int idAnimal) {
@@ -506,6 +763,26 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return comments;
+    }
+
+    public int getAnimalIdFromComment(int commentId) {
+
+        int animalId = -1;
+
+        Cursor c = database.query(
+                TABLE_ANIMALS_COMMENTS,
+                new String[]{ ID_ANIMAL },
+                ID_COMMENT + " = ?",
+                new String[]{ String.valueOf(commentId) },
+                null, null, null
+        );
+
+        if (c.moveToFirst()) {
+            animalId = c.getInt(0);
+        }
+
+        c.close();
+        return animalId;
     }
 //FIM---------------------------------------------------------COMENTÁRIOS---------------------------------------
 

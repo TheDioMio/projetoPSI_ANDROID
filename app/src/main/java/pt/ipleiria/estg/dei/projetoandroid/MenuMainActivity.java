@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -61,33 +62,71 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     private BottomNavigationView  bottomNav;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    private ActionBarDrawerToggle drawerToggle;
     private static final int REQ_NOTIF = 1001;
-
-
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // EdgeToEdge.enable(this);
         setContentView(R.layout.activity_menu_main);
         requestNotificationPermissionIfNeeded();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         drawer = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navView);
         bottomNav = findViewById(R.id.bottomNav);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
-                drawer, toolbar, R.string.ndOpen, R.string.ndClose);
-        toggle.syncState();
-        drawer.addDrawerListener(toggle);
+        drawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawer,
+                toolbar,
+                R.string.ndOpen,
+                R.string.ndClose
+        );
+
+        // Listener correto para o ícone (hamburger/seta)
+        drawerToggle.setToolbarNavigationClickListener(v -> {
+            if (!drawerToggle.isDrawerIndicatorEnabled()) {
+                // Estamos no modo seta → faz back
+                getOnBackPressedDispatcher().onBackPressed();
+            } else {
+                // Estamos no modo hamburger → abre/fecha drawer
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
+        drawer.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
         carregarCabecalho();
 
         navigationView.setNavigationItemSelectedListener(this);
         bottomNav.setOnItemSelectedListener(this);
         fragmentManager = getSupportFragmentManager();
+
+        getOnBackPressedDispatcher().addCallback(this,
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        FragmentManager fm = getSupportFragmentManager();
+                        if (fm.getBackStackEntryCount() > 0) {
+                            fm.popBackStack();
+                        } else {
+//                            carregarFragmentoInicial();  // volta a colocar o HomeFragment
+//                            showHamburger();
+                            moveTaskToBack(true);
+                        }
+                    }
+                });
+
         carregarFragmentoInicial();
 
     }
@@ -106,6 +145,33 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         }
     }
 
+    //METODOS PARA TRATAR DA SETA E DO HAMBURGUER
+    public void showHamburger() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.syncState();
+    }
+
+    public void showBackArrow() {
+        drawerToggle.setDrawerIndicatorEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+
+//    public void abrirFragment(Fragment fragment, boolean addToBackStack) {
+//        FragmentTransaction ft = getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.contentFragment, fragment);
+//
+//        if (addToBackStack) {
+//            ft.addToBackStack(null);
+//        }
+//
+//        ft.commit();
+//    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -121,29 +187,76 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
 
 
-    public void abrirFragment(Fragment fragment, boolean addToBackStack) {
-        FragmentTransaction ft = getSupportFragmentManager()
+    public void navegarPara(Fragment fragment) {
+        getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.contentFragment, fragment);
+                .replace(R.id.contentFragment, fragment)
+                .addToBackStack(null)
+                .commit();
 
-        if (addToBackStack) {
-            ft.addToBackStack(null);
-        }
-
-        ft.commit();
+        showBackArrow();
     }
+
+//    public void navegarPara(Fragment fragment, boolean isHome) {
+//
+//        FragmentTransaction ft = getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.contentFragment, fragment);
+//
+//        ft.addToBackStack(null);
+//        ft.commit();
+//
+//        if (isHome) {
+//            showHamburger();
+//        } else {
+//            showBackArrow();
+//        }
+//    }
+
+
+
+//    public void navegarPara(Fragment fragment, boolean isHome) {
+//
+//        FragmentTransaction ft = getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.contentFragment, fragment);
+//
+//        if (!isHome) {
+//            ft.addToBackStack(null);
+//            showBackArrow();
+//        } else {
+//            clearBackStack();
+//            showHamburger();
+//        }
+//
+//        ft.commit();
+//    }
+
+    private void clearBackStack() {
+        getSupportFragmentManager().popBackStack(
+                null,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE
+        );
+    }
+
 
     @Override
     public boolean onSupportNavigateUp() {
-        onBackPressed();
+        getOnBackPressedDispatcher().onBackPressed();
         return true;
     }
 
 
 
     private void carregarFragmentoInicial() {
-       Fragment fragment = new HomeFragment();
-       fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.contentFragment, new HomeFragment())
+                //.addToBackStack("HOME")
+                .commit();
+
+        showHamburger();
+//       Fragment fragment = new HomeFragment();
+//       fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
 
     }
 
@@ -187,56 +300,40 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        Fragment fragment = null;
-        boolean addToBackStack = true;
-
-        int id = menuItem.getItemId();
+        int id = item.getItemId();
 
         if (id == R.id.navHome || id == R.id.bottom_home) {
+//            navegarPara(new HomeFragment(), true);
+//            getSupportFragmentManager().popBackStack(
+//                    "HOME",
+//                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+//            );
 
-            fragment = new HomeFragment();
-            addToBackStack = false; // ⚠️ Home nunca entra na backstack
-            setTitle(menuItem.getTitle());
-            System.out.println("--> Nav Home");
+            getSupportFragmentManager().popBackStack(
+                    null,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+            );
+            carregarFragmentoInicial();
 
         } else if (id == R.id.navDetalhesAnimal || id == R.id.bottom_animals) {
-
-            fragment = new AllAnimalsFragment();
-            setTitle(menuItem.getTitle());
-
-        } else if (id == R.id.navProfileDetails || id == R.id.bottom_profile) {
-
-//            fragment = ProfileFragment.newInstance(iduser, false);
-//            setTitle(menuItem.getTitle());
-
-            Intent intent = new Intent (getApplicationContext(), ProfileActivity.class);
-//            intent.putExtra(DetalhesLivroActivity.IDLIVRO, (int) id);
-            startActivityForResult(intent, MenuMainActivity.EDIT);
+            navegarPara(new AllAnimalsFragment());
 
         } else if (id == R.id.navMyAnimals) {
-
-            fragment = new MyAnimalsFragment();
-            setTitle(menuItem.getTitle());
-            System.out.println("--> Nav MY Animals");
+            navegarPara(new MyAnimalsFragment());
 
         } else if (id == R.id.navCandidaturas || id == R.id.bottom_application) {
-
-            fragment = new ApplicationMenuFragment();
-            setTitle(menuItem.getTitle());
-            System.out.println("--> Nav Listagem de Candidaturas");
+            navegarPara(new ApplicationMenuFragment());
 
         } else if (id == R.id.navMessage || id == R.id.bottom_messages) {
+            navegarPara(new MessageListFragment());
 
-            fragment = new MessageListFragment();
-            setTitle(menuItem.getTitle());
-            System.out.println("--> Nav Message List");
-            Toast.makeText(this, "Mensagens", Toast.LENGTH_SHORT).show();
-        }
-
-        if (fragment != null) {
-            abrirFragment(fragment, addToBackStack);
+        } else if (id == R.id.navProfileDetails || id == R.id.bottom_profile) {
+            startActivityForResult(
+                    new Intent(this, ProfileActivity.class),
+                    EDIT
+            );
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -248,39 +345,60 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 //    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 //
 //        Fragment fragment = null;
-//        if (menuItem.getItemId() == R.id.navHome || menuItem.getItemId() == R.id.bottom_home){
+//        boolean addToBackStack = true;
+//
+//        int id = menuItem.getItemId();
+//
+//        if (id == R.id.navHome || id == R.id.bottom_home) {
+//
 //            fragment = new HomeFragment();
+//            addToBackStack = false; // ⚠️ Home nunca entra na backstack
 //            setTitle(menuItem.getTitle());
 //            System.out.println("--> Nav Home");
-//        } else if (menuItem.getItemId() == R.id.navDetalhesAnimal|| menuItem.getItemId() == R.id.bottom_animals){
+//
+//        } else if (id == R.id.navDetalhesAnimal || id == R.id.bottom_animals) {
+//
 //            fragment = new AllAnimalsFragment();
 //            setTitle(menuItem.getTitle());
-//        } else if (menuItem.getItemId() == R.id.navProfileDetails || menuItem.getItemId() == R.id.bottom_profile) {
-//            fragment = ProfileFragment.newInstance(iduser, false);
-//            setTitle(menuItem.getTitle());
-//        }else if (menuItem.getItemId() == R.id.navMyAnimals) {
+//
+//        } else if (id == R.id.navProfileDetails || id == R.id.bottom_profile) {
+//
+////            fragment = ProfileFragment.newInstance(iduser, false);
+////            setTitle(menuItem.getTitle());
+//
+//            Intent intent = new Intent (getApplicationContext(), ProfileActivity.class);
+////            intent.putExtra(DetalhesLivroActivity.IDLIVRO, (int) id);
+//            startActivityForResult(intent, MenuMainActivity.EDIT);
+//
+//        } else if (id == R.id.navMyAnimals) {
+//
 //            fragment = new MyAnimalsFragment();
 //            setTitle(menuItem.getTitle());
 //            System.out.println("--> Nav MY Animals");
-//        } else if (menuItem.getItemId()== R.id.navCandidaturas || menuItem.getItemId() == R.id.bottom_application) {
+//
+//        } else if (id == R.id.navCandidaturas || id == R.id.bottom_application) {
+//
 //            fragment = new ApplicationMenuFragment();
 //            setTitle(menuItem.getTitle());
 //            System.out.println("--> Nav Listagem de Candidaturas");
-//        } else if (menuItem.getItemId() == R.id.navMessage || menuItem.getItemId() == R.id.bottom_messages) {
-//            fragment = new MessageListFragment(); // ou MessageListFragment.newInstance()
+//
+//        } else if (id == R.id.navMessage || id == R.id.bottom_messages) {
+//
+//            fragment = new MessageListFragment();
 //            setTitle(menuItem.getTitle());
 //            System.out.println("--> Nav Message List");
-//            Toast.makeText(getApplicationContext(), "Mensagens", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Mensagens", Toast.LENGTH_SHORT).show();
 //        }
 //
-//        if (fragment != null){
-//            fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
-//
+//        if (fragment != null) {
+//            abrirFragment(fragment, addToBackStack);
 //        }
 //
 //        drawer.closeDrawer(GravityCompat.START);
-//        return false;
+//        return true;
 //    }
+
+
 
 
     @Override

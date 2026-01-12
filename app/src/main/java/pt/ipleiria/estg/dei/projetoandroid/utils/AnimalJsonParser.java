@@ -52,6 +52,19 @@ public class AnimalJsonParser {
                         ? null
                         : animalJson.getString("owner_avatar");
 
+                int status = animalJson.isNull("status")
+                        ? 0
+                        : animalJson.getInt("status");
+
+                int userId = animalJson.isNull("user_id")
+                        ? 0
+                        : animalJson.getInt("user_id");
+
+                int userRole = animalJson.isNull("user_role")
+                        ? 0
+                        : animalJson.getInt("user_role");
+
+
                 ArrayList<AnimalFile> animalFiles = new ArrayList<>();
                 if (animalJson.has("files")) {
                     JSONArray filesArray = animalJson.getJSONArray("files");
@@ -67,7 +80,7 @@ public class AnimalJsonParser {
                         ? null
                         : listingJson.getString("description");
 
-                String listingViews = String.valueOf(listingJson.getInt("views"));
+                int listingViews= listingJson.getInt("views");
 
                 // -------------------
                 // COMMENTS aqui guardamos os comentários
@@ -99,6 +112,9 @@ public class AnimalJsonParser {
                         ownerAvatar,
                         listingDescription,
                         listingViews,
+                        status,
+                        userId,
+                        userRole,
                         comments,
                         animalFiles
                 );
@@ -184,19 +200,5 @@ public class AnimalJsonParser {
 
         return animalFiles;
     }
-
-
-//    public static boolean isConnectionInternet(Context context){
-//        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        //necessita de permissões de acesso a internet
-//        //e acesso ao estado la ligação
-//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//
-//        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-//    }
-
-
-
 
 }

@@ -39,7 +39,9 @@
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="false" /> <!-- GOOGLE MAPS API KEY -->
+            android:exported="false" />
+
+        <!-- GOOGLE MAPS API KEY -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA1cLsf-5np-zOKC4m6DUJygDOFaKwPpEw" />

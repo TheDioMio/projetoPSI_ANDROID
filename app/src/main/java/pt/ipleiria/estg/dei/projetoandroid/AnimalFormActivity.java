@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
     private static final int MAX_PHOTOS = 5;
 
+    private View rootView;
     public static final String EXTRA_MODE = "MODE";
     public static final String MODE_CREATE = "CREATE";
     public static final String MODE_EDIT = "EDIT";
@@ -77,7 +80,7 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
     private TextInputEditText etName, etDescription, etLocation, etListingDescription;
     private CheckBox cbNeutered;
     private Spinner spStatus;
-    private Button btnAddPhoto, btnSave;
+    private Button btnAddPhoto;
     private RecyclerView rvPhotos, rvComments;
     private CommentAdaptador commentAdaptador;
     private AnimalPhotoAdaptador photoAdapter;
@@ -109,9 +112,8 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //setContentView(R.layout.activity_animal_form);
         setContentView(R.layout.activity_animal_form_base);
-
+        rootView = findViewById(android.R.id.content);
         getLayoutInflater().inflate(
                 R.layout.activity_animal_form,
                 findViewById(R.id.contentForm),
@@ -149,7 +151,6 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
         etLocation = findViewById(R.id.etLocation);
         etListingDescription = findViewById(R.id.etListingDescription);
         btnAddPhoto = findViewById(R.id.btnAddPhoto);
-        btnSave = findViewById(R.id.btnSave);
         cbNeutered = findViewById(R.id.cbNeutered);
         spStatus = findViewById(R.id.spListingStatus);
         rvComments = findViewById(R.id.rvComments);
@@ -205,17 +206,6 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
         );
 
         rvPhotos.setAdapter(photoAdapter);
-
-        //alterar bara a barra
-        btnSave.setOnClickListener(v -> {
-            if (!validateForm()) return;
-
-            if (isEditMode) {
-                updateAnimal();
-            } else {
-                createAnimal();
-            }
-        });
 
 
         btnAddPhoto.setOnClickListener(v -> {
@@ -276,6 +266,16 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
+
+            if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
+                Snackbar.make(rootView,
+                                R.string.txt_offline_indisponivel,
+                                Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.txt_ok, v -> {})
+                        .show();
+                return false;
+            }
+
             if (!validateForm()) return false;
 
             if (isEditMode) {
@@ -327,69 +327,12 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
         AnimalEdit animal = buildAnimalFromForm();
         AppSingleton.getInstance(this).createAnimalAPI(this, animal);
-
-//        AnimalEdit animal = buildAnimalFromForm();
-//
-//        AppSingleton.getInstance(this)
-//                .createAnimalAPI(this, animal,
-//                        createdAnimalId -> {
-//
-//                            // ⬅️ agora temos ID
-//                            uploadNewPhotos(createdAnimalId);
-//
-//                            Toast.makeText(this,
-//                                    "Animal criado com sucesso",
-//                                    Toast.LENGTH_SHORT).show();
-//
-//                            finish();
-//                        },
-//                        error -> {
-//                            if (error.networkResponse != null) {
-//                                String body = new String(error.networkResponse.data);
-//                                Log.e("API_ERROR_BODY", body);
-//                            } else {
-//                                Log.e("API_ERROR", error.toString());
-//                            }
-//                        }
-////                        error -> Toast.makeText(
-////                                this,
-////                                error.getMessage() != null ? error.getMessage() : "Erro na comunicação com o servidor",
-////                                Toast.LENGTH_SHORT
-////                        ).show()
-//                );
     }
 
     private void updateAnimal() {
         AnimalEdit animal = buildAnimalFromForm();
         animal.setId(animalId);
-
         AppSingleton.getInstance(this).updateAnimalAPI(this, animalId, animal);
-
-//        AnimalEdit animal = buildAnimalFromForm();
-//        animal.setId(animalId);
-//
-//        AppSingleton.getInstance(this)
-//                .updateAnimalAPI(this, animalId, animal,
-//                        response -> {
-//
-//                            // 1️⃣ apagar fotos removidas
-//                            deleteRemovedPhotos();
-//
-//                            // 2️⃣ enviar fotos novas
-//                            uploadNewPhotos(animalId);
-//
-//                            Toast.makeText(this,
-//                                    "Animal atualizado",
-//                                    Toast.LENGTH_SHORT).show();
-//
-//                           // finish();
-//                        },
-//                        error -> Toast.makeText(
-//                                this,
-//                                error.getMessage() != null ? error.getMessage() : "Erro na comunicação com o servidor",
-//                                Toast.LENGTH_SHORT
-//                        ).show()
-//                );
     }
 
 
@@ -421,28 +364,12 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
     private void uploadNewPhotos(int animalId) {
         if (addedPhotos.isEmpty()) {
-            finish(); // mantém o teu comportamento
+            setResult(Activity.RESULT_OK);
+            finish();
             return;
         }
 
         AppSingleton.getInstance(this).uploadAnimalPhotosAPI(this, animalId, addedPhotos);
-
-//        if (addedPhotos.isEmpty()) return;
-//
-//        AppSingleton.getInstance(this)
-//                .uploadAnimalPhotosAPI(
-//                        this,
-//                        animalId,
-//                        addedPhotos,
-//                        response -> { /* ok */
-//                            finish();
-//                            },
-//                        error -> Toast.makeText(
-//                                this,
-//                                error.getMessage() != null ? error.getMessage() : "Erro na comunicação com o servidor",
-//                                Toast.LENGTH_SHORT
-//                        ).show()
-//                );
     }
 
     private void deleteRemovedPhotos() {
@@ -450,19 +377,6 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
         if (removedFileIds.isEmpty()) return;
 
         AppSingleton.getInstance(this).deleteAnimalPhotosAPI(this, removedFileIds);
-//        if (removedFileIds.isEmpty()) return;
-//
-//        AppSingleton.getInstance(this)
-//                .deleteAnimalPhotosAPI(
-//                        this,
-//                        removedFileIds,
-//                        response -> { /* ok */ },
-//                        error -> Toast.makeText(
-//                                this,
-//                                error.getMessage() != null ? error.getMessage() : "Erro na comunicação com o servidor",
-//                                Toast.LENGTH_SHORT
-//                        ).show()
-//                );
     }
 
     //ponto 1
@@ -474,7 +388,7 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
                                 result.getData() != null) {
 
                             if (photos.size() + addedPhotos.size() >= MAX_PHOTOS) {
-                                Toast.makeText(this,"Limite máximo de 5 fotos", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, R.string.txt_limite_m_ximo_de_5_fotos, Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
@@ -487,43 +401,12 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
                     });
 
 
-
-// está a funcionar mas só para google fotos não para a galeria
-    //carregar a foto da galeria
-//    private ActivityResultLauncher<Intent> photoPicker = registerForActivityResult(
-//        new ActivityResultContracts.StartActivityForResult(),
-//        result -> {
-//
-//            if (result.getResultCode() == RESULT_OK &&
-//                    result.getData() != null) {
-//
-//                if (photos.size() + addedPhotos.size() >= MAX_PHOTOS) {
-//                    Toast.makeText(
-//                            this,
-//                            "Limite máximo de 5 fotos",
-//                            Toast.LENGTH_SHORT
-//                    ).show();
-//                    return;
-//                }
-//
-//                Uri imageUri = result.getData().getData();
-//
-//                addedPhotos.add(imageUri);
-//
-//                photoAdapter.notifyItemInserted(
-//                        photos.size() + addedPhotos.size() - 1
-//                );
-//            }
-//        });
-
-
-
     private void setupStatusSpinner() {
 
         ArrayList<String> states = new ArrayList<>();
-        states.add("Inativo");
-        states.add("Ativo");
-        states.add("Adotado");
+        states.add(getString(R.string.txt_inativo));
+        states.add(getString(R.string.txt_ativo));
+        states.add(getString(R.string.txt_adotado));
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -551,27 +434,25 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
                     @Override
                     public void onMetaError(String error) {
-                        Toast.makeText(AnimalFormActivity.this, error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
     }
 
-    private int getTotalPhotosCount() {
-        return photos.size() + addedPhotos.size();
-    }
 
 
     private void positionAllSpinners() {
 
-        // 1️⃣ TYPE
+        //  TYPE
         selectSpinnerById(spType, types, editTypeId);
 
-        // 2️⃣ AGE / SIZE / VACCINATION
+        //  AGE / SIZE / VACCINATION
         selectSpinnerById(spAge, ages, editAgeId);
         selectSpinnerById(spSize, sizes, editSizeId);
         selectSpinnerById(spVaccination, vaccinations, editVaccinationId);
 
-        // 3️⃣ BREED — depois do filtro do type
+        //  BREED — depois do filtro do type
         spType.post(() -> {
             selectSpinnerById(spBreed, filteredBreeds, editBreedId);
         });
@@ -693,7 +574,7 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
     @Override
     public void onCreateAnimalError(VolleyError error) {
         if (error.networkResponse != null) {
-            Toast.makeText(getApplicationContext(),"Erro ao criar animal", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.txt_erro_ao_criar_animal, Toast.LENGTH_SHORT).show();
             String body = new String(error.networkResponse.data);
             Log.e("API_ERROR_BODY", body);
         } else {
@@ -728,7 +609,6 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
             commentAdaptador = new CommentAdaptador(
                     this,
-                    //auxAnimal.getComments(),
                     new ArrayList<>(auxAnimal.getComments()),
                     this,
                     true// <-- porque permite editar/apagar
@@ -741,7 +621,7 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
     @Override
     public void onGetAnimalEditError(VolleyError error) {
-        Toast.makeText(getApplicationContext(),"Erro ao carregar animal", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.txt_erro_ao_carregar_animal, Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -770,19 +650,19 @@ public class AnimalFormActivity extends AppCompatActivity implements CreateAnima
 
     @Override
     public void onUpdateAnimalError(VolleyError error) {
-        Toast.makeText(this, error != null && error.getMessage() != null ? error.getMessage() : "Erro na comunicação com o servidor", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, error != null && error.getMessage() != null ? error.getMessage() : getString(R.string.txt_erro_na_comunicacao_com_o_servidor), Toast.LENGTH_SHORT).show();
     }
 
     //METODOS DO LISTENER DOS UPLOAD DA FOTOS DOS ANIMAIS
     @Override
     public void onUploadAnimalPhotosSuccess() {
-        if (isEditMode) {
-            Toast.makeText(getApplicationContext(), "Animal atualizado com sucesso.", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(getApplicationContext(), "Animal criado com sucesso.", Toast.LENGTH_SHORT).show();
-        }
+//        if (isEditMode) {
+//            Toast.makeText(getApplicationContext(), "Animal atualizado com sucesso.", Toast.LENGTH_SHORT).show();
+//        }else {
+//            Toast.makeText(getApplicationContext(), "Animal criado com sucesso.", Toast.LENGTH_SHORT).show();
+//        }
+        setResult(Activity.RESULT_OK);
         finish();
-
     }
 
     @Override

@@ -43,6 +43,9 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     public static final int EDIT = 200;
     public static final String TOKEN = "token";
 
+    public static final int ADD_ANIMAL = 10;
+    public static final int EDIT_ANIMAL = 20;
+
     public static final String NAME = "name";
     public static final String USERNAME = "username";
     public static final String EMAIL = "email";

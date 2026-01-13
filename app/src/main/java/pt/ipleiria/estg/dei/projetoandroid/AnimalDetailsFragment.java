@@ -27,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import pt.ipleiria.estg.dei.projetoandroid.listeners.CommentActionListener;
@@ -53,13 +54,14 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
 
     private ImageView imgPrincipal;
     private LinearLayout layoutMiniaturas;
-    private Button btnAdopt, btnSendComment;
+    private Button btnAdopt, btnSendComment, btnSendMessage;
     private TextView tvNome, tvLocalizacao, tvDescricao, tvOwnerName, tvOwnerEmail, tvListingDescription, tvViews, tvOwnerContact, tvSize, tvAge, tvVaccination, tvAnimalType, tvBreed, tvNeutered;
     private ImageView imgOwnerAvatar;
     private TextView tvOwnerAddress;
     private TextView tvAnimalExtraInfo;
     private Animal animal;
 
+    private View rootView;
     private TextInputEditText etNewComment;
     private RecyclerView rvAnimalImages, rvComments;
     private AnimalImageAdaptador animalImageAdaptador;
@@ -75,6 +77,7 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_animal_show, container, false);
+        rootView = view;
         imgPrincipal = view.findViewById(R.id.imgAnimalMain);
 
         tvNome = view.findViewById(R.id.tvAnimalName);
@@ -92,6 +95,7 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
         btnAdopt = view.findViewById(R.id.btnAdopt);
         btnSendComment = view.findViewById(R.id.btnSendComment);
         etNewComment = view.findViewById(R.id.etNewComment);
+        btnSendMessage = view.findViewById(R.id.btnSendMessage);
         AppSingleton.getInstance(getContext()).setCommentCreateListener(this);
         // LayoutManagers
         rvAnimalImages.setLayoutManager(
@@ -115,6 +119,17 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
         btnSendComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //primeiro vê se tem internet
+                if (!AppSingleton.getInstance(getContext()).isConnectionInternet(getContext())) {
+                    Snackbar.make(rootView,
+                                    R.string.txt_offline_indisponivel,
+                                    Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.txt_ok, vv -> {})
+                            .show();
+                    return;
+                }
+
+
                 String text = etNewComment.getText().toString().trim();
                 if (text.isEmpty()) {
                     Toast.makeText(getContext(), R.string.txt_comentario_vazio, Toast.LENGTH_SHORT).show();
@@ -127,10 +142,54 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
             }
         });
 
+        btnSendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!AppSingleton.getInstance(getContext()).isConnectionInternet(getContext())) {
+                    Snackbar.make(rootView,
+                                    R.string.txt_offline_indisponivel,
+                                    Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.txt_ok, vv -> {})
+                            .show();
+                    return;
+                }
+
+                //falta implementar chamar a vista de enviar a mensagem
+                int receiverId = animal.getUserId(); // ID do dono do animal
+
+                // cria o fragmento de mensagem em modo "escrever"
+                MessageFragment frag = MessageFragment.newInstanceForCompose(
+                        receiverId,
+                        getString(R.string.txt_interesse_no_animal) + animal.getName()
+                );
+
+                requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.contentFragment, frag)
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+        });
+
         //Botão para submeter a candidatura no animal em específico
         btnAdopt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //primeiro vê se tem internet
+
+                if (!AppSingleton.getInstance(getContext()).isConnectionInternet(getContext())) {
+                    Snackbar.make(rootView,
+                                    R.string.txt_offline_indisponivel,
+                                    Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.txt_ok, vv -> {})
+                            .show();
+                    return ;
+                }
+
+
                 Fragment fragment = new ApplicationCreateFragment();
 
                 Bundle args = new Bundle();

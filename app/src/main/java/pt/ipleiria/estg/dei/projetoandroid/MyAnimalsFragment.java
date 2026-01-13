@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -35,13 +37,16 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
 
 public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, AnimalDeleteListener {
+
+
+
     private ListView lvMyAnimals;
 
     private ArrayList<Animal> myAnimals;
     private ArrayList<Animal> animalsFiltrados; //os que ficam visiveis quando é filtrado
 
     private ListaAnimalsAdaptador adaptador;
-
+    private View rootView;
     private FloatingActionButton fabAddAnimal;
 
     public MyAnimalsFragment() {
@@ -86,6 +91,7 @@ public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, An
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_animals, container, false);
+        rootView = view;
         lvMyAnimals = view.findViewById(R.id.lvMyAnimals);
 
         myAnimals = new ArrayList<>();
@@ -118,10 +124,21 @@ public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, An
         fabAddAnimal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (!AppSingleton.getInstance(getContext()).isConnectionInternet(getContext())) {
+                    Snackbar.make(rootView,
+                                    R.string.txt_offline_indisponivel,
+                                    Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.txt_ok, vv -> {})
+                            .show();
+                    return;
+                }
+
+
                 Intent intent = new Intent(getContext(), AnimalFormActivity.class);
                         intent.putExtra(AnimalFormActivity.EXTRA_MODE,
                         AnimalFormActivity.MODE_CREATE);
-                startActivity(intent);
+                startActivityForResult(intent, MenuMainActivity.ADD_ANIMAL);
                 //colocar for result
 
             }
@@ -131,13 +148,23 @@ public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, An
         lvMyAnimals.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (!AppSingleton.getInstance(getContext()).isConnectionInternet(getContext())) {
+                    Snackbar.make(rootView,
+                                    R.string.txt_offline_indisponivel,
+                                    Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.txt_ok, vv -> {})
+                            .show();
+                    return;
+                }
+
                 int idAnimal = animalsFiltrados.get(position).getId();
 
                 Intent intent = new Intent(getContext(), AnimalFormActivity.class);
                 intent.putExtra(AnimalFormActivity.EXTRA_MODE,
                         AnimalFormActivity.MODE_EDIT);
                 intent.putExtra(AnimalFormActivity.EXTRA_ANIMAL_ID, idAnimal);
-                startActivity(intent);
+                startActivityForResult(intent, MenuMainActivity.EDIT_ANIMAL);
                 //colocar for result
             }
         });
@@ -145,6 +172,27 @@ public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, An
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+
+            // Voltar a ir buscar os animals
+            AppSingleton.getInstance(getContext()).getMyAnimalsAPI(getContext());
+
+            if (requestCode == MenuMainActivity.ADD_ANIMAL) {
+                Toast.makeText(getContext(),
+                        R.string.txt_animal_adicionado_com_sucesso,
+                        Toast.LENGTH_SHORT).show();
+            }
+            else if (requestCode == MenuMainActivity.EDIT_ANIMAL) {
+                Toast.makeText(getContext(),
+                        R.string.txt_animal_editado_com_sucesso,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     private void aplicarFiltros(AnimalFilter filtro) {
 
@@ -187,33 +235,6 @@ public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, An
         adaptador.notifyDataSetChanged();
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//
-//        AppCompatActivity act = (AppCompatActivity) requireActivity();
-//        if (act.getSupportActionBar() != null) {
-//            act.getSupportActionBar().setTitle(R.string.txt_animais);
-//            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
-//    }
-
-
-    //METODOS IMPLEMENADOS DO LISTENER DOS ANIMAIS
-//    @Override
-//    public void onRefreshMyAnimalsList(ArrayList<Animal> animalsFromSingleton) {
-//        //lvAnimalsGrid.setAdapter(new ListaAnimalsGridAdaptador(getContext(), animals));
-//
-//        animals.clear();
-//        animals.addAll(animalsFromSingleton);
-//
-//        animalsFiltrados.clear();
-//        animalsFiltrados.addAll(animalsFromSingleton);
-//
-//        adaptador.notifyDataSetChanged();
-//
-//    }
-
     @Override
     public void onRefreshMyAnimals(ArrayList<Animal> Animals) {
         //lvAnimalsGrid.setAdapter(new ListaAnimalsGridAdaptador(getContext(), animals));
@@ -228,6 +249,30 @@ public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, An
     }
 
     @Override
+    public void onMyAnimalsOffline(ArrayList<Animal> cachedAnimals) {
+        Snackbar.make(
+                        rootView,
+                        R.string.txt_sem_internet_a_mostrar_dados_guardados,
+                        Snackbar.LENGTH_INDEFINITE
+                )
+                .setAction(R.string.txt_ok, v -> {
+                    // Ao clicar em OK simplesmente fecha
+                })
+                .show();
+
+        // Atualiza a lista base
+        myAnimals.clear();
+        myAnimals.addAll(cachedAnimals);
+
+        // Atualiza o que está visível
+        animalsFiltrados.clear();
+        animalsFiltrados.addAll(cachedAnimals);
+
+        // Atualiza o ListView
+        adaptador.notifyDataSetChanged();
+    }
+
+    @Override
     public void onErro(String erro) {
         //tratamos o erro que devolva da API
     }
@@ -235,7 +280,8 @@ public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, An
 
     //METODOS IMPLEMENTADOS DO DELETE lISTENER
     @Override
-    public void onDeleteAnimalSuccess(int animalId) {   //alterar isto para atualizar no singleton e não aqui (atualiza a lista no singleton e aqui faz refresh da lista toda não retira da lista daqui diretamente)
+    public void onDeleteAnimalSuccess(int animalId) {
+        AppSingleton.getInstance(getContext()).getMyAnimalsAPI(getContext());
         // remover localmente
         for (int i = 0; i < myAnimals.size(); i++) {
             if (myAnimals.get(i).getId() == animalId) {

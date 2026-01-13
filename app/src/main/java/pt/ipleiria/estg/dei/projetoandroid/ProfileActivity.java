@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,6 +23,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 
 import pt.ipleiria.estg.dei.projetoandroid.listeners.AvatarUploadListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.UserUpdateListener;
@@ -36,7 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView imgProfile;
     Button btnSave, btnCancel;
     ImageButton imgProfileChange;
-
+    private View rootView;
     private static final int PICK_IMAGE = 1000;
     private Uri avatarUri;
     private static final int PERMISSION_REQUEST = 2000;
@@ -46,6 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
+        rootView= findViewById(android.R.id.content);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -79,6 +82,17 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void guardar() {
+
+        //primeiro ver se tem internet
+        if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
+            Snackbar.make(rootView,
+                            R.string.txt_offline_indisponivel,
+                            Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.txt_ok, vv -> {})
+                    .show();
+            return;
+        }
+
 
         SharedPreferences sp = getSharedPreferences("DADOS_USER", MODE_PRIVATE);
         int userId = sp.getInt("USER_ID_INT", -1);
@@ -143,6 +157,16 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void escolherImagem() {
+
+        if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
+            Snackbar.make(rootView,
+                            R.string.txt_offline_indisponivel,
+                            Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.txt_ok, vv -> {})
+                    .show();
+            return ;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES)
                     != PackageManager.PERMISSION_GRANTED) {

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
@@ -123,6 +124,19 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
         }
 
         private void mostrarDialogApagar(Animal animal) {
+
+
+
+            //primeiro vê se tem internet
+            if (!AppSingleton.getInstance(context.getApplicationContext()).isConnectionInternet(context.getApplicationContext())) {
+                Snackbar.make(btnDelete,
+                                R.string.txt_offline_indisponivel,
+                                Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.txt_ok, v -> {})
+                        .show();
+                return;
+            }
+
             new AlertDialog.Builder(context)
                     .setTitle("Eliminar animal")
                     .setMessage("Tem a certeza que deseja eliminar este animal?")

@@ -119,4 +119,17 @@
     <string name="txt_comentario_vazio">O texto do comentário não pode estar vazio.</string>
     <string name="txt_obrigatorio">Obrigatório</string>
     <string name="txt_comentario_adicionado_com_sucesso">Comentário adicionado com sucesso.</string>
+    <string name="txt_sem_internet_a_mostrar_dados_guardados">Sem internet — a mostrar dados guardados</string>
+    <string name="txt_ok">OK</string>
+    <string name="txt_offline_indisponivel">Sem internet, esta opção não está disponivel em modo OFFLINE.</string>
+    <string name="txt_interesse_no_animal">"Interesse no animal: "</string>
+    <string name="txt_animal_adicionado_com_sucesso">Animal adicionado com sucesso.</string>
+    <string name="txt_animal_editado_com_sucesso">Animal editado com sucesso.</string>
+    <string name="txt_limite_m_ximo_de_5_fotos">Limite máximo de 5 fotos</string>
+    <string name="txt_inativo">Inativo</string>
+    <string name="txt_ativo">Ativo</string>
+    <string name="txt_adotado">Adotado</string>
+    <string name="txt_erro_ao_criar_animal">Erro ao criar animal</string>
+    <string name="txt_erro_ao_carregar_animal">Erro ao carregar animal</string>
+    <string name="txt_erro_na_comunicacao_com_o_servidor">Erro na comunicação com o servidor</string>
 </resources>

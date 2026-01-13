@@ -18,6 +18,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaAnimalsAdaptador;
@@ -35,7 +37,7 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
     private ArrayList<Animal> animalsFiltrados; //os que ficam visiveis quando é filtrado
 
     private ListaAnimalsGridAdaptador adaptador;
-
+    private View rootView;
 
     public AllAnimalsFragment() {
         // Required empty public constructor
@@ -79,9 +81,9 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_all_animals, container, false);
+        rootView = view;
         lvAnimalsGrid = view.findViewById(R.id.lvAnimalsGrid);
-        AppSingleton.getInstance(getContext()).getAnimalsAPI(getContext());
-        AppSingleton.getInstance(getContext()).setAnimalsListener(this);
+
 
         animals = new ArrayList<>();
         animalsFiltrados = new ArrayList<>();
@@ -89,7 +91,8 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
         adaptador = new ListaAnimalsGridAdaptador(getContext(), animalsFiltrados);
         lvAnimalsGrid.setAdapter(adaptador);
 
-
+        AppSingleton.getInstance(getContext()).setAnimalsListener(this);
+        AppSingleton.getInstance(getContext()).getAnimalsAPI(getContext());
 
         getParentFragmentManager().setFragmentResultListener(
                 "FILTROS_REQUEST",
@@ -192,6 +195,33 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
         animalsFiltrados.addAll(animalsFromSingleton);
 
         adaptador.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onAnimalsOffline(ArrayList<Animal> cachedAnimals) {
+        Snackbar.make(
+                        rootView,
+                        R.string.txt_sem_internet_a_mostrar_dados_guardados,
+                        Snackbar.LENGTH_INDEFINITE
+                )
+                .setAction(R.string.txt_ok, v -> {
+                    // Ao clicar em OK simplesmente fecha
+                })
+                .show();
+
+        // Atualiza a lista base
+        animals.clear();
+        animals.addAll(cachedAnimals);
+
+        // Atualiza o que está visível
+        animalsFiltrados.clear();
+        animalsFiltrados.addAll(cachedAnimals);
+
+        // Atualiza o ListView
+        adaptador.notifyDataSetChanged();
+
+
 
     }
 

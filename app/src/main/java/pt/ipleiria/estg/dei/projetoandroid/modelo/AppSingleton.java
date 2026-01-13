@@ -572,6 +572,9 @@ public class AppSingleton {
         return null;
     }
 
+    public ArrayList<Animal> getMyAnimals() {
+        return new ArrayList<>(myAnimals);
+    }
 
     //endregion
 
@@ -632,9 +635,19 @@ public class AppSingleton {
     public void getMyAnimalsAPI(final Context context) {
 
         if (!isConnectionInternet(context)) {
-            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+
+            ArrayList<Animal> local = appBD.getAllMyAnimalsBD();
+
+            if (myAnimalsListener != null)
+                myAnimalsListener.onMyAnimalsOffline(local);
+
             return;
         }
+
+//        if (!isConnectionInternet(context)) {
+//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
@@ -862,11 +875,20 @@ public class AppSingleton {
 
     public void getAnimalsAPI(final Context context) {
 
-        //esta tarefa fica para o gestor
         if (!isConnectionInternet(context)) {
-            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+
+            ArrayList<Animal> local = appBD.getAllAnimalsBD();
+
+            if (animalsListener != null)
+                animalsListener.onAnimalsOffline(local);
+
             return;
         }
+
+//        if (!isConnectionInternet(context)) {
+//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,

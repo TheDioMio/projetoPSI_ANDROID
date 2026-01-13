@@ -173,29 +173,5 @@
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
-        <!-- ================= BOTÕES ================= -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp">
-
-            <Button
-                android:id="@+id/btnCancel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cancelar"/>
-
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Guardar"
-                android:layout_marginStart="8dp"/>
-        </LinearLayout>
-
     </LinearLayout>
 </ScrollView>

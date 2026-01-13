@@ -6,5 +6,6 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 
 public interface MyAnimalsListener {
     void onRefreshMyAnimals(ArrayList<Animal> myAnimals);
+    void onMyAnimalsOffline(ArrayList<Animal> cachedAnimals);
     void onErro(String erro);
 }

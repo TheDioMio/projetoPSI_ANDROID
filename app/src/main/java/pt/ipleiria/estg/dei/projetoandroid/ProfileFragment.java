@@ -13,7 +13,7 @@ import android.widget.EditText;
 
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
-
+                                                                            //Deve ser para apagar
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProfileFragment#newInstance} factory method to

@@ -1,12 +1,18 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView; // MUDANÇA IMPORTANTE
+import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaApplicationsAdaptor; // Importa o nosso adaptador corrigido
@@ -15,11 +21,14 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
 
 public class ApplicationsListFragment extends Fragment implements ApplicationsListener {
-
     private static final String ARG_TYPE = "type";
     private String type; // "sent" ou "received", é isto que troca entre as listas
-
     private ListView lvApplications;
+
+    private ArrayList<Application> applications;
+    private ListaApplicationsAdaptor adaptor;
+
+    private View rootView;
 
     public ApplicationsListFragment() { }
 
@@ -42,30 +51,34 @@ public class ApplicationsListFragment extends Fragment implements ApplicationsLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_application_list, container, false);
-
-        // 1. Encontrar a ListView pelo ID correto do XML
+        //Encontrar a ListView pelo ID correto do XML
         lvApplications = view.findViewById(R.id.lvApplications);
+        //Iniciar a lista vazia
+        applications = new ArrayList<>();
+        //Iniciar o adaptador SÓ UMA VEZ AQUI
+        adaptor = new ListaApplicationsAdaptor(getContext(), applications, type);
+        lvApplications.setAdapter(adaptor);
 
-        // 2. Chamar a API
-        AppSingleton.getInstance(getContext()).getApplicationsAPI(getContext(), type, this);
+        //Configurar Listener e chamar API
+        AppSingleton.getInstance(getContext()).setApplicationsListener(this);
+        AppSingleton.getInstance(getContext()).getApplicationsAPI(getContext(), type);
 
         lvApplications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Passo A: Obter o objeto da linha clicada
-                // O adapter sabe qual é o objeto na posição X
+                //Ir buscar o item clicado: O adapter sabe qual é o objeto na posição X
                 Application selected = (Application) parent.getItemAtPosition(position);
 
-                // Passo B: Preparar os dados para enviar (apenas o ID chega)
+                //Preparar os dados para enviar
                 Bundle bundle = new Bundle();
                 bundle.putInt("application_id", selected.getId());
                 bundle.putString("type_sent_received", type);
 
-                // Passo C: Criar o fragmento de detalhes e dar-lhe os argumentos
+                //Criar o fragmento de detalhes e dar-lhe os argumentos
                 ApplicationDetailsFragment detailsFragment = new ApplicationDetailsFragment();
                 detailsFragment.setArguments(bundle);
 
-                // Passo D: Navegar (Substituir o fragmento atual pelo de detalhes)
+                //Substituir o fragmento atual pelo de detalhes
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.contentFragment, detailsFragment)
@@ -77,32 +90,86 @@ public class ApplicationsListFragment extends Fragment implements ApplicationsLi
         return view;
     }
 
-    // --- MÉTODOS DO LISTENER ---
-
+    //Adicionar onResume para gerir o título da Toolbar
     @Override
-    public void onRefreshList(ArrayList<Application> listaCandidaturas) {
-        // Este é o método que o AppSingleton chama quando os dados chegam
-        if (listaCandidaturas != null && getContext() != null) {
-            // Criar o adaptador e ligá-lo à ListView
-            ListaApplicationsAdaptor adapter = new ListaApplicationsAdaptor(getContext(), listaCandidaturas, type);
-            lvApplications.setAdapter(adapter);
+    public void onResume() {
+        super.onResume();
+        AppCompatActivity act = (AppCompatActivity) requireActivity();
+        if (act.getSupportActionBar() != null) {
+            // Define o título consoante o tipo da lista
+            if ("sent".equals(type)) {
+                act.getSupportActionBar().setTitle("Candidaturas Enviadas");
+            } else {
+                act.getSupportActionBar().setTitle("Candidaturas Recebidas");
+            }
+            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    // Implementar restantes métodos da interface para evitar erros (podem ficar vazios)
+    //Limpar o listener ao destruir a vista
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        AppSingleton.getInstance(getContext()).setApplicationsListener(null);
+    }
+
+
+    
+    
+    // --- MÉTODOS DO LISTENER ---
+    @Override
+    public void onRefreshList(ArrayList<Application> listaCandidaturas) {
+        // Este é o método que o AppSingleton chama quando os dados chegam
+        if (listaCandidaturas != null) {
+            //Limpa e atualiza a lista
+            applications.clear();
+            applications.addAll(listaCandidaturas);
+            
+            //Avisa o adaptador que os dados mudaram
+            adaptor.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public void onRefreshApplicationList(ArrayList<Application> list) {
-        // Se a tua interface usar este nome, redireciona para o de cima
         onRefreshList(list);
     }
 
     @Override
     public void onError(String error) {
-        // Podes adicionar um Toast aqui se quiseres ver erros
+        Toast.makeText(getContext(), "Erro inesperado", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRefreshList(Object o) {
-        // Método genérico, não utilizado neste contexto
+    }
+
+    @Override
+    public void onApplicationsOffline(ArrayList<Application> cachedApplications) {
+        // Mostra o aviso (Snackbar)
+        if (rootView != null) {
+            Snackbar.make(
+                    rootView,
+                    R.string.txt_sem_internet_a_mostrar_dados_guardados,
+                    Snackbar.LENGTH_INDEFINITE
+            ).setAction(R.string.txt_ok, v -> {}).show();
+        }
+
+        // VERIFICAÇÃO E ATUALIZAÇÃO
+        if (cachedApplications != null && !cachedApplications.isEmpty()) {
+            //Para ajudar debug
+            System.out.println("DEBUG CACHE: A atualizar lista com " + cachedApplications.size() + " itens.");
+
+            //Atualiza a lista local
+            applications.clear();
+            applications.addAll(cachedApplications);
+
+            //Como o notifyDataSetChanged() não estava a atualizar a lista, tive que forçar...
+            adaptor = new ListaApplicationsAdaptor(getContext(), applications, type);
+            lvApplications.setAdapter(adaptor);
+
+        } else {
+            System.out.println("DEBUG FRAGMENT: A lista de cache veio vazia.");
+        }
     }
 }

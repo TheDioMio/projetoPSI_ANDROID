@@ -13,4 +13,6 @@ public interface ApplicationsListener {
     void onError(String error);
 
     void onRefreshList(Object o);
+
+    void onApplicationsOffline(ArrayList<Application> cachedApplications);
 }

@@ -89,15 +89,12 @@
                         android:textSize="14sp"
                         android:textColor="?android:textColorSecondary" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnAdopt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
                         android:text="@string/txt_adotar"
-                        app:cornerRadius="12dp"
-                        app:iconPadding="8dp"
-                        app:backgroundTint="@color/primary" />
+                        />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -195,13 +192,12 @@
                     </LinearLayout>
 
                     <!-- Botão enviar mensagem -->
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btnSendMessage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="@string/txt_enviar_mensagem"
-                        app:backgroundTint="@color/primary"
                         app:iconPadding="8dp"
                         app:cornerRadius="12dp"/>
 

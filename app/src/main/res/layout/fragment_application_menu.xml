@@ -4,17 +4,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ApplicationMenuFragment" >
+    android:padding="16dp"
+    tools:context=".ApplicationMenuFragment">
 
-    <Button
-        android:id="@+id/btnSent"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/txt_btn_applications_sent" />
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp">
 
-    <Button
-        android:id="@+id/btnReceived"
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_candidaturas"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvPendingStuff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/txt_todas_as_candidaturas_na_palma_da_sua_m_o"
+            android:textColor="#757575"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_txt_application_received" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/txt_btn_applications_sent" />
+
+        <Button
+            android:id="@+id/btnReceived"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/btn_txt_application_received" />
+
+    </LinearLayout>
+
 </LinearLayout>

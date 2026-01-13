@@ -18,12 +18,11 @@
 
     <Button
         android:id="@+id/btn_pesquisaAnimais"
+        style="@style/Widget.ProjetoANDROID.SecondaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/dark_green"
-        android:text="@string/txt_button_pesquisar_animais"
-        app:cornerRadius="@dimen/button_radius" />
+        android:text="@string/txt_button_pesquisar_animais" />
 </LinearLayout>

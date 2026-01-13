@@ -175,6 +175,11 @@ public class ApplicationCreateFragment extends Fragment {
                             @Override public void onRefreshApplicationList(ArrayList<Application> list) {}
                             @Override public void onError(String error) {}
                             @Override public void onRefreshList(Object o) {}
+
+                            @Override
+                            public void onApplicationsOffline(ArrayList<Application> cachedApplications) {
+
+                            }
                         }
                 );
             }

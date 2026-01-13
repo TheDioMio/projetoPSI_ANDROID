@@ -132,4 +132,8 @@
     <string name="txt_erro_ao_criar_animal">Erro ao criar animal</string>
     <string name="txt_erro_ao_carregar_animal">Erro ao carregar animal</string>
     <string name="txt_erro_na_comunicacao_com_o_servidor">Erro na comunicação com o servidor</string>
+    <string name="txt_pesquisar">Pesquisar</string>
+    <string name="hint_insira_aqui_o_seu_nome_completo">Insira aqui o seu nome completo...</string>
+    <string name="txt_todas_as_candidaturas_na_palma_da_sua_m_o">Todas as candidaturas na palma da sua mão</string>
+    <string name="txt_candidaturas">Candidaturas</string>
 </resources>

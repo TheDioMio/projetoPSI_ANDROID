@@ -81,16 +81,14 @@
             android:layout_marginTop="24dp"
             android:gravity="center_vertical">
 
-            <Space />
+            <Space/>
 
             <Button
                 android:id="@+id/btnLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Widget.ProjetoANDROID.SecondaryButton"
                 android:layout_marginHorizontal="8dp"
                 android:text="@string/txt_login"
-                app:backgroundTint="@color/secondary"
-                app:cornerRadius="@dimen/button_radius" />
+            />
         </TableRow>
 
         <TableRow
@@ -103,12 +101,10 @@
 
             <Button
                 android:id="@+id/btnSignup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Widget.ProjetoANDROID.SecondaryButton"
                 android:layout_marginHorizontal="8dp"
                 android:text="@string/txt_registar"
-                app:backgroundTint="@color/secondary"
-                app:cornerRadius="@dimen/button_radius" />
+            />
 
         </TableRow>
 

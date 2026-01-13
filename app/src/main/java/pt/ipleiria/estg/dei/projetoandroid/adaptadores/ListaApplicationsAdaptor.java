@@ -31,33 +31,13 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
     private ArrayList<Application> candidaturas;
     private AppSingleton singleton;
     private ApplicationListener listener;
-
-
     private String type; //Este type é "sent" ou "received", para dar para esconder o botão delete no listview.
 
-    public ListaApplicationsAdaptor(Context context, ArrayList<Application> candidaturasDoFragmento, String type) {
+    public ListaApplicationsAdaptor(Context context, ArrayList<Application> candidaturas, String type) {
         this.context = context;
-        this.singleton = AppSingleton.getInstance(context);
         this.type = type;
 
-        // 1. AQUI ESTÁ O TRUQUE:
-        // Em vez de fazermos "this.candidaturas = candidaturasDoFragmento" (que copiava o lixo todo),
-        // nós inicializamos a NOSSA lista interna vazia. É como se limpássemos a mesa.
-        this.candidaturas = new ArrayList<>();
-        // 2. Agora vamos percorrer a lista que veio de fora...
-        boolean isCandidate = type != null && type.equalsIgnoreCase("sent");
-        if (candidaturasDoFragmento != null) {
-            for (Application app : candidaturasDoFragmento) {
-                //Se for candidato, mostrar todas as applications
-                if (isCandidate) {
-                    this.candidaturas.add(app);
-
-                //Se não for candidato, esconder as applications que tenham status_cancelled.
-                } else if (!isCandidate && !app.getStatus().equals(Application.STATUS_CANCELLED)) {
-                    this.candidaturas.add(app);
-                }
-            }
-        }
+       this.candidaturas = candidaturas;
     }
 
     @Override

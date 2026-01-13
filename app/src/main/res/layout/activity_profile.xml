@@ -246,16 +246,14 @@ tools:context=".ProfileActivity">
         android:id="@+id/btnSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/txt_save"
-        app:backgroundTint="@color/secondary" />
+        android:text="@string/txt_save" />
 
     <Button
         android:id="@+id/btnCancel"
+        style="@style/Widget.ProjetoANDROID.SecondaryButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/txt_cancelar"
-        android:backgroundTint="@color/primary"
         android:layout_marginTop="8dp"/>
 
 </LinearLayout>

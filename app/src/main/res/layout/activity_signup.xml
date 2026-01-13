@@ -108,12 +108,12 @@
 
             <Button
                 android:id="@+id/btnSignup"
+                style="@style/Widget.ProjetoANDROID.SecondaryButton"
+                android:layout_marginTop= "0dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
-                android:text="@string/txt_registar"
-                app:backgroundTint="@color/secondary"
-                app:cornerRadius="@dimen/button_radius" />
+                android:text="@string/txt_registar" />
         </TableRow>
     </TableLayout>
 

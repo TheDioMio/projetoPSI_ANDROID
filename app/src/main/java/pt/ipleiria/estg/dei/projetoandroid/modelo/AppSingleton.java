@@ -97,17 +97,16 @@ public class AppSingleton {
 
 
     //-------------------------------------------
-    // Endpoints da API
+    // Endpoints da API 10.104.146.191
     //--------------------------------------------
     //region ENDPOINTS
-    //public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
-    public String endereco = "http://192.168.1.68:8000/projetoPSI_WEB/backend/web/api";
+    public String endereco = "http://10.104.146.191/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-    //public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
-    public static final String FRONTEND_BASE_URL = "http://192.168.1.68:8000/projetoPSI_WEB/frontend/web";
-
+    public static final String FRONTEND_BASE_URL = "http://10.104.146.191/projetoPSI_WEB/frontend/web";
 
     //ENDPOINTS DOS USERS
+
+
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String postmUrlAPISignup = endereco+"/auth/signup";
 
@@ -116,16 +115,10 @@ public class AppSingleton {
     private String getMessageURL = endereco+"/messages";
     private String getmUrlAPIApplication = endereco + "/application";
 
-    private String getSentApplications = endereco+"application/sent"; // <- Diogo penso que o link deve começar por / não quis alterar pois podes estar a tratar isto de outra forma
-
-
     //ENDPOINTS DOS FILES
     private String postAvatarURL = endereco+"/file/update-avatar";
     private String postmUrlAPIFilesDelete = endereco+"/file/delete"; 
     private String postmUrlAPIFilesCreate = endereco+"/file/create";
-
-
-    //ENDPOINTS DOS ANIMALS
     private String getmUrlAPIAnimals = endereco+"/animals?expand=listing.comments.user.profileImage,user.profileImage";
     private String putmUrlAPIAnimalUpdate = endereco+"/animals/";
     private String deletemUrlAPIAnimalDelete = endereco+"/animals/";
@@ -250,6 +243,10 @@ public class AppSingleton {
         this.metaListener = metaListener;
     }
 
+    public void setApplicationsListener(ApplicationsListener applicationsListener){
+        this.applicationsListener = applicationsListener;
+    }
+
     //endregion
 
 
@@ -273,6 +270,7 @@ public class AppSingleton {
         appBD = AppDBHelper.getInstance(this.context);
         animals = new ArrayList<>();
         myAnimals = new ArrayList<>();
+        applications = new ArrayList<>();
     }
 
 
@@ -1073,10 +1071,10 @@ public class AppSingleton {
     //--------------------------------------
 
 
-    public ArrayList<Application> getAllApplicationsBD() {
-        applications = appBD.getAllApplicationsBD();
-        return new ArrayList<>(applications);
-    }
+//    public ArrayList<Application> getAllApplicationsBD() {
+//        applications = appBD.getAllApplicationsBD();
+//        return new ArrayList<>(applications);
+//    }
 
 
 
@@ -1086,113 +1084,6 @@ public class AppSingleton {
             appBD.adicionarFileBD(f);
         }
     }
-
-
-
-
-//    public void createAnimalAPI(Context context, AnimalEdit animal, Response.Listener<Integer> listener, Response.ErrorListener errorListener) {
-//
-//        if (!isConnectionInternet(context)) {
-//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        JSONObject body = new JSONObject();
-//        try {
-//            body.put("name", animal.getName());
-//            body.put("description", animal.getDescription());
-//            body.put("location", animal.getLocation());
-//
-//            body.put("animal_type_id", animal.getTypeId());
-//            body.put("breed_id", animal.getBreedId());
-//            body.put("age_id", animal.getAgeId());
-//            body.put("size_id", animal.getSizeId());
-//            body.put("vaccination_id", animal.getVaccinationId());
-//            body.put("neutered", animal.getNeutered());
-//
-//            // listing
-//            body.put("listing_description", animal.getListingDescription());
-//            body.put("listing_status", animal.getListingStatus());
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        JsonObjectRequest request = new JsonObjectRequest(
-//                Request.Method.POST,
-//                postmUrlAPIAnimalCreate,
-//                body,
-//                response -> {
-//                    int animalId = response.optInt("animal_id", -1);
-//                    listener.onResponse(animalId);
-//                },
-//                errorListener
-//        ) {
-//            @Override
-//            public Map<String, String> getHeaders() {
-//                Map<String, String> headers = new HashMap<>();
-//                headers.put("Authorization", "Bearer " + getToken(context));
-//                headers.put("Accept", "application/json");
-//                headers.put("Content-Type", "application/json");
-//                return headers;
-//            }
-//        };
-//
-//        volleyQueue.add(request);
-//    }
-
-
-
-
-
-
-//    public void updateAnimalAPI(Context context, int animalId, AnimalEdit animal, Response.Listener<Void> listener, Response.ErrorListener errorListener) {
-//
-//        if (!isConnectionInternet(context)) {
-//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        JSONObject body = new JSONObject();
-//        try {
-//            body.put("name", animal.getName());
-//            body.put("description", animal.getDescription());
-//            body.put("location", animal.getLocation());
-//
-//            body.put("animal_type_id", animal.getTypeId());
-//            body.put("breed_id", animal.getBreedId());
-//            body.put("age_id", animal.getAgeId());
-//            body.put("size_id", animal.getSizeId());
-//            body.put("vaccination_id", animal.getVaccinationId());
-//            body.put("neutered", animal.getNeutered());
-//
-//            body.put("listing_description", animal.getListingDescription());
-//            body.put("listing_status", animal.getListingStatus());
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        JsonObjectRequest request = new JsonObjectRequest(
-//                Request.Method.PUT,
-//                putmUrlAPIAnimalUpdate+animalId,
-//                body,
-//                response -> listener.onResponse(null),
-//                errorListener
-//        ) {
-//            @Override
-//            public Map<String, String> getHeaders() {
-//                Map<String, String> headers = new HashMap<>();
-//                headers.put("Authorization", "Bearer " + getToken(context));
-//                headers.put("Accept", "application/json");
-//                headers.put("Content-Type", "application/json");
-//                return headers;
-//            }
-//        };
-//
-//        volleyQueue.add(request);
-//    }
-
 
     public void uploadAnimalPhotosAPI(Context context, int animalId, ArrayList<Uri> photos) {
 
@@ -1325,158 +1216,16 @@ public class AppSingleton {
         volleyQueue.add(request);
     }
 
-
-//    public void deleteAnimalPhotosAPI(Context context, ArrayList<Integer> removedPhotoIds, Response.Listener<Void> listener, Response.ErrorListener errorListener) {
-//
-//        if (!isConnectionInternet(context)) {
-//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        JSONObject body = new JSONObject();
-//        JSONArray ids = new JSONArray();
-//
-//        for (int id : removedPhotoIds) {
-//            ids.put(id);
-//        }
-//
-//        try {
-//            body.put("photo_ids", ids);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        JsonObjectRequest request = new JsonObjectRequest(
-//                Request.Method.POST,
-//                postmUrlAPIFilesDelete,
-//                body,
-//                response -> listener.onResponse(null),
-//                errorListener
-//        ) {
-//            @Override
-//            public Map<String, String> getHeaders() {
-//                Map<String, String> headers = new HashMap<>();
-//                headers.put("Authorization", "Bearer " + getToken(context));
-//                return headers;
-//            }
-//        };
-//
-//        volleyQueue.add(request);
-//    }
-
-
-
-
-
-
-//    public void getAnimalEditAPI(Context context, int animalId, Response.Listener<AnimalEdit> listener, Response.ErrorListener errorListener) {
-//
-//        if (!isConnectionInternet(context)) {
-//            errorListener.onErrorResponse(null);
-//            return;
-//        }
-//
-//        String url = getmUrlAPIAnimalEdit + animalId;
-//
-//        JsonObjectRequest request = new JsonObjectRequest(
-//                Request.Method.GET,
-//                url,
-//                null,
-//                response -> {
-//                    AnimalEdit animal = AnimalEditJsonParser.parse(response);
-//                    listener.onResponse(animal);
-//                },
-//                errorListener
-//        ) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> headers = new HashMap<>();
-//                String token = getToken(context);
-//
-//                if (token != null) {
-//                    headers.put("Authorization", "Bearer " + token);
-//                }
-//                return headers;
-//            }
-//        };
-//
-//        volleyQueue.add(request);
-//    }
-
-    //recebe os dados para carreagar nos spinners da form do animal
-
-
-
-
-
     // -------------------------
     // GESTOR User
     // -------------------------
 
-//    public User getUserLogin(String username, String password){
-//        return gestorUsers.getUserLogin(username, password);
-//    }
-//
+
     public User getUser(int idUser){
         //colocar aqui o que está no gestor de users
         return gestorUsers.getUser(idUser);
     }
-//
-//    public void addUser(String username, String email, String password) {
-//        gestorUsers.addUser(username, email, password);
-//    }
-//
-//    // -------------------------
-//    // GESTOR ANIMAL TYPE
-//    // -------------------------
-//    public ArrayList<AnimalType> getAnimalTypes() {
-//        return gestorAnimalType.getAnimalTypes();
-//    }
-//
-//    public AnimalType getAnimalType(int id) {
-//        return gestorAnimalType.getAnimalType(id);
-//    }
-//
-//    // -------------------------
-//    // GESTOR BREED
-//    // -------------------------
-//    public ArrayList<AnimalBreed> getBreedsByAnimalType(int tipoId) {
-//        return gestorAnimalBreed.getBreedsByType(tipoId);
-//    }
-//
-//    public AnimalBreed getBreed(int id) {
-//        return gestorAnimalBreed.getAnimalBreed(id);
-//    }
-//
-//    // -------------------------
-//    // GESTOR AGE
-//    // -------------------------
-//    public ArrayList<String> getAnimalAgesStrings() {
-//        return gestorAnimalAge.getAgesStrings();
-//    }
-//
-//    // -------------------------
-//    // GESTOR SIZE
-//    // -------------------------
-//    public ArrayList<String> getAnimalSizesStrings() {
-//        return gestorAnimalSize.getSizesStrings();
-//    }
-//
-//    public ArrayList<AnimalSize> getAnimalSizes() {
-//        return gestorAnimalSize.getSizes();
-//    }
-//
-//    // -------------------------
-//    // GESTOR Vaccination
-//    // -------------------------
-//    public ArrayList<String> getVaccinationStrings() {
-//        return gestorVaccination.getVaccinationStrings();
-//    }
-//    public ArrayList<Vaccination> getVaccinations() {
-//        return gestorVaccination.getVaccinations();
-//    }
-//
-//
+
 
     // -------------------------
     // GESTOR Application
@@ -1486,65 +1235,66 @@ public class AppSingleton {
     }
 
     public Application getApplication(int id) {
-        for (Application a : applications) {
-            if (a.getId() == id) {
-                return a;
+        //Tenta procurar na memória (Se a lista existir)
+        if (applications != null) {
+            for (Application a : applications) {
+                if (a.getId() == id) {
+                    return a;
+                }
             }
         }
 
-        // fallback BD
+        //Se não encontrou na memória (ou lista nula), vai à BD buscar
+        // Isto impede o crash se a lista applications estiver a null
         return AppDBHelper.getInstance(context).getApplicationById(id);
     }
 
-    public void getApplicationsAPI(final Context context, String type, final ApplicationsListener listener) {
+    public void getApplicationsAPI(final Context context, final String type) {
         String url = endereco + "/application/" + type;
 
+        //Se não tem net, vai logo à BD
+        if (!isConnectionInternet(context)) {
+            System.out.println("DEBUG: Sem net detetada. A carregar cache...");
+            tentaCarregarCache(type);
+            return;
+        }
+
+        //Pedido API
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray jsonArray) {
                         try {
-                            // Tenta converter
+                            //Converter JSON
                             applications = ApplicationJsonParser.parserJsonApplications(jsonArray);
-                            //Limpar dados antigos das applications anteriores
-                            appBD.removerAllApplicationsBD();
-                            //Guardar na BD local
-                            adicionarApplicationsBD(applications);
-                            if (listener != null) {
-                                listener.onRefreshList(applications);
+
+                            //Guardar dados vindos da API na BD local (para cache)
+                            try {
+                                //Limpa lista antiga e guarda a nova
+                                adicionarApplicationsBD(applications, type);
+                                System.out.println("DEBUG: Dados guardados na BD com sucesso!");
+                            } catch (Exception ex) {
+                                System.out.println("DEBUG: Erro ao guardar na BD: " + ex.getMessage());
+                                ex.printStackTrace();
+                            }
+
+                            //Atualizar vista
+                            if (applicationsListener != null) {
+                                applicationsListener.onRefreshList(applications);
                             }
                         } catch (Exception e) {
-                            // Se falhar aqui, é erro no Parser (campos errados ou nulos)
                             e.printStackTrace();
-                            Toast.makeText(context, "Erro ao processar dados: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            // Se falhar o parse, tenta mostrar o que temos na BD
+                            tentaCarregarCache(type);
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        String message = "Erro desconhecido";
-
-                        if (error.networkResponse != null) {
-                            // Se o servidor respondeu (ex: 404, 500, 401)
-                            message = "Erro Servidor: " + error.networkResponse.statusCode;
-                            try {
-                                // Tenta ler o que o servidor escreveu no erro
-                                String data = new String(error.networkResponse.data, "UTF-8");
-                                android.util.Log.e("ERRO_API", data); // VEJAM NO LOGCAT!
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        } else if (error instanceof com.android.volley.ParseError) {
-                            message = "Erro de Formato (ParseError): O JSON não veio como esperado.";
-                        } else if (error instanceof com.android.volley.NoConnectionError) {
-                            message = "Sem ligação à Internet";
-                        } else if (error instanceof com.android.volley.TimeoutError) {
-                            message = "O servidor demorou muito a responder";
-                        }
-
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                        error.printStackTrace(); // Imprime o erro completo na consola
+                        //Se o pedido falhar por algum motivo, vai à BD local
+                        System.out.println("DEBUG: Erro no Volley. A tentar cache local...");
+                        tentaCarregarCache(type);
                     }
                 }) {
             @Override
@@ -1561,7 +1311,6 @@ public class AppSingleton {
     }
 
     public void addApplicationAPI(final Context context, int userId,int animalId, String motive, String dataJsonString, final ApplicationsListener listener) {
-
         if (!isConnectionInternet(context)) {
             Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
             return;
@@ -1571,8 +1320,8 @@ public class AppSingleton {
 
         JSONObject jsonBody;
         try {
-            // 1. O SEGREDO: Pegar na string que vem do fragmento e torná-la no objeto raiz
-            // Assim "age", "home", etc. ficam na raiz, como o PHP quer.
+            //Pegar na string que vem do fragmento e torná-la no objeto raiz
+            //Assim "age", "home", etc. ficam na raiz, como o PHP quer.
             jsonBody = new JSONObject(dataJsonString);
 
             // 2. Adicionar o que falta
@@ -1618,7 +1367,7 @@ public class AppSingleton {
                         } else if (error instanceof com.android.volley.ParseError) {
                         message += " (Erro de Leitura)";
 
-                        // TENTA LER O HTML QUE VEIO NO ERRO (NOVO)
+                        // TENTA LER O HTML QUE VEIO NO ERRO
                         if (error.networkResponse != null && error.networkResponse.data != null) {
                             try {
                                 String htmlErro = new String(error.networkResponse.data, "UTF-8");
@@ -1646,31 +1395,16 @@ public class AppSingleton {
         volleyQueue.add(request);
     }
 
-    public void adicionarApplicationBD(Application application) {
-        //Guarda na Base de Dados
-        Application auxApp = appBD.adicionarApplicationBD(application);
-
-        //Atualiza a lista em memória (Singleton)
-        if (auxApp != null) {
-            // Procura se já existe na lista para substituir (Update)
-            Application existente = getApplication(auxApp.getId());
-
-            if (existente != null) {
-                applications.remove(existente);
-                applications.add(auxApp);
-            } else {
-                applications.add(auxApp);
-            }
-        }
-    }
-    public void adicionarApplicationsBD(ArrayList<Application> listaApplications) {
-        appBD.removerAllApplicationsBD();
-        for (Application app : listaApplications) {
-            appBD.adicionarApplicationBD(app);
+    public void adicionarApplicationsBD(ArrayList<Application> applications, String type) {
+        //Limpar dados antigos das applications anteriores da lista específica ao type
+        appBD.removerAllApplicationsBD(type);
+        for (Application app : applications) {
+            appBD.adicionarApplicationBD(app, type);
         }
         // Atualiza a memória
-        this.applications = new ArrayList<>(listaApplications);
+        this.applications = new ArrayList<>(applications);
     }
+
     public void editarApplicationAPI(final Application application, final Context context, final ApplicationListener listener) {
         if (!isConnectionInternet(context)) {
             Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
@@ -1819,6 +1553,22 @@ public class AppSingleton {
         }
     }
 
+    private void tentaCarregarCache(String type) {
+        try {
+            ArrayList<Application> local = appBD.getAllApplicationsBD(type);
+
+            if (local != null && !local.isEmpty()) {
+                System.out.println("DEBUG: Recuperados " + local.size() + " itens da cache.");
+                if (applicationsListener != null) {
+                    applicationsListener.onApplicationsOffline(local);
+                }
+            } else {
+                System.out.println("DEBUG: A cache está vazia.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     // -------------------------
     // FIM GESTOR Application
     // -------------------------

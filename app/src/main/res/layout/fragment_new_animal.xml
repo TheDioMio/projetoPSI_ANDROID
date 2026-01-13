@@ -145,11 +145,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="@android:color/holo_blue_dark"
-                android:padding="12dp"
-                android:text="Guardar"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
+                android:text="@string/txt_send"/>
         </LinearLayout>
     </ScrollView>
 

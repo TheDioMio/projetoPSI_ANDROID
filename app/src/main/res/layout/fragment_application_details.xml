@@ -408,8 +408,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="#4CAF50"
-                android:text="@string/txt_btn_aprovar"
-                android:textColor="#FFFFFF" />
+                android:text="@string/txt_btn_aprovar" />
 
             <Button
                 android:id="@+id/btnReject"
@@ -417,8 +416,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:backgroundTint="#F44336"
-                android:text="@string/txt_btn_rejeitar"
-                android:textColor="#FFFFFF" />
+                android:text="@string/txt_btn_rejeitar" />
 
         </LinearLayout>
 

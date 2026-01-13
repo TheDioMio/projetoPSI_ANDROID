@@ -54,6 +54,7 @@ import pt.ipleiria.estg.dei.projetoandroid.listeners.DeleteAnimalPhotosListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.GetAnimalEditListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MetaListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MyAnimalsListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.SignupListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.UpdateAnimalListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.UploadAnimalPhotosListener;
 import pt.ipleiria.estg.dei.projetoandroid.utils.FileUtils;
@@ -108,6 +109,8 @@ public class AppSingleton {
 
     //ENDPOINTS DOS USERS
     private String getmUrlAPILogin = endereco+"/auth/login";
+    private String postmUrlAPISignup = endereco+"/auth/signup";
+
     private String getmUrlAPIMe = endereco+"/users/me";
     private String putmUrlAPIMe = endereco+"/users/me";
     private String getMessageURL = endereco+"/messages";
@@ -180,6 +183,11 @@ public class AppSingleton {
 
     private CommentUpdateListener commentUpdateListener;
 
+    private SignupListener signupListener;
+
+    public void setSignupListener(SignupListener listener) {
+        this.signupListener = listener;
+    }
     public void setCommentUpdateListener(CommentUpdateListener commentUpdateListener) {
         this.commentUpdateListener = commentUpdateListener;
     }
@@ -1970,6 +1978,85 @@ public class AppSingleton {
 
     //*************************************** Fim Mensagens *************************************
 
+
+
+    public void signupAPI(final String username,
+                          final String email,
+                          final String password,
+                          final Context context) {
+
+        if (!isConnectionInternet(context)) {
+            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                postmUrlAPISignup,
+                response -> {
+                    try {
+                        JSONObject json = new JSONObject(response);
+
+                        boolean success = json.optBoolean("success", false);
+
+                        if (success) {
+                            if (signupListener != null) {
+                                signupListener.onSignupResultListener(true, "Conta criada com sucesso");
+                            }
+                        } else {
+                            if (signupListener != null) {
+                                signupListener.onSignupResultListener(false, "Erro ao criar conta");
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (signupListener != null) {
+                            signupListener.onSignupResultListener(false, "Erro a processar resposta");
+                        }
+                    }
+                },
+                error -> {
+
+                    String msg = "Erro desconhecido";
+
+                    if (error.networkResponse != null) {
+                        int code = error.networkResponse.statusCode;
+
+                        if (code == 422) msg = "Dados inválidos";
+                        else if (code == 409) msg = "Utilizador já existe";
+                        else if (code == 500) msg = "Erro no servidor";
+                    } else if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                        msg = "Sem ligação ao servidor";
+                    }
+
+                    if (signupListener != null) {
+                        signupListener.onSignupResultListener(false, msg);
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("email", email);
+                params.put("password", password);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
+
     public void loginAPI(final String username, final String password, final Context context){
         if(!isConnectionInternet(context)){
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
@@ -2256,13 +2343,13 @@ public class AppSingleton {
                 .apply();
     }
 
-    public void notifyMenuRefresh(Me me) {
-        this.me = me;
-
-        if (menuListener != null) {
-            menuListener.onRefreshMenu(me);
-        }
-    }
+//    public void notifyMenuRefresh(Me me) {
+//        this.me = me;
+//
+//        if (menuListener != null) {
+//            menuListener.onRefreshMenu(me);
+//        }
+//    }
 
 
     public String getToken(Context context) {

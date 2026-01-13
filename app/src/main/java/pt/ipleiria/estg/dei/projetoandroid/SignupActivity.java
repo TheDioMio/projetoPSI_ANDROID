@@ -11,9 +11,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import pt.ipleiria.estg.dei.projetoandroid.listeners.SignupListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignupActivity extends AppCompatActivity implements SignupListener {
 
     private EditText etUsername, etPassword, etEmail;
     private Button btnSignup;
@@ -28,6 +31,7 @@ public class SignupActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        AppSingleton.getInstance(this).setSignupListener(this);
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
@@ -37,6 +41,17 @@ public class SignupActivity extends AppCompatActivity {
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
+                    Snackbar.make(findViewById(android.R.id.content),
+                                    R.string.txt_offline_indisponivel,
+                                    Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.txt_ok, vv -> {})
+                            .show();
+                    return;
+                }
+
+
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
                 String email = etEmail.getText().toString();
@@ -46,10 +61,23 @@ public class SignupActivity extends AppCompatActivity {
                     return;
                 }
 
-                //AppSingleton.getInstance(getApplicationContext()).addUser(username, email, password);
-                Toast.makeText(SignupActivity.this, R.string.txt_toast_registo_utilizador_sucesso, Toast.LENGTH_SHORT).show();
-                finish();
+                AppSingleton.getInstance(getApplicationContext()).signupAPI(username, email, password, getApplicationContext());
+
             }
         });
+    }
+
+    @Override
+    public void onSignupResultListener(boolean success, String message) {
+
+
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+        if (success) {
+            etUsername.setText("");
+            etPassword.setText("");
+            etEmail.setText("");
+            finish();
+        }
     }
 }

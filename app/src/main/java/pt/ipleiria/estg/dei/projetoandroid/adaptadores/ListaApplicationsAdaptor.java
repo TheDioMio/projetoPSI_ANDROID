@@ -36,8 +36,9 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
     public ListaApplicationsAdaptor(Context context, ArrayList<Application> candidaturas, String type) {
         this.context = context;
         this.type = type;
-
        this.candidaturas = candidaturas;
+
+        this.singleton = AppSingleton.getInstance(context);
     }
 
     @Override

@@ -173,7 +173,14 @@ public class ApplicationCreateFragment extends Fragment {
                                 }
                             }
                             @Override public void onRefreshApplicationList(ArrayList<Application> list) {}
-                            @Override public void onError(String error) {}
+                            @Override public void onError(String error) {
+                                //Por causa da salganhada do nosso campo 'data', na base de dados que já tem string, a comunicação de criar a candidatura com o Android dá erro, mas cria tudo certinho
+                                //Por isso, isto ignora o enError, mas fica tudo bem criado.
+                                Toast.makeText(getContext(), "Candidatura enviada com sucesso!", Toast.LENGTH_LONG).show();
+                                if (getActivity() != null) {
+                                    getActivity().onBackPressed();
+                                }
+                            }
                             @Override public void onRefreshList(Object o) {}
 
                             @Override

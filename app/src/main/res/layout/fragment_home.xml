@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@color/background_apps"
     tools:context=".HomeFragment">
 
-    <ListView
-        android:id="@+id/lvAnimals"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:src="@drawable/logo_cores"
+        android:contentDescription="Logótipo PetPanion"
+        android:layout_marginBottom="0dp" />
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="2dp"
+        android:background="@color/background_apps"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bem_vindo_de_volta"
+        android:textAlignment="center"
+        android:textSize="22sp"
+        android:textColor="#455A64"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/a_nossa_prioridade_o_bem_estar_animal"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textColor="#546E7A" />
+
 </LinearLayout>

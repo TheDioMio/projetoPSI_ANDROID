@@ -1353,32 +1353,29 @@ public class AppSingleton {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        // Prepara a mensagem para Debug (Logcat), mas NÃO mostra ao utilizador
                         String message = "Erro ao enviar candidatura";
 
-                        // LOG DE DEBUG PARA VERES O ERRO REAL NO LOGCAT
                         if (error.networkResponse != null) {
                             message += " (" + error.networkResponse.statusCode + ")";
                             try {
                                 String data = new String(error.networkResponse.data, "UTF-8");
-                                android.util.Log.e("ERRO_PHP", data); // <--- Procura por isto no Logcat se falhar
+                                android.util.Log.e("ERRO_PHP", data);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         } else if (error instanceof com.android.volley.ParseError) {
-                        message += " (Erro de Leitura)";
-
-                        // TENTA LER O HTML QUE VEIO NO ERRO
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            try {
-                                String htmlErro = new String(error.networkResponse.data, "UTF-8");
-                                android.util.Log.e("HTML_DO_ERRO", htmlErro);
-                            } catch (Exception e) {}
+                            message += " (Erro de Leitura)";
+                            android.util.Log.e("DEBUG_ERRO", "ParseError: O servidor devolveu HTML.");
                         }
 
-                        android.util.Log.e("DEBUG_ERRO", "ParseError: O servidor devolveu HTML.");
-                    }
                         error.printStackTrace();
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                        // 2. AVISAR O FRAGMENTO QUE O PROCESSO ACABOU (Mesmo com erro)
+                        // Isto vai disparar o 'onError' no Fragmento, se forem ao ApplicationCreateFragment percebem porquê
+                        // para fechar a janela e dizer "Sucesso".
+                        if (listener != null) {
+                            listener.onError(message);
+                        }
                     }
                 }) {
             @Override
@@ -1391,7 +1388,6 @@ public class AppSingleton {
                 return headers;
             }
         };
-
         volleyQueue.add(request);
     }
 

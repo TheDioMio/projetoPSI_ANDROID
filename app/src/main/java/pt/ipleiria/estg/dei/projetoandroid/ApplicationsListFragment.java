@@ -66,6 +66,14 @@ public class ApplicationsListFragment extends Fragment implements ApplicationsLi
         lvApplications.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!AppSingleton.getInstance(getContext()).isConnectionInternet(getContext())) {
+                    Snackbar.make(lvApplications,
+                                    R.string.txt_offline_indisponivel,
+                                    Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.txt_ok, vv -> {})
+                            .show();
+                    return;
+                }
                 //Ir buscar o item clicado: O adapter sabe qual é o objeto na posição X
                 Application selected = (Application) parent.getItemAtPosition(position);
 

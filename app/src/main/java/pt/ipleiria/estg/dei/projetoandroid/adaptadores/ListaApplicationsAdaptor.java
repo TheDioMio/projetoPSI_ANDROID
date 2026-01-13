@@ -92,7 +92,7 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
 
 
         //Se a candidatura for enviada pelo user e se ainda não estiver decidida, mostrar o btn e fazer o onClickListener
-        if (isCandidate && isNotDecided) {
+        if (isCandidate && isNotDecided && AppSingleton.getInstance(context).isConnectionInternet(context)) {
             btnDelete.setVisibility(View.VISIBLE);
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override

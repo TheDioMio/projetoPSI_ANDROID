@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     private Button btnLogin, btnSignup;
     private String email, avatar;
     private int user_id;
+    private ImageButton btnSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         username = findViewById(R.id.etUsername);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignup = findViewById(R.id.btnSignup);
+        btnSettings = findViewById(R.id.btnSettings);
 
         AppSingleton.getInstance(getApplicationContext()).setLoginListener(this);
 
@@ -100,6 +103,11 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivity(intent);
             }
+        });
+
+        btnSettings.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, SettingsActivity.class);
+            startActivity(intent);
         });
     }
 

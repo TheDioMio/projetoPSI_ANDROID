@@ -138,4 +138,6 @@
     <string name="txt_candidaturas">Candidaturas</string>
     <string name="a_nossa_prioridade_o_bem_estar_animal">A nossa prioridade é o bem-estar animal</string>
     <string name="bem_vindo_de_volta">Bem-vindo de volta!</string>
+    <string name="txt_ipAdress">Endereço</string>
+    <string name="txt_port">Porta</string>
 </resources>

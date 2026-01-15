@@ -13,6 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class MqttManager {
 
     // ✅ Tablet / dispositivo físico: IP do teu PC na rede
     // (No emulador Android Studio seria tcp://10.0.2.2:1883)
-    private static final String SERVER_URI = "tcp://172.20.10.2:1883";
+   // private static final String SERVER_URI = "tcp://172.20.10.2:1883";
 
     private static final int QOS = 1;
 
@@ -51,6 +52,11 @@ public class MqttManager {
      * Re-subscreve automaticamente em reconnects.
      */
     public synchronized void connectAndSubscribe(String topic) {
+
+        String serverUri = ServerConfig.getMqttUri(appContext);
+        System.out.println("MQTT serverUri=" + serverUri);
+
+
         if (topic == null || topic.trim().isEmpty()) {
             System.out.println("MQTT connectAndSubscribe: topic vazio, ignorado");
             return;
@@ -69,7 +75,7 @@ public class MqttManager {
         String clientId = "android-" + UUID.randomUUID();
         client = new MqttAndroidClient(
                 appContext,
-                SERVER_URI,
+                serverUri,
                 clientId,
                 Ack.AUTO_ACK
         );
@@ -126,7 +132,7 @@ public class MqttManager {
         });
 
         try {
-            System.out.println("MQTT connecting to " + SERVER_URI + " clientId=" + clientId);
+            System.out.println("MQTT connecting to " + serverUri + " clientId=" + clientId);
 
             client.connect(options, null, new IMqttActionListener() {
                 @Override

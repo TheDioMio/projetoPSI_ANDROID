@@ -8,14 +8,8 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" /> <!-- Para Android 13+ -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-
-<!--    &lt;!&ndash; Para Android 13+ &ndash;&gt;-->
-<!--    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>-->
-
-<!--    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />-->
 
     <application
         android:allowBackup="true"
@@ -28,20 +22,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjetoANDROID"
         android:usesCleartextTraffic="true">
-
-
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
 
         <service
             android:name="org.eclipse.paho.android.service.MqttService"
             android:exported="false" />
+
         <activity
             android:name=".AnimalFormActivity"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"
-            android:exported="false" />
-
-        <!-- GOOGLE MAPS API KEY -->
+            android:exported="false" /> <!-- GOOGLE MAPS API KEY -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA1cLsf-5np-zOKC4m6DUJygDOFaKwPpEw" />

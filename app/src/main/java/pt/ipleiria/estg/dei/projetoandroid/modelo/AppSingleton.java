@@ -100,13 +100,16 @@ public class AppSingleton {
     // Endpoints da API 10.104.146.191
     //--------------------------------------------
     //region ENDPOINTS
-    public String endereco = "http://10.104.146.191/projetoPSI_WEB/backend/web/api";
+  //  public String endereco = "http://10.104.146.191/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-    public static final String FRONTEND_BASE_URL = "http://10.104.146.191/projetoPSI_WEB/frontend/web";
+  //  public static final String FRONTEND_BASE_URL = "http://10.104.146.191/projetoPSI_WEB/frontend/web";
+
+    public String endereco;
+    public static String FRONTEND_BASE_URL;
 
     //ENDPOINTS DOS USERS
 
-
+/*
     private String getmUrlAPILogin = endereco+"/auth/login";
     private String postmUrlAPISignup = endereco+"/auth/signup";
 
@@ -131,6 +134,33 @@ public class AppSingleton {
     private String postmUrlAPICommentCreate = endereco+"/comments";
     private String deletemUrlAPICommentDelete = endereco+"/comments";
     private String putmUrlAPICommentUpdate = endereco+"/comments";
+
+ */
+
+    private String getmUrlAPILogin;
+    private String postmUrlAPISignup;
+    private String getmUrlAPIMe;
+    private String putmUrlAPIMe;
+    private String getMessageURL;
+    private String getmUrlAPIApplication;
+
+    private String getSentApplications;
+
+    private String postAvatarURL;
+    private String postmUrlAPIFilesDelete;
+    private String postmUrlAPIFilesCreate;
+
+    private String getmUrlAPIAnimals;
+    private String putmUrlAPIAnimalUpdate;
+    private String deletemUrlAPIAnimalDelete;
+    private String postmUrlAPIAnimalCreate;
+    private String getmUrlAPIMyAnimals;
+    private String getmUrlAPIMeta;
+    private String getmUrlAPIAnimalEdit;
+
+    private String postmUrlAPICommentCreate;
+    private String deletemUrlAPICommentDelete;
+    private String putmUrlAPICommentUpdate;
 
 
 
@@ -2114,6 +2144,47 @@ public class AppSingleton {
         void onSuccess();
 
         void onError(String msg);
+    }
+
+    private void buildUrls() {
+        // Vai buscar às SharedPreferences (ou default)
+        endereco = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getApiBase(context);
+        FRONTEND_BASE_URL = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getFrontendBase(context);
+
+
+
+        // Constrói URLs com base no endereco atual
+        getmUrlAPILogin = endereco + "/auth/login";
+        postmUrlAPISignup = endereco + "/auth/signup";
+
+        getmUrlAPIMe = endereco + "/users/me";
+        putmUrlAPIMe = endereco + "/users/me";
+        getMessageURL = endereco + "/messages";
+        getmUrlAPIApplication = endereco + "/application";
+
+        getSentApplications = endereco + "/application/sent";
+
+        postAvatarURL = endereco + "/file/update-avatar";
+        postmUrlAPIFilesDelete = endereco + "/file/delete";
+        postmUrlAPIFilesCreate = endereco + "/file/create";
+
+        getmUrlAPIAnimals = endereco + "/animals?expand=listing.comments.user.profileImage,user.profileImage";
+        putmUrlAPIAnimalUpdate = endereco + "/animals/";
+        deletemUrlAPIAnimalDelete = endereco + "/animals/";
+        postmUrlAPIAnimalCreate = endereco + "/animals";
+        getmUrlAPIMyAnimals = endereco + "/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
+        getmUrlAPIMeta = endereco + "/animals/meta";
+        getmUrlAPIAnimalEdit = endereco + "/animals/edit/";
+
+        postmUrlAPICommentCreate = endereco + "/comments";
+        deletemUrlAPICommentDelete = endereco + "/comments";
+        putmUrlAPICommentUpdate = endereco + "/comments";
+
+        System.out.println("DEBUG API endereco=" + endereco);
+    }
+
+    public void reloadServerConfig() {
+        buildUrls();
     }
 }
 

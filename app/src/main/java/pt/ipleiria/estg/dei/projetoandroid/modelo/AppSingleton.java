@@ -2170,7 +2170,7 @@ public class AppSingleton {
 
     private void buildUrls() {
         // Vai buscar às SharedPreferences (ou default)
-        endereco = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getApiBase(context);
+        endereco = ServerConfig.getApiBase(context);
         FRONTEND_BASE_URL = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getFrontendBase(context);
 
 

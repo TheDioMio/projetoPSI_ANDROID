@@ -10,6 +10,11 @@ public class ServerConfig {
     private static final String API_KEY_HOST = "HOST";
     private static final String API_KEY_PORT = "PORT";
 
+    private static final String PREFS = "API_CONFIG";
+    private static final String KEY_API_BASE = "API_BASE";
+    private static final String DEFAULT_API_BASE =
+            "http://172.20.10.2/projetoPSI_WEB/backend/web/api";
+
     // defaults da API (ajusta se precisares)
     private static final String DEFAULT_API_HOST = "172.20.10.2";
     private static final int DEFAULT_API_PORT = 80;
@@ -25,8 +30,8 @@ public class ServerConfig {
     }
 
     public static String getApiBase(Context ctx) {
-        return "http://" + getApiHost(ctx) + ":" + getApiPort(ctx)
-                + "/PSI/projetoPSI_WEB/backend/web/api";
+        SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        return sp.getString(KEY_API_BASE, DEFAULT_API_BASE);
     }
 
     public static String getFrontendBase(Context ctx) {
@@ -34,11 +39,10 @@ public class ServerConfig {
                 + "/PSI/projetoPSI_WEB/frontend/web";
     }
 
-    public static void saveApi(Context ctx, String host, int port) {
-        SharedPreferences sp = ctx.getSharedPreferences(API_PREFS, Context.MODE_PRIVATE);
+    public static void saveApiBase(Context ctx, String apiBase) {
+        SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         sp.edit()
-                .putString(API_KEY_HOST, host)
-                .putInt(API_KEY_PORT, port)
+                .putString(KEY_API_BASE, apiBase)
                 .apply();
     }
 

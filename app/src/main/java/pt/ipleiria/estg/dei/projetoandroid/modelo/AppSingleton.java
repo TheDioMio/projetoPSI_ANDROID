@@ -74,6 +74,7 @@ import pt.ipleiria.estg.dei.projetoandroid.utils.MetaJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.UserJsonParser;
 import pt.ipleiria.estg.dei.projetoandroid.utils.VolleyMultipartRequest;
 import pt.ipleiria.estg.dei.projetoandroid.utils.AnimalEditJsonParser;
+import pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig;
 
 public class AppSingleton {
 
@@ -297,6 +298,11 @@ public class AppSingleton {
 
     public AppSingleton(Context context) {
         this.context = context.getApplicationContext();
+        buildUrls();
+
+        System.out.println("DEBUG API endereco=" + endereco);
+        System.out.println("DEBUG AppSingleton CREATED");
+
         appBD = AppDBHelper.getInstance(this.context);
         animals = new ArrayList<>();
         myAnimals = new ArrayList<>();
@@ -1882,6 +1888,22 @@ public class AppSingleton {
                             if (error.networkResponse != null) {
                                 statusCode = error.networkResponse.statusCode;
                             }
+
+                            Log.e("LOGIN_API", "VolleyError class=" + error.getClass().getSimpleName());
+                            Log.e("LOGIN_API", "statusCode=" + statusCode);
+                            Log.e("LOGIN_API", "message=" + error.getMessage());
+
+                            if (error.networkResponse != null && error.networkResponse.data != null) {
+                                try {
+                                    String body = new String(error.networkResponse.data, "UTF-8");
+                                    Log.e("LOGIN_API", "error body=" + body);
+                                } catch (Exception e) {
+                                    Log.e("LOGIN_API", "error reading body", e);
+                                }
+                            } else {
+                                Log.e("LOGIN_API", "networkResponse is null (sem resposta do servidor)");
+                            }
+
 
                             String msg = "Erro desconhecido";
 

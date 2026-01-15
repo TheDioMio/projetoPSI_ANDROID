@@ -109,6 +109,14 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             Intent intent = new Intent(LoginActivity.this, SettingsActivity.class);
             startActivity(intent);
         });
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppSingleton.getInstance(getApplicationContext()).reloadServerConfig();
     }
 
     private boolean isUsernameValid(String username){

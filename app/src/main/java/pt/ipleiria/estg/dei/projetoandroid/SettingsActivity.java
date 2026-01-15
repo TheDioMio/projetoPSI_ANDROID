@@ -48,18 +48,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void loadCurrentConfig() {
-        SharedPreferences sp = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-
-        String host = sp.getString(KEY_HOST, DEFAULT_HOST);
-        int port = sp.getInt(KEY_PORT, DEFAULT_PORT);
+        String host = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getApiHost(this);
+        int port = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getApiPort(this);
 
         et_ServerIp.setText(host);
         et_ServerPort.setText(String.valueOf(port));
     }
 
     private void saveConfig() {
-        SharedPreferences sp = getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-
         String host = et_ServerIp.getText().toString().trim();
         String portStr = et_ServerPort.getText().toString().trim();
 
@@ -81,14 +77,9 @@ public class SettingsActivity extends AppCompatActivity {
             return;
         }
 
-        sp.edit()
-                .putString(KEY_HOST, host)
-                .putInt(KEY_PORT, port)
-                .apply();
+        pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.saveApi(this, host, port);
 
         Toast.makeText(this, "Configuração guardada", Toast.LENGTH_SHORT).show();
-
-        // opcional: fechar e voltar ao login
         finish();
     }
 }

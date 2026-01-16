@@ -33,6 +33,8 @@ public class MessageFragment extends Fragment {
     private static final String ARG_MESSAGE_ID = "message_id";
     private static final String ARG_RECEIVER_ID = "receiver_id";
     private static final String ARG_DEFAULT_SUBJECT = "default_subject";
+    private static final String ARG_RECEIVER_USERNAME = "receiver_username";
+    private String receiverUsername;
 
     private static final int MODE_READ = 0;
     private static final int MODE_COMPOSE = 1;
@@ -87,11 +89,12 @@ public class MessageFragment extends Fragment {
         return fragment;
     }
 
-    public static MessageFragment newInstanceForCompose (int receiverId, @Nullable String defaultSubject) {
+    public static MessageFragment newInstanceForCompose (int receiverId, @Nullable String receiverUsername, @Nullable String defaultSubject) {
         MessageFragment fragment = new MessageFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_MODE, MODE_COMPOSE);
         args.putInt(ARG_RECEIVER_ID, receiverId);
+        args.putString(ARG_RECEIVER_USERNAME, receiverUsername);
         args.putString(ARG_DEFAULT_SUBJECT, defaultSubject);
         fragment.setArguments(args);
         return fragment;
@@ -108,6 +111,7 @@ public class MessageFragment extends Fragment {
                 messageId = getArguments().getInt(ARG_MESSAGE_ID);
             } else {
                 receiverId = getArguments().getInt(ARG_RECEIVER_ID);
+                receiverUsername = getArguments().getString(ARG_RECEIVER_USERNAME);
                 defaultSubject = getArguments().getString(ARG_DEFAULT_SUBJECT);
             }
         }
@@ -151,19 +155,30 @@ public class MessageFragment extends Fragment {
         etSubject.setText(msg.getSubject());
         etMensagem.setText(msg.getText());
 
-        String senderName = msg.getSender_username(); // novo getter
-        if (senderName != null && !senderName.isEmpty()) {
-            tvSendMessageTo.setText("Mensagem de: " + senderName);
+        boolean souSender = (msg.getSender_user_id() == myId);
+
+        // Cabeçalho correto: DE vs PARA
+        if (souSender) {
+            // Eu enviei -> mostrar PARA (receiver)
+            String receiverName = msg.getReceiver_username();
+            if (receiverName != null && !receiverName.trim().isEmpty()) {
+                tvSendMessageTo.setText("Mensagem para: " + receiverName);
+            } else {
+                tvSendMessageTo.setText("Mensagem para utilizador #" + msg.getReciver_user_id());
+            }
         } else {
-            tvSendMessageTo.setText("Mensagem de utilizador #" + msg.getSender_user_id());
+            // Eu recebi -> mostrar DE (sender)
+            String senderName = msg.getSender_username();
+            if (senderName != null && !senderName.trim().isEmpty()) {
+                tvSendMessageTo.setText("Mensagem de: " + senderName);
+            } else {
+                tvSendMessageTo.setText("Mensagem de utilizador #" + msg.getSender_user_id());
+            }
         }
 
         // tornar os campos só de leitura
         makeReadOnly(etSubject);
         makeReadOnly(etMensagem);
-
-        // botão passa a "Responder"
-        boolean souSender = (msg.getSender_user_id() == myId);
 
         if (btnDelete != null) {
             btnDelete.setVisibility(souSender ? View.VISIBLE : View.GONE);
@@ -183,6 +198,7 @@ public class MessageFragment extends Fragment {
 
                 MessageFragment frag = MessageFragment.newInstanceForCompose(
                         msg.getSender_user_id(),
+                        msg.getReceiver_username(),
                         "Re: " + msg.getSubject()
                 );
 
@@ -193,7 +209,6 @@ public class MessageFragment extends Fragment {
                         .commit();
             });
         }
-
 
         if (souSender && btnDelete != null) {
             btnDelete.setOnClickListener(v -> {
@@ -234,15 +249,45 @@ public class MessageFragment extends Fragment {
 
         btnDelete.setVisibility(View.GONE);
 
-        User receiver = AppSingleton.getInstance(getContext()).getUser(receiverId);
-        System.out.println("DEBUG receiverId=" + receiverId + " receiver=" + receiver);
-        if (receiver != null) {
-            tvSendMessageTo.setText("Enviar mensagem para: " + receiver.getName());
-        } else {
-            tvSendMessageTo.setText("Enviar mensagem para utilizador #" + receiverId);
+        Message msg = (Message) getArguments().getSerializable(ARG_MESSAGE);
+
+        int targetUserId = receiverId;     // por defeito usa o receiverId vindo nos args
+        String targetUsername = receiverUsername;      // tenta obter username se existir
+
+        // Se o compose foi aberto a partir de uma mensagem (reply), decide quem é o "outro lado"
+        if (msg != null) {
+            boolean euSouSender = (msg.getSender_user_id() == myId);
+
+            if (euSouSender) {
+                // eu enviei a msg original -> responder vai para o receiver original
+                targetUserId = msg.getReciver_user_id();
+                targetUsername = msg.getReceiver_username();
+            } else {
+                // eu recebi a msg original -> responder vai para o sender original
+                targetUserId = msg.getSender_user_id();
+                targetUsername = msg.getSender_username();
+            }
+
+            // IMPORTANTÍSSIMO: garantir que o envio vai para o user certo
+            receiverId = targetUserId;
         }
 
-        if (defaultSubject != null) {
+        // Cabeçalho do compose: SEMPRE "Mensagem para:"
+        if (targetUsername != null && !targetUsername.trim().isEmpty()) {
+            tvSendMessageTo.setText("Mensagem para: " + targetUsername);
+        } else {
+            // fallback: tentar ir ao cache
+            User u = AppSingleton.getInstance(getContext()).getUser(targetUserId);
+            if (u != null) {
+                // se tiveres getUsername(), usa-o em vez de getName()
+                tvSendMessageTo.setText("Mensagem para: " + u.getName());
+            } else {
+                tvSendMessageTo.setText("Mensagem para utilizador #" + targetUserId);
+            }
+        }
+
+        // Assunto por defeito (ex: "Re: ...")
+        if (defaultSubject != null && !defaultSubject.trim().isEmpty()) {
             etSubject.setText(defaultSubject);
         }
 
@@ -257,6 +302,7 @@ public class MessageFragment extends Fragment {
                 etSubject.setError("Assunto obrigatório");
                 return;
             }
+
             if (text.isEmpty()) {
                 etMensagem.setError("Mensagem obrigatória");
                 return;
@@ -270,7 +316,6 @@ public class MessageFragment extends Fragment {
                     new AppSingleton.SendMessageListener() {
                         @Override
                         public void onSuccess() {
-                            // volta atrás para a mensagem lida ou para a lista
                             requireActivity().getSupportFragmentManager().popBackStack();
                         }
 

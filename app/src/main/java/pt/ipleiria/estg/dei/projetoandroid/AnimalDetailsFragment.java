@@ -156,10 +156,12 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
 
                 //falta implementar chamar a vista de enviar a mensagem
                 int receiverId = animal.getUserId(); // ID do dono do animal
+                String receiver_username =animal.getOwnerName();
 
                 // cria o fragmento de mensagem em modo "escrever"
                 MessageFragment frag = MessageFragment.newInstanceForCompose(
                         receiverId,
+                        receiver_username,
                         getString(R.string.txt_interesse_no_animal) + animal.getName()
                 );
 

@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.LoginListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
+import pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig;
 
 public class LoginActivity extends AppCompatActivity implements LoginListener {
     private TextView username, password;
@@ -45,6 +46,9 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         btnSettings = findViewById(R.id.btnSettings);
 
         AppSingleton.getInstance(getApplicationContext()).setLoginListener(this);
+
+        //carrega o caminho para a API da sharedPreferences
+        AppSingleton.getInstance(getApplicationContext()).setEndereco(ServerConfig.getApiBase(getApplicationContext()));
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +120,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     @Override
     protected void onResume() {
         super.onResume();
-        AppSingleton.getInstance(getApplicationContext()).reloadServerConfig();
+        //AppSingleton.getInstance(getApplicationContext()).reloadServerConfig();
     }
 
     private boolean isUsernameValid(String username){

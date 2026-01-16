@@ -111,7 +111,7 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
             if (imgPath != null) {
                 String imageUrl = imgPath.startsWith("http")
                         ? imgPath
-                        : AppSingleton.getInstance(context).FRONTEND_BASE_URL + imgPath;
+                        : AppSingleton.getInstance(context).getEndereco() + AppSingleton.getInstance(context).FRONTEND_BASE_URL + imgPath;
 
                 Glide.with(context)
                         .load(imageUrl)

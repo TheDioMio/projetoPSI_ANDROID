@@ -143,7 +143,7 @@ public class ListaApplicationsAdaptor extends BaseAdapter {
     private void animalImgLoad(String imgPath, ImageView imgAnimal) {
         if (imgPath != null && !imgPath.isEmpty()) {
             String imageUrl;
-            imageUrl = AppSingleton.FRONTEND_BASE_URL + imgPath;
+            imageUrl = AppSingleton.getInstance(context).getEndereco() + AppSingleton.FRONTEND_BASE_URL + imgPath;
 
             Glide.with(context)
                     .load(imageUrl)

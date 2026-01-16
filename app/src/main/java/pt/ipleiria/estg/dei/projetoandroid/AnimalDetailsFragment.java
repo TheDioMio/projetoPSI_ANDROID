@@ -330,7 +330,7 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
 
             String avatarUrl = avatar.startsWith("http")
                     ? avatar
-                    : AppSingleton.getInstance(getContext()).FRONTEND_BASE_URL + avatar;
+                    : AppSingleton.getInstance(getContext()).getEndereco()+ AppSingleton.getInstance(getContext()).FRONTEND_BASE_URL + avatar;
 
             Glide.with(requireContext())
                     .load(avatarUrl)
@@ -352,7 +352,7 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
             if (imgPath.startsWith("http")) {
                 imageUrl = imgPath;
             } else {
-                imageUrl = AppSingleton.getInstance(getContext()).FRONTEND_BASE_URL + imgPath;
+                imageUrl = AppSingleton.getInstance(getContext()).getEndereco()+ AppSingleton.getInstance(getContext()).FRONTEND_BASE_URL + imgPath;
             }
 
             Glide.with(requireContext())

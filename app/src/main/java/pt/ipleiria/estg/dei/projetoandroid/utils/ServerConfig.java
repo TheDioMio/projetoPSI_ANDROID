@@ -3,6 +3,8 @@ package pt.ipleiria.estg.dei.projetoandroid.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
+
 public class ServerConfig {
 
     // ---------------- API CONFIG ----------------
@@ -12,48 +14,45 @@ public class ServerConfig {
 
     private static final String PREFS = "API_CONFIG";
     private static final String KEY_API_BASE = "API_BASE";
-    private static final String DEFAULT_API_BASE =
-            "http://172.20.10.2/projetoPSI_WEB/backend/web/api";
+    private static final String DEFAULT_API_BASE ="http://127.0.0.1";
 
-    private static final String KEY_FRONTEND_BASE = "FRONTEND_BASE";
-    private static final String DEFAULT_FRONTEND_BASE =
-            "http://172.20.10.2/projetoPSI_WEB/frontend/web";
+//    // defaults da API (ajusta se precisares)
+//    private static final String DEFAULT_API_HOST = "172.20.10.2";
+//    private static final int DEFAULT_API_PORT = 80;
 
-    // defaults da API (ajusta se precisares)
-    private static final String DEFAULT_API_HOST = "172.20.10.2";
-    private static final int DEFAULT_API_PORT = 80;
-
-    public static String getApiHost(Context ctx) {
-        SharedPreferences sp = ctx.getSharedPreferences(API_PREFS, Context.MODE_PRIVATE);
-        return sp.getString(API_KEY_HOST, DEFAULT_API_HOST);
-    }
-
-    public static int getApiPort(Context ctx) {
-        SharedPreferences sp = ctx.getSharedPreferences(API_PREFS, Context.MODE_PRIVATE);
-        return sp.getInt(API_KEY_PORT, DEFAULT_API_PORT);
-    }
+//    public static String getApiHost(Context ctx) {
+//        SharedPreferences sp = ctx.getSharedPreferences(API_PREFS, Context.MODE_PRIVATE);
+//        return sp.getString(API_KEY_HOST, DEFAULT_API_HOST);
+//    }
+//
+//    public static int getApiPort(Context ctx) {
+//        SharedPreferences sp = ctx.getSharedPreferences(API_PREFS, Context.MODE_PRIVATE);
+//        return sp.getInt(API_KEY_PORT, DEFAULT_API_PORT);
+//    }
 
     public static String getApiBase(Context ctx) {
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         return sp.getString(KEY_API_BASE, DEFAULT_API_BASE);
     }
 
-    public static String getFrontendBase(Context ctx) {
-        SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        return sp.getString(KEY_FRONTEND_BASE, DEFAULT_FRONTEND_BASE);
-    }
+//    public static String getFrontendBase(Context ctx) {
+//        return "http://" + getApiHost(ctx) + ":" + getApiPort(ctx)
+//                + "/PSI/projetoPSI_WEB/frontend/web";
+//    }
 
     public static void saveApiBase(Context ctx, String apiBase) {
+        AppSingleton.getInstance(ctx.getApplicationContext()).setEndereco(apiBase);
+
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         sp.edit()
                 .putString(KEY_API_BASE, apiBase)
                 .apply();
     }
 
-    public static void saveFrontendBase(Context ctx, String frontendBase) {
-        SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        sp.edit().putString(KEY_FRONTEND_BASE, frontendBase).apply();
-    }
+//    public static void saveFrontendBase(Context ctx, String frontendBase) {
+//        SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+//        sp.edit().putString(KEY_FRONTEND_BASE, frontendBase).apply();
+//    }
 
     // ---------------- MQTT CONFIG ----------------
     private static final String MQTT_PREFS = "MQTT_CONFIG";

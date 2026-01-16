@@ -78,7 +78,7 @@ public class AnimalImageAdaptador
             if (imgPath.startsWith("http")) {
                 imageUrl = imgPath;
             } else {
-                imageUrl = AppSingleton.getInstance(context).FRONTEND_BASE_URL + imgPath;
+                imageUrl = AppSingleton.getInstance(context).getEndereco() + AppSingleton.getInstance(context).FRONTEND_BASE_URL + imgPath;
             }
 
             // miniatura

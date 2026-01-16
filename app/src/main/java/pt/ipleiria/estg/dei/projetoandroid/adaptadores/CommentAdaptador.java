@@ -103,7 +103,7 @@ public class CommentAdaptador
                 if (avatar.startsWith("http")) {
                     imageUrl = avatar;
                 } else {
-                    imageUrl = AppSingleton.getInstance(context).FRONTEND_BASE_URL + avatar;
+                    imageUrl = AppSingleton.getInstance(context).getEndereco() + AppSingleton.getInstance(context).FRONTEND_BASE_URL + avatar;
                 }
 
                 Glide.with(context)

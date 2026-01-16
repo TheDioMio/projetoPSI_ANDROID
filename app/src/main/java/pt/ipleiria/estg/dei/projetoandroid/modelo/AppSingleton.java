@@ -101,68 +101,82 @@ public class AppSingleton {
     // Endpoints da API 10.104.146.191
     //--------------------------------------------
     //region ENDPOINTS
-  //  public String endereco = "http://10.104.146.191/projetoPSI_WEB/backend/web/api";
+    //public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
+    //public String endereco = "http://192.168.1.68:8000/projetoPSI_WEB/backend/web/api";
+    //public String endereco = "http://172.22.21.240/projetoPSI_WEB/backend/web/api";
     //endereço para as imagens
-  //  public static final String FRONTEND_BASE_URL = "http://10.104.146.191/projetoPSI_WEB/frontend/web";
+    //public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
+    //public static final String FRONTEND_BASE_URL = "http://192.168.1.68:8000/projetoPSI_WEB/frontend/web";
+    //public static final String FRONTEND_BASE_URL = "http://172.22.21.240/projetoPSI_WEB/frontend/web";
 
     public String endereco;
-    public static String FRONTEND_BASE_URL;
+    public static String FRONTEND_BASE_URL = "/projetoPSI_WEB/frontend/web";
+
+    public String getEndereco() {
+
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+    }
 
     //ENDPOINTS DOS USERS
 
-/*
-    private String getmUrlAPILogin = endereco+"/auth/login";
-    private String postmUrlAPISignup = endereco+"/auth/signup";
 
-    private String getmUrlAPIMe = endereco+"/users/me";
-    private String putmUrlAPIMe = endereco+"/users/me";
-    private String getMessageURL = endereco+"/messages";
-    private String getmUrlAPIApplication = endereco + "/application";
+    private String getmUrlAPILogin = "/projetoPSI_WEB/backend/web/api/auth/login";
+    private String postmUrlAPISignup = "/projetoPSI_WEB/backend/web/api/auth/signup";
+
+    private String getmUrlAPIMe = "/projetoPSI_WEB/backend/web/api/users/me";
+    private String putmUrlAPIMe = "/projetoPSI_WEB/backend/web/api/users/me";
+    private String getMessageURL = "/projetoPSI_WEB/backend/web/api/messages";
+    private String getmUrlAPIApplication = "/projetoPSI_WEB/backend/web/api/application";
 
     //ENDPOINTS DOS FILES
-    private String postAvatarURL = endereco+"/file/update-avatar";
-    private String postmUrlAPIFilesDelete = endereco+"/file/delete"; 
-    private String postmUrlAPIFilesCreate = endereco+"/file/create";
-    private String getmUrlAPIAnimals = endereco+"/animals?expand=listing.comments.user.profileImage,user.profileImage";
-    private String putmUrlAPIAnimalUpdate = endereco+"/animals/";
-    private String deletemUrlAPIAnimalDelete = endereco+"/animals/";
-    private String postmUrlAPIAnimalCreate = endereco+"/animals";
-    private String getmUrlAPIMyAnimals = endereco+"/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
-    private String getmUrlAPIMeta = endereco+"/animals/meta";
-    private String getmUrlAPIAnimalEdit = endereco+"/animals/edit/";
+    private String postAvatarURL = "/projetoPSI_WEB/backend/web/api/file/update-avatar";
+    private String postmUrlAPIFilesDelete = "/projetoPSI_WEB/backend/web/api/file/delete";
+    private String postmUrlAPIFilesCreate = "/projetoPSI_WEB/backend/web/api/file/create";
+    private String getmUrlAPIAnimals = "/projetoPSI_WEB/backend/web/api/animals?expand=listing.comments.user.profileImage,user.profileImage";
+    private String putmUrlAPIAnimalUpdate = "/projetoPSI_WEB/backend/web/api/animals/";
+    private String deletemUrlAPIAnimalDelete = "/projetoPSI_WEB/backend/web/api/animals/";
+    private String postmUrlAPIAnimalCreate = "/projetoPSI_WEB/backend/web/api/animals";
+    private String getmUrlAPIMyAnimals = "/projetoPSI_WEB/backend/web/api/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
+    private String getmUrlAPIMeta = "/projetoPSI_WEB/backend/web/api/animals/meta";
+    private String getmUrlAPIAnimalEdit = "/projetoPSI_WEB/backend/web/api/animals/edit/";
 
     //ENDPOINTS DOS COMMENTS
-    private String postmUrlAPICommentCreate = endereco+"/comments";
-    private String deletemUrlAPICommentDelete = endereco+"/comments";
-    private String putmUrlAPICommentUpdate = endereco+"/comments";
+    private String postmUrlAPICommentCreate = "/projetoPSI_WEB/backend/web/api/comments";
+    private String deletemUrlAPICommentDelete = "/projetoPSI_WEB/backend/web/api/comments";
+    private String putmUrlAPICommentUpdate = "/projetoPSI_WEB/backend/web/api/comments";
 
- */
 
-    private String getmUrlAPILogin;
-    private String postmUrlAPISignup;
-    private String getmUrlAPIMe;
-    private String putmUrlAPIMe;
-    private String getMessageURL;
-    private String getmUrlAPIApplication;
 
-    private String getSentApplications;
-
-    private String postAvatarURL;
-    private String postmUrlAPIFilesDelete;
-    private String postmUrlAPIFilesCreate;
-
-    private String getmUrlAPIAnimals;
-    private String putmUrlAPIAnimalUpdate;
-    private String deletemUrlAPIAnimalDelete;
-    private String postmUrlAPIAnimalCreate;
-    private String getmUrlAPIMyAnimals;
-    private String getmUrlAPIMeta;
-    private String getmUrlAPIAnimalEdit;
-
-    private String postmUrlAPICommentCreate;
-    private String deletemUrlAPICommentDelete;
-    private String putmUrlAPICommentUpdate;
-
+//
+//    private String getmUrlAPILogin;
+//    private String postmUrlAPISignup;
+//    private String getmUrlAPIMe;
+//    private String putmUrlAPIMe;
+//    private String getMessageURL;
+//    private String getmUrlAPIApplication;
+//
+//    private String getSentApplications;
+//
+//    private String postAvatarURL;
+//    private String postmUrlAPIFilesDelete;
+//    private String postmUrlAPIFilesCreate;
+//
+//    private String getmUrlAPIAnimals;
+//    private String putmUrlAPIAnimalUpdate;
+//    private String deletemUrlAPIAnimalDelete;
+//    private String postmUrlAPIAnimalCreate;
+//    private String getmUrlAPIMyAnimals;
+//    private String getmUrlAPIMeta;
+//    private String getmUrlAPIAnimalEdit;
+//
+//    private String postmUrlAPICommentCreate;
+//    private String deletemUrlAPICommentDelete;
+//    private String putmUrlAPICommentUpdate;
+//
 
 
     public static boolean isConnectionInternet(Context context){
@@ -298,7 +312,7 @@ public class AppSingleton {
 
     public AppSingleton(Context context) {
         this.context = context.getApplicationContext();
-        buildUrls();
+        //buildUrls();
 
         System.out.println("DEBUG API endereco=" + endereco);
         System.out.println("DEBUG AppSingleton CREATED");
@@ -416,7 +430,7 @@ public class AppSingleton {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
-                postmUrlAPICommentCreate,
+                endereco + postmUrlAPICommentCreate,
                 body,
                 response -> {
                     try {
@@ -469,7 +483,7 @@ public class AppSingleton {
 
     public void updateCommentAPI(Context context, int commentId, String text) {
 
-        String url = putmUrlAPICommentUpdate + "/" + commentId;
+        String url = endereco + putmUrlAPICommentUpdate + "/" + commentId;
 
         JSONObject body = new JSONObject();
         try {
@@ -537,7 +551,7 @@ public class AppSingleton {
 
     public void deleteCommentAPI(Context context, int commentId) {
 
-        String url = deletemUrlAPICommentDelete + "/" + commentId;
+        String url = endereco + deletemUrlAPICommentDelete + "/" + commentId;
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.DELETE,
@@ -693,7 +707,7 @@ public class AppSingleton {
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
-                getmUrlAPIMyAnimals,
+                endereco + getmUrlAPIMyAnimals,
                 null,
                 response -> {
 
@@ -763,8 +777,7 @@ public class AppSingleton {
         //utilizado nos Myanimals
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.DELETE,
-                deletemUrlAPIAnimalDelete + animalId,
-                //endereco + "/animals/" + animalId,
+                endereco + deletemUrlAPIAnimalDelete + animalId,
                 null,
                 response -> {
 
@@ -827,7 +840,7 @@ public class AppSingleton {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
-                postmUrlAPIAnimalCreate,
+                endereco + postmUrlAPIAnimalCreate,
                 body,
                 response -> {
                     int animalId = response.optInt("animal_id", -1);
@@ -888,7 +901,7 @@ public class AppSingleton {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.PUT,
-                putmUrlAPIAnimalUpdate + animalId,
+                endereco + putmUrlAPIAnimalUpdate + animalId,
                 body,
                 response -> {
 
@@ -934,7 +947,7 @@ public class AppSingleton {
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
-                getmUrlAPIAnimals,
+                endereco + getmUrlAPIAnimals,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -1009,7 +1022,7 @@ public class AppSingleton {
             return;
         }
 
-        String url = getmUrlAPIAnimalEdit + animalId;
+        String url = endereco + getmUrlAPIAnimalEdit + animalId;
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -1053,7 +1066,7 @@ public class AppSingleton {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
-                getmUrlAPIMeta,
+                endereco + getmUrlAPIMeta,
                 null,
                 response -> {
                     try {
@@ -1155,7 +1168,7 @@ public class AppSingleton {
         VolleyMultipartRequest request =
                 new VolleyMultipartRequest(
                         Request.Method.POST,
-                        postmUrlAPIFilesCreate,
+                        endereco + postmUrlAPIFilesCreate,
                         stringParams,
                         fileParams,
                         response -> {
@@ -1228,7 +1241,7 @@ public class AppSingleton {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
-                postmUrlAPIFilesDelete,
+                endereco + postmUrlAPIFilesDelete,
                 body,
                 response -> {
                     if (deleteAnimalPhotosListener != null) {
@@ -1285,8 +1298,9 @@ public class AppSingleton {
         return AppDBHelper.getInstance(context).getApplicationById(id);
     }
 
+
     public void getApplicationsAPI(final Context context, final String type) {
-        String url = endereco + "/application/" + type;
+        String url = endereco + getmUrlAPIApplication +"/"+ type;
 
         //Se não tem net, vai logo à BD
         if (!isConnectionInternet(context)) {
@@ -1352,7 +1366,7 @@ public class AppSingleton {
             return;
         }
 
-        String url = endereco + "/application";
+        String url = endereco + getmUrlAPIApplication;
 
         JSONObject jsonBody;
         try {
@@ -1442,7 +1456,7 @@ public class AppSingleton {
             Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
             return;
         }
-        String url = endereco + "/application/" + application.getId();
+        String url = endereco + getmUrlAPIApplication+ "/" + application.getId();
 
         JSONObject jsonBody = new JSONObject();
         try {
@@ -1541,7 +1555,7 @@ public class AppSingleton {
         }
 
         // URL: .../api/application/5
-        String url = getmUrlAPIApplication + "/" + application.getId();
+        String url = endereco + getmUrlAPIApplication + "/" + application.getId();
 
         StringRequest request = new StringRequest(Request.Method.DELETE, url,
                 new Response.Listener<String>() {
@@ -1613,7 +1627,7 @@ public class AppSingleton {
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
-                getMessageURL,
+                endereco + getMessageURL,
                 null,
                 (JSONArray response) -> {
                     ArrayList<Message> lista = MessageJsonParser.parserJsonMessages(response);
@@ -1663,7 +1677,7 @@ public class AppSingleton {
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
-                getMessageURL,
+                endereco + getMessageURL,
                 response -> {
                     if (listener != null) listener.onSuccess();
                 },
@@ -1701,7 +1715,7 @@ public class AppSingleton {
 
 
     public void editarMensagemAPI(int id, String subject, String text, Context context, SendMessageListener listener) {
-        String url = getMessageURL + "/" + id; // ex: /messages/9
+        String url = endereco + getMessageURL + "/" + id; // ex: /messages/9
 
         StringRequest request = new StringRequest(
                 Request.Method.PUT,    // se o backend usar POST para update, troca para Request.Method.POST
@@ -1813,7 +1827,7 @@ public class AppSingleton {
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
-                postmUrlAPISignup,
+                endereco + postmUrlAPISignup,
                 response -> {
                     try {
                         JSONObject json = new JSONObject(response);
@@ -1879,12 +1893,15 @@ public class AppSingleton {
 
 
     public void loginAPI(final String username, final String password, final Context context){
+        //para debug
+        Toast.makeText(context, endereco + getmUrlAPILogin, Toast.LENGTH_SHORT).show();
+
         if(!isConnectionInternet(context)){
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
         }else{
             StringRequest request = new StringRequest(
                     Request.Method.POST,
-                    getmUrlAPILogin,
+                    endereco + getmUrlAPILogin,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String s) {
@@ -1989,7 +2006,7 @@ public class AppSingleton {
         if(!isConnectionInternet(context)){
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
         }else{
-            JsonObjectRequest request = new JsonObjectRequest (Request.Method.GET, getmUrlAPIMe, null, new Response.Listener<JSONObject>() {
+            JsonObjectRequest request = new JsonObjectRequest (Request.Method.GET, endereco + getmUrlAPIMe, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     //atualiza o singleton
@@ -2064,7 +2081,7 @@ public class AppSingleton {
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.PUT,
-                putmUrlAPIMe,
+                endereco + putmUrlAPIMe,
                 body,
                 response -> {
 
@@ -2138,7 +2155,7 @@ public class AppSingleton {
 
         VolleyMultipartRequest request = new VolleyMultipartRequest(
                 Request.Method.POST,
-                postAvatarURL,
+                endereco + postAvatarURL,
                 headers,
                 file,
                 response -> {
@@ -2207,45 +2224,45 @@ public class AppSingleton {
         void onError(String msg);
     }
 
-    private void buildUrls() {
-        // Vai buscar às SharedPreferences (ou default)
-        endereco = ServerConfig.getApiBase(context);
-        FRONTEND_BASE_URL = ServerConfig.getFrontendBase(context);
+//    private void buildUrls() {
+//        // Vai buscar às SharedPreferences (ou default)
+//        endereco = ServerConfig.getApiBase(context);
+//        endereco+FRONTEND_BASE_URL = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getFrontendBase(context);
+//
+//
+//
+//        // Constrói URLs com base no endereco atual
+//        getmUrlAPILogin = endereco + "/auth/login";
+//        postmUrlAPISignup = endereco + "/auth/signup";
+//
+//        getmUrlAPIMe = endereco + "/users/me";
+//        putmUrlAPIMe = endereco + "/users/me";
+//        getMessageURL = endereco + "/messages";
+//        getmUrlAPIApplication = endereco + "/application";
+//
+//        getSentApplications = endereco + "/application/sent";
+//
+//        postAvatarURL = endereco + "/file/update-avatar";
+//        postmUrlAPIFilesDelete = endereco + "/file/delete";
+//        postmUrlAPIFilesCreate = endereco + "/file/create";
+//
+//        getmUrlAPIAnimals = endereco + "/animals?expand=listing.comments.user.profileImage,user.profileImage";
+//        putmUrlAPIAnimalUpdate = endereco + "/animals/";
+//        deletemUrlAPIAnimalDelete = endereco + "/animals/";
+//        postmUrlAPIAnimalCreate = endereco + "/animals";
+//        getmUrlAPIMyAnimals = endereco + "/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
+//        getmUrlAPIMeta = endereco + "/animals/meta";
+//        getmUrlAPIAnimalEdit = endereco + "/animals/edit/";
+//
+//        postmUrlAPICommentCreate = endereco + "/comments";
+//        deletemUrlAPICommentDelete = endereco + "/comments";
+//        putmUrlAPICommentUpdate = endereco + "/comments";
+//
+//        System.out.println("DEBUG API endereco=" + endereco);
+//    }
 
-
-
-        // Constrói URLs com base no endereco atual
-        getmUrlAPILogin = endereco + "/auth/login";
-        postmUrlAPISignup = endereco + "/auth/signup";
-
-        getmUrlAPIMe = endereco + "/users/me";
-        putmUrlAPIMe = endereco + "/users/me";
-        getMessageURL = endereco + "/messages";
-        getmUrlAPIApplication = endereco + "/application";
-
-        getSentApplications = endereco + "/application/sent";
-
-        postAvatarURL = endereco + "/file/update-avatar";
-        postmUrlAPIFilesDelete = endereco + "/file/delete";
-        postmUrlAPIFilesCreate = endereco + "/file/create";
-
-        getmUrlAPIAnimals = endereco + "/animals?expand=listing.comments.user.profileImage,user.profileImage";
-        putmUrlAPIAnimalUpdate = endereco + "/animals/";
-        deletemUrlAPIAnimalDelete = endereco + "/animals/";
-        postmUrlAPIAnimalCreate = endereco + "/animals";
-        getmUrlAPIMyAnimals = endereco + "/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
-        getmUrlAPIMeta = endereco + "/animals/meta";
-        getmUrlAPIAnimalEdit = endereco + "/animals/edit/";
-
-        postmUrlAPICommentCreate = endereco + "/comments";
-        deletemUrlAPICommentDelete = endereco + "/comments";
-        putmUrlAPICommentUpdate = endereco + "/comments";
-
-        System.out.println("DEBUG API endereco=" + endereco);
-    }
-
-    public void reloadServerConfig() {
-        buildUrls();
-    }
+//    public void reloadServerConfig() {
+//        //buildUrls();
+//    }
 }
 

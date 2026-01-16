@@ -13,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -39,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         et_ServerIp = findViewById(R.id.et_ServerIp);
-        et_endereco_front = findViewById(R.id. et_endereco_front);
+//        et_endereco_front = findViewById(R.id. et_endereco_front);
         btSave = findViewById(R.id.bt_save);
 
         // 2) Carregar valores atuais
@@ -51,9 +52,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadCurrentConfig() {
         String apiBase = ServerConfig.getApiBase(this);
-        String apiFrontBase = ServerConfig.getFrontendBase(this);
+//        String apiFrontBase = ServerConfig.getFrontendBase(this);
         et_ServerIp.setText(apiBase);
-        et_endereco_front.setText(apiFrontBase);
+//        et_endereco_front.setText(apiFrontBase);
 
     }
 
@@ -72,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         ServerConfig.saveApiBase(this, apiBase);
-        ServerConfig.saveFrontendBase(this,apiFrontendBase);
+//        ServerConfig.saveFrontendBase(this,apiFrontendBase);
 
         Toast.makeText(this, "Configuração guardada", Toast.LENGTH_SHORT).show();
         finish();

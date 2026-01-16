@@ -143,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity {
         String avatarPath = sp.getString(MenuMainActivity.IMGAVATAR, null);
 
         if (avatarPath != null && !avatarPath.isEmpty()) {
-            String avatarUrl = AppSingleton.getInstance(this).FRONTEND_BASE_URL + avatarPath;
+            String avatarUrl = AppSingleton.getInstance(getApplicationContext()).getEndereco() + AppSingleton.getInstance(this).FRONTEND_BASE_URL + avatarPath;
 
             Glide.with(this)
                     .load(avatarUrl)

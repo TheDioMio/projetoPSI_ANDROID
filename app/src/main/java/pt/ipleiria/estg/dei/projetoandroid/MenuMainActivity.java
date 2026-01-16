@@ -360,7 +360,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
             if (avatar.startsWith("http")) {
                 imageUrl = avatar;
             } else {
-                imageUrl = AppSingleton.getInstance(getApplicationContext()).FRONTEND_BASE_URL + avatar;
+                imageUrl = AppSingleton.getInstance(getApplicationContext()).getEndereco() + AppSingleton.getInstance(getApplicationContext()).FRONTEND_BASE_URL + avatar;
             }
 
             Glide.with(this)
@@ -420,7 +420,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         if (avatar != null && !avatar.isEmpty()) {
             String imageUrl = avatar.startsWith("http")
                     ? avatar
-                    : AppSingleton.getInstance(this).FRONTEND_BASE_URL + avatar;
+                    : AppSingleton.getInstance(getApplicationContext()).getEndereco() + AppSingleton.getInstance(this).FRONTEND_BASE_URL + avatar;
 
             Glide.with(this)
                     .load(imageUrl)

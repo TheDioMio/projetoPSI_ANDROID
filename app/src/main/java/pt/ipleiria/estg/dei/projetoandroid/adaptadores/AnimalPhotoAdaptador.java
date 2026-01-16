@@ -73,8 +73,7 @@ public class AnimalPhotoAdaptador
             AnimalFile file = apiPhotos.get(position);
 
             Glide.with(context)
-                    .load(AppSingleton.getInstance(context)
-                            .FRONTEND_BASE_URL + file.getFileAddress())
+                    .load(AppSingleton.getInstance(context).getEndereco() + AppSingleton.getInstance(context).FRONTEND_BASE_URL + file.getFileAddress())
                     .into(holder.imgPhoto);
 
             holder.btnRemove.setOnClickListener(v ->

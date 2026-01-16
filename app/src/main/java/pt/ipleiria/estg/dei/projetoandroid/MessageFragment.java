@@ -1,5 +1,6 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Message;
@@ -49,6 +52,7 @@ public class MessageFragment extends Fragment {
     private EditText etSubject;
     private EditText etMensagem;
     private Button btnSend;
+    private ImageButton btnDelete;
 
 
     public MessageFragment() {
@@ -126,6 +130,7 @@ public class MessageFragment extends Fragment {
         etSubject = view.findViewById(R.id.etSubject);
         etMensagem = view.findViewById(R.id.etMensagem);
         btnSend = view.findViewById(R.id.btnSend);
+        btnDelete = view.findViewById(R.id.btnDelete);
 
         if (mode == MODE_READ) {
             setupReadMode();
@@ -160,6 +165,10 @@ public class MessageFragment extends Fragment {
         // botão passa a "Responder"
         boolean souSender = (msg.getSender_user_id() == myId);
 
+        if (btnDelete != null) {
+            btnDelete.setVisibility(souSender ? View.VISIBLE : View.GONE);
+        }
+
         System.out.println("DEBUG myId=" + myId
                 + " msgId=" + msg.getId()
                 + " sender=" + msg.getSender_user_id()
@@ -184,6 +193,38 @@ public class MessageFragment extends Fragment {
                         .commit();
             });
         }
+
+
+        if (souSender && btnDelete != null) {
+            btnDelete.setOnClickListener(v -> {
+
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Apagar mensagem")
+                        .setMessage("Tens a certeza que queres apagar esta mensagem?")
+                        .setPositiveButton("Apagar", (dialog, which) -> {
+
+                            AppSingleton.getInstance(getContext()).apagarMensagemAPI(
+                                    msg.getId(),
+                                    getContext(),
+                                    new AppSingleton.SendMessageListener() {
+                                        @Override
+                                        public void onSuccess() {
+                                            requireActivity()
+                                                    .getSupportFragmentManager()
+                                                    .popBackStack();
+                                        }
+
+                                        @Override
+                                        public void onError(String erro) {
+                                            Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                            );
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            });
+        }
     }
 
     // -------------------------------
@@ -191,7 +232,10 @@ public class MessageFragment extends Fragment {
     // -------------------------------
     private void setupComposeMode() {
 
+        btnDelete.setVisibility(View.GONE);
+
         User receiver = AppSingleton.getInstance(getContext()).getUser(receiverId);
+        System.out.println("DEBUG receiverId=" + receiverId + " receiver=" + receiver);
         if (receiver != null) {
             tvSendMessageTo.setText("Enviar mensagem para: " + receiver.getName());
         } else {

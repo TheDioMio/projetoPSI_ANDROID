@@ -1757,6 +1757,45 @@ public class AppSingleton {
     }
 
 
+    public void apagarMensagemAPI(
+            int messageId,
+            Context context,
+            SendMessageListener listener
+    ) {
+        String url = getMessageURL + "/" + messageId;
+
+        StringRequest request = new StringRequest(
+                Request.Method.DELETE,
+                url,
+                response -> {
+                    if (listener != null) listener.onSuccess();
+                },
+                error -> {
+                    String msg = (error.networkResponse != null)
+                            ? "Erro " + error.networkResponse.statusCode
+                            : "Erro de ligação ao servidor";
+                    if (listener != null) listener.onError(msg);
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Accept", "application/json");
+
+                String token = getToken(context);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
+
+
 
     //*************************************** Fim Mensagens *************************************
 

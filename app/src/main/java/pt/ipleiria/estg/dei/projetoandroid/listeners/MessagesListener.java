@@ -5,6 +5,8 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.Message;
 
 public interface MessagesListener {
     void onRefreshListaMessages(ArrayList<Message> lista);
+    void onMessagesOffline(ArrayList<Message> cachedMessages);
     void onErro(String erro);
+
 
 }

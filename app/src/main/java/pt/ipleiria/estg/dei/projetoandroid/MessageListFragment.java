@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaMessagesAdaptador;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Message;
@@ -28,7 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
  * Use the {@link MessageListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MessageListFragment extends Fragment {
+public class MessageListFragment extends Fragment implements MessagesListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -122,19 +123,22 @@ public class MessageListFragment extends Fragment {
 
         AppSingleton singleton = AppSingleton.getInstance(getContext());
 
-        singleton.setMessageListener(new pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener() {
-            @Override
-            public void onRefreshListaMessages(ArrayList lista) {
-                atualizarListas(lista);
-                mostrarRecebidas();
-            }
+//        singleton.setMessageListener(new pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener() {
+//            @Override
+//            public void onRefreshListaMessages(ArrayList lista) {
+//                atualizarListas(lista);
+//                mostrarRecebidas();
+//            }
+//
+//            @Override
+//            public void onErro(String erro) {
+//                // opcional: Toast
+//                // Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
-            @Override
-            public void onErro(String erro) {
-                // opcional: Toast
-                // Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
-            }
-        });
+        singleton.setMessageListener(this);
+        singleton.getAllMessagesAPI(getContext());
 
         singleton.getAllMessagesAPI(getContext());
 
@@ -166,6 +170,30 @@ public class MessageListFragment extends Fragment {
 
     private void mostrarEnviadas() {
         adaptador.atualizar(enviadas);
+    }
+
+    @Override
+    public void onRefreshListaMessages(ArrayList lista) {
+        atualizarListas(lista);
+        mostrarRecebidas();
+    }
+
+    @Override
+    public void onMessagesOffline(ArrayList<Message> cachedMessages) {
+        Snackbar.make(
+                requireView(),
+                "Sem internet — a mostrar mensagens guardadas",
+                Snackbar.LENGTH_LONG
+        ).show();
+
+        atualizarListas(new ArrayList<>(cachedMessages));
+        mostrarRecebidas();
+    }
+
+    @Override
+    public void onErro(String erro) {
+        // opcional
+        // Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
     }
     
 

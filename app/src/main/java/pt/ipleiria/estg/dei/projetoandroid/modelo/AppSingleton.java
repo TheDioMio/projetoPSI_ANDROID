@@ -1625,6 +1625,14 @@ public class AppSingleton {
 
     public void getAllMessagesAPI(final Context context) {
 
+        if (!isConnectionInternet(context)) {
+            ArrayList<Message> cached = getAllMessagesBD();
+            if (messagesListener != null) {
+                messagesListener.onMessagesOffline(cached);
+            }
+            return;
+        }
+
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
                 endereco + getMessageURL,

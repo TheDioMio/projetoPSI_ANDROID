@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void saveConfig() {
         String apiBase = et_ServerIp.getText().toString().trim();
-        String apiFrontendBase = et_endereco_front.getText().toString().trim();
+       // String apiFrontendBase = et_endereco_front.getText().toString().trim();
 
         if (apiBase.isEmpty()) {
             Toast.makeText(this, "Preenche o endereço da API", Toast.LENGTH_SHORT).show();

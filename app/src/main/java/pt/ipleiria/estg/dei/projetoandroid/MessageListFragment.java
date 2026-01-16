@@ -15,10 +15,13 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.ListaMessagesAdaptador;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Message;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 import android.content.Context;
+
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -164,9 +167,6 @@ public class MessageListFragment extends Fragment {
     private void mostrarEnviadas() {
         adaptador.atualizar(enviadas);
     }
-
-
-
-
+    
 
 }

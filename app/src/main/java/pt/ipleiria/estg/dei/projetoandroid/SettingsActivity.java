@@ -23,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String DEFAULT_HOST = "172.20.10.2";
     private static final int DEFAULT_PORT = 1883;
     private EditText et_ServerIp;
-    private EditText et_ServerPort;
+    private EditText et_endereco_front;
     private Button btSave;
 
 
@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         et_ServerIp = findViewById(R.id.et_ServerIp);
-       // et_ServerPort = findViewById(R.id.et_ServerPort);
+        et_endereco_front = findViewById(R.id. et_endereco_front);
         btSave = findViewById(R.id.bt_save);
 
         // 2) Carregar valores atuais
@@ -51,11 +51,15 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void loadCurrentConfig() {
         String apiBase = ServerConfig.getApiBase(this);
+        String apiFrontBase = ServerConfig.getFrontendBase(this);
         et_ServerIp.setText(apiBase);
+        et_endereco_front.setText(apiFrontBase);
+
     }
 
     private void saveConfig() {
         String apiBase = et_ServerIp.getText().toString().trim();
+        String apiFrontendBase = et_endereco_front.getText().toString().trim();
 
         if (apiBase.isEmpty()) {
             Toast.makeText(this, "Preenche o endereço da API", Toast.LENGTH_SHORT).show();
@@ -68,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         ServerConfig.saveApiBase(this, apiBase);
+        ServerConfig.saveFrontendBase(this,apiFrontendBase);
 
         Toast.makeText(this, "Configuração guardada", Toast.LENGTH_SHORT).show();
         finish();

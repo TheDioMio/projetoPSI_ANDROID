@@ -44,27 +44,27 @@
 
     </LinearLayout>
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal">-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-<!--        <TextView-->
-<!--            android:id="@+id/tv_port"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="2.5"-->
-<!--            android:text="@string/txt_port" />-->
+        <TextView
+            android:id="@+id/tv_endereco_front"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/txt_ipAdress" />
 
-<!--        <EditText-->
-<!--            android:id="@+id/et_ServerPort"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:ems="10"-->
-<!--            android:inputType="number" />-->
+        <EditText
+            android:id="@+id/et_endereco_front"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="text" />
 
-<!--    </LinearLayout>-->
+    </LinearLayout>
 
     <Button
         android:id="@+id/bt_save"

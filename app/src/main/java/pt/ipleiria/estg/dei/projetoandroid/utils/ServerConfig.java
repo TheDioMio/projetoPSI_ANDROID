@@ -15,6 +15,10 @@ public class ServerConfig {
     private static final String DEFAULT_API_BASE =
             "http://172.20.10.2/projetoPSI_WEB/backend/web/api";
 
+    private static final String KEY_FRONTEND_BASE = "FRONTEND_BASE";
+    private static final String DEFAULT_FRONTEND_BASE =
+            "http://172.20.10.2/projetoPSI_WEB/frontend/web";
+
     // defaults da API (ajusta se precisares)
     private static final String DEFAULT_API_HOST = "172.20.10.2";
     private static final int DEFAULT_API_PORT = 80;
@@ -35,8 +39,8 @@ public class ServerConfig {
     }
 
     public static String getFrontendBase(Context ctx) {
-        return "http://" + getApiHost(ctx) + ":" + getApiPort(ctx)
-                + "/PSI/projetoPSI_WEB/frontend/web";
+        SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        return sp.getString(KEY_FRONTEND_BASE, DEFAULT_FRONTEND_BASE);
     }
 
     public static void saveApiBase(Context ctx, String apiBase) {
@@ -44,6 +48,11 @@ public class ServerConfig {
         sp.edit()
                 .putString(KEY_API_BASE, apiBase)
                 .apply();
+    }
+
+    public static void saveFrontendBase(Context ctx, String frontendBase) {
+        SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        sp.edit().putString(KEY_FRONTEND_BASE, frontendBase).apply();
     }
 
     // ---------------- MQTT CONFIG ----------------

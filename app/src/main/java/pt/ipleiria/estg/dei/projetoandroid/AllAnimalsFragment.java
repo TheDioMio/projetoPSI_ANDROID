@@ -28,7 +28,6 @@ import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalsListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AnimalFilter;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
-import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
 
 public class AllAnimalsFragment extends Fragment implements AnimalsListener {
     private GridView lvAnimalsGrid;

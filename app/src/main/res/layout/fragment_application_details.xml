@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="Candidatura de (Nome)"
+            android:text="@string/txt_candidatura_de_nome"
             android:textColor="#000000"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -54,7 +54,7 @@
                         android:id="@+id/tvSubmissionDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📅 Submetida em: 25/12/2025"
+                        android:text="@string/txt_submetida_em"
                         android:textColor="#757575"
                         android:textSize="14sp" />
 
@@ -63,7 +63,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="🐾 Animal: Rex"
+                        android:text="@string/txt_animal_rex"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -88,7 +88,7 @@
                         android:paddingTop="4dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="4dp"
-                        android:text="Em análise"
+                        android:text="@string/txt_em_analise"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -133,7 +133,7 @@
                         android:id="@+id/tvCandidateName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Teste API"
+                        android:text="@string/txt_teste_api"
                         android:textSize="14sp"/>
                 </LinearLayout>
 
@@ -153,7 +153,7 @@
                         android:id="@+id/tvCandidateAge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="99"
+                        android:text="@string/txt_99"
                         android:textSize="14sp"/>
                 </LinearLayout>
 
@@ -173,7 +173,7 @@
                         android:id="@+id/tvContact"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="91919191"
+                        android:text="@string/txt_91919191"
                         android:textSize="14sp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -218,7 +218,7 @@
                         android:id="@+id/tvHome"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Arrendada"
+                        android:text="@string/txt_arrendada"
                         android:textSize="14sp"/>
                 </LinearLayout>
 
@@ -238,7 +238,7 @@
                         android:id="@+id/tvTimeAlone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="+8 Horas"
+                        android:text="@string/txt_8_horas"
                         android:textSize="14sp"/>
                 </LinearLayout>
 
@@ -264,7 +264,7 @@
                         android:paddingTop="2dp"
                         android:paddingEnd="8dp"
                         android:paddingBottom="2dp"
-                        android:text="Sim"
+                        android:text="@string/txt_sim"
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -311,7 +311,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Sim"
+                        android:text="@string/txt_sim"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -339,7 +339,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Sim"
+                        android:text="@string/txt_sim"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
@@ -379,7 +379,7 @@
                     android:id="@+id/tvMotive"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Texto descritivo da motivação..."
+                    android:text="@string/txt_texto_descritivo_da_motivacao"
                     android:textSize="14sp"
                     android:lineSpacingExtra="4dp"/>
             </LinearLayout>

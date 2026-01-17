@@ -34,7 +34,6 @@ import pt.ipleiria.estg.dei.projetoandroid.listeners.MyAnimalsListener;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AnimalFilter;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
-import pt.ipleiria.estg.dei.projetoandroid.modelo.GestorAnimals;
 
 public class MyAnimalsFragment extends Fragment implements MyAnimalsListener, AnimalDeleteListener {
 

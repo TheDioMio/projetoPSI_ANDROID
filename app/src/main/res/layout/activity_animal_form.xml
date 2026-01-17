@@ -35,7 +35,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descrição"
+            android:hint="@string/txt_descricao"
             android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -50,7 +50,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Localização"
+            android:hint="@string/txt_localizacao"
             android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -99,7 +99,7 @@
             android:id="@+id/cbNeutered"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Esterilizado"
+            android:text="@string/txt_esterilizado"
             android:layout_marginTop="12dp"/>
 
         <!-- ================= ANÚNCIO ================= -->
@@ -107,7 +107,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Anúncio"
+            android:text="@string/txt_anuncio"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginTop="20dp"/>
@@ -116,7 +116,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descrição do anúncio"
+            android:hint="@string/txt_descricao_do_anuncio"
             android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -139,7 +139,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fotos"
+            android:text="@string/txt_fotografias"
             android:textStyle="bold"
             android:layout_marginTop="20dp"/>
 
@@ -153,7 +153,7 @@
             android:id="@+id/btnAddPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Adicionar foto"
+            android:text="@string/txt_adicionar_fotografia"
             android:layout_marginTop="8dp"/>
 
         <!-- ================= COMENTÁRIOS (EDIT) ================= -->
@@ -162,7 +162,7 @@
             android:id="@+id/tvCommentsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Comentários"
+            android:text="@string/txt_comentarios"
             android:textStyle="bold"
             android:layout_marginTop="20dp"
             android:visibility="gone"/>

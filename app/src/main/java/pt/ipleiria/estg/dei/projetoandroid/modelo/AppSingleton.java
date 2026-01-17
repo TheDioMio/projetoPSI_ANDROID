@@ -82,9 +82,11 @@ import pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig;
 
 public class AppSingleton {
 
+    //region VARIAVEIS E CONSTANTES
+
     public static final int ROLE_ADMIN = 1;
     public static final int ROLE_USERPRO = 2;
-    public static final int ROLE_USER  = 3;
+    public static final int ROLE_USER = 3;
 
     private Context context;
 
@@ -97,6 +99,7 @@ public class AppSingleton {
     private ArrayList<Animal> animals;
     private ArrayList<Animal> myAnimals;
 
+    private ArrayList<User> users;
     private ArrayList<Comment> comments;
 
     //variaveis e constantes dos Favoritos
@@ -165,6 +168,7 @@ public class AppSingleton {
         return totalViews;
     }
     //endregion
+//endregion
 
     //region ENDPOINTS
 
@@ -199,17 +203,6 @@ public class AppSingleton {
     private String putmUrlAPICommentUpdate = "/projetoPSI_WEB/backend/web/api/comments";
 
 //endregion
-
-
-    public static boolean isConnectionInternet(Context context){
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        //necessita de permissões de acesso a internet
-        //e acesso ao estado la ligação
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
-
 
 
     //region LISTENERS
@@ -249,9 +242,11 @@ public class AppSingleton {
     public void setStatsListener(StatsListener listener) {
         this.statsListener = listener;
     }
+
     public void setSignupListener(SignupListener listener) {
         this.signupListener = listener;
     }
+
     public void setCommentUpdateListener(CommentUpdateListener commentUpdateListener) {
         this.commentUpdateListener = commentUpdateListener;
     }
@@ -275,9 +270,11 @@ public class AppSingleton {
     public void setDeleteAnimalPhotosListener(DeleteAnimalPhotosListener listener) {
         this.deleteAnimalPhotosListener = listener;
     }
+
     public void setUploadAnimalPhotosListener(UploadAnimalPhotosListener listener) {
         this.uploadAnimalPhotosListener = listener;
     }
+
     public void setUpdateAnimalListener(UpdateAnimalListener updateAnimalListener) {
         this.updateAnimalListener = updateAnimalListener;
     }
@@ -314,24 +311,18 @@ public class AppSingleton {
         this.metaListener = metaListener;
     }
 
-    public void setApplicationsListener(ApplicationsListener applicationsListener){
+    public void setApplicationsListener(ApplicationsListener applicationsListener) {
         this.applicationsListener = applicationsListener;
     }
 
     //endregion
 
 
-
     private static AppSingleton instance = null;
-//    private GestorAnimals gestorAnimals = new GestorAnimals();
 
 
-    // retirar isto daqui
-    private GestorUsers gestorUsers = new GestorUsers();
-
-
-    public static synchronized AppSingleton getInstance(Context context){
-        if (instance == null){
+    public static synchronized AppSingleton getInstance(Context context) {
+        if (instance == null) {
             instance = new AppSingleton(context);
             volleyQueue = Volley.newRequestQueue(context);
         }
@@ -350,11 +341,22 @@ public class AppSingleton {
         animals = new ArrayList<>();
         myAnimals = new ArrayList<>();
         applications = new ArrayList<>();
+        users = new ArrayList<>();
     }
 
-    // ------------------------------------------
-    // ----------------------------FAVORITOS-----
-    // ------------------------------------------
+    public static boolean isConnectionInternet(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        //necessita de permissões de acesso a internet
+        //e acesso ao estado la ligação
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+
+    // -------------------------
+    // GESTOR Favoritos
+    // -------------------------
     //region FAVORITOS
 
     private void saveFavorites(Context context) {
@@ -437,7 +439,6 @@ public class AppSingleton {
     }
 
 
-
     //endregion
 
 
@@ -448,8 +449,8 @@ public class AppSingleton {
 
     //gestor dos comments no singleton (atualiza a lista dos animals e dos my animals)
 
-    public void adicionarCommentsBD(ArrayList<Comment> comments){
-        for (Comment c: comments){
+    public void adicionarCommentsBD(ArrayList<Comment> comments) {
+        for (Comment c : comments) {
             appBD.adicionarCommentBD(c);
         }
     }
@@ -485,7 +486,7 @@ public class AppSingleton {
     public void editarCommentBD(Comment comment) {
 
         int commentId = comment.getIdComment();
-        int animalId  = comment.getIdAnimal();
+        int animalId = comment.getIdAnimal();
 
         //  Atualizar BD
         appBD.updateCommentBD(comment);
@@ -711,30 +712,31 @@ public class AppSingleton {
     //endregion
 
 
-
     // -------------------------
     // GESTOR ANIMAL
     // -------------------------
+
+    //region Animais
 
     //region ANIMALS SINGLETON
     public ArrayList<Animal> getAnimals() {
         return new ArrayList<>(animals);
     }
 
-    public Animal getAnimal(int idAnimal){
+    public Animal getAnimal(int idAnimal) {
 
-        for (Animal animal: animals) {
-            if (animal.getId()==idAnimal){
+        for (Animal animal : animals) {
+            if (animal.getId() == idAnimal) {
                 return animal;
             }
         }
         return null;
     }
 
-    public Animal getMyAnimal(int idAnimal){
+    public Animal getMyAnimal(int idAnimal) {
 
-        for (Animal animal: myAnimals) {
-            if (animal.getId()==idAnimal){
+        for (Animal animal : myAnimals) {
+            if (animal.getId() == idAnimal) {
                 return animal;
             }
         }
@@ -752,9 +754,9 @@ public class AppSingleton {
     //FALTA o editar animal BD
     //falta o remover Animal BD
 
-    public void adicionarAnimalsBD(ArrayList<Animal> animals){
+    public void adicionarAnimalsBD(ArrayList<Animal> animals) {
         AppDBHelper.getInstance(context).removerAllAnimalsBD();
-        for (Animal a: animals){
+        for (Animal a : animals) {
             appBD.adicionarAnimalBD(a);
         }
     }
@@ -775,9 +777,9 @@ public class AppSingleton {
 
     //------------MY ANIMALS BD
 
-    public void adicionarMyAnimalsBD(ArrayList<Animal> animals){
+    public void adicionarMyAnimalsBD(ArrayList<Animal> animals) {
         AppDBHelper.getInstance(context).removerAllMyAnimalsBD();
-        for (Animal a: animals){
+        for (Animal a : animals) {
             appBD.adicionarMyAnimalBD(a);
         }
     }
@@ -826,7 +828,7 @@ public class AppSingleton {
                     //atualiza a BD
                     adicionarMyAnimalsBD(myAnimals);
 //                    // 2️⃣ Guardar na BD local (my_animals)
-                    for (Animal a: myAnimals){
+                    for (Animal a : myAnimals) {
                         adicionarCommentsBD(a.getComments());
                         adicionarFilesBD(a.getAnimalfiles());
                     }
@@ -1064,7 +1066,7 @@ public class AppSingleton {
                         //Guardar na BD local
                         appBD.removerAllAnimalsBD();          // limpa dados antigos dos animais dos comments e dos files
                         adicionarAnimalsBD(animals);
-                        for (Animal a: animals){
+                        for (Animal a : animals) {
                             adicionarCommentsBD(a.getComments());
                             adicionarFilesBD(a.getAnimalfiles());
                         }
@@ -1272,9 +1274,9 @@ public class AppSingleton {
 
                         animalsAdopted = json.optInt("animals_adopted");
                         animalsWaiting = json.optInt("animals_waiting");
-                        activeUsers    = json.optInt("active_users");
+                        activeUsers = json.optInt("active_users");
                         activeListings = json.optInt("active_listings");
-                        totalViews     = json.optInt("total_views");
+                        totalViews = json.optInt("total_views");
 
                         if (listener != null) listener.onStatsSuccess();
 
@@ -1309,16 +1311,18 @@ public class AppSingleton {
     }
 
 
-
+    //endregion
 
     //endregion
 
+    // -------------------------
+    // GESTOR Files
+    // -------------------------
 
+    //region FICHEIROS / FOTOGRAFIAS
 
-
-
-    public void adicionarFilesBD(ArrayList<AnimalFile> files){
-        for (AnimalFile f: files){
+    public void adicionarFilesBD(ArrayList<AnimalFile> files) {
+        for (AnimalFile f : files) {
             appBD.adicionarFileBD(f);
         }
     }
@@ -1382,7 +1386,6 @@ public class AppSingleton {
 
         volleyQueue.add(request);
     }
-
 
 
     private byte[] getBytesFromUri(Context context, Uri uri) {
@@ -1454,17 +1457,12 @@ public class AppSingleton {
         volleyQueue.add(request);
     }
 
+    //endregion
+
     // -------------------------
-    // GESTOR User
+    // GESTOR Application
     // -------------------------
-
-
-    public User getUser(int idUser){
-        //colocar aqui o que está no gestor de users
-        return gestorUsers.getUser(idUser);
-    }
-
-
+    //region APPLICATION
     // -------------------------
     // GESTOR Application
     // -------------------------
@@ -1489,7 +1487,7 @@ public class AppSingleton {
 
 
     public void getApplicationsAPI(final Context context, final String type) {
-        String url = endereco + getmUrlAPIApplication +"/"+ type;
+        String url = endereco + getmUrlAPIApplication + "/" + type;
 
         //Se não tem net, vai logo à BD
         if (!isConnectionInternet(context)) {
@@ -1549,7 +1547,7 @@ public class AppSingleton {
         volleyQueue.add(req);
     }
 
-    public void addApplicationAPI(final Context context, int userId,int animalId, String motive, String dataJsonString, final ApplicationsListener listener) {
+    public void addApplicationAPI(final Context context, int userId, int animalId, String motive, String dataJsonString, final ApplicationsListener listener) {
         if (!isConnectionInternet(context)) {
             Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
             return;
@@ -1645,7 +1643,7 @@ public class AppSingleton {
             Toast.makeText(context, "Sem ligação à internet", Toast.LENGTH_SHORT).show();
             return;
         }
-        String url = endereco + getmUrlAPIApplication+ "/" + application.getId();
+        String url = endereco + getmUrlAPIApplication + "/" + application.getId();
 
         JSONObject jsonBody = new JSONObject();
         try {
@@ -1777,6 +1775,7 @@ public class AppSingleton {
         };
         volleyQueue.add(request);
     }
+
     public void removerApplicationBD(int idApplication) {
         Application app = getApplication(idApplication);
 
@@ -1807,6 +1806,13 @@ public class AppSingleton {
     // -------------------------
     // FIM GESTOR Application
     // -------------------------
+
+    //endregion
+
+    // -------------------------
+    // GESTOR Mensagens
+    // -------------------------
+    //region MENSAGENS
 
     public void setMessageListener(MessagesListener messageListener) {
         this.messagesListener = messageListener;
@@ -1951,7 +1957,6 @@ public class AppSingleton {
     }
 
 
-
     public void removerAllMessagesBD() {
         AppDBHelper.getInstance(context).removerAllMessagesBD();
     }
@@ -2005,11 +2010,36 @@ public class AppSingleton {
     }
 
 
-
-
-
     //*************************************** Fim Mensagens *************************************
 
+    //endregion
+
+    //region MENSAGENS AUX
+
+    public interface SendMessageListener {
+        void onSuccess();
+
+        void onError(String msg);
+    }
+//endregion
+
+    // -------------------------
+    // GESTOR User
+    // -------------------------
+
+    //region UTILIZADORES AUTENTICAÇÃO
+
+    public User getUser(int idUser) {
+        //colocar aqui o que está no gestor de users
+        //return gestorUsers.getUser(idUser);
+
+        for (User user : users) {
+            if (user.getId() == idUser) {
+                return user;
+            }
+        }
+        return null;
+    }
 
 
     public void signupAPI(final String username,
@@ -2088,8 +2118,6 @@ public class AppSingleton {
     }
 
 
-
-
     public void logout(Context context) {
 
         clearFavorites(context);
@@ -2105,14 +2133,11 @@ public class AppSingleton {
     }
 
 
+    public void loginAPI(final String username, final String password, final Context context) {
 
-    public void loginAPI(final String username, final String password, final Context context){
-        //para debug
-        Toast.makeText(context, endereco + getmUrlAPILogin, Toast.LENGTH_SHORT).show();
-
-        if(!isConnectionInternet(context)){
+        if (!isConnectionInternet(context)) {
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             StringRequest request = new StringRequest(
                     Request.Method.POST,
                     endereco + getmUrlAPILogin,
@@ -2124,10 +2149,8 @@ public class AppSingleton {
                                 JSONObject json = new JSONObject(s);
 
                                 String token = json.optString("token", null);
-                                int userId   = json.optInt("id", -1);
+                                int userId = json.optInt("id", -1);
 
-                                // se ainda quiseres usar o parser antigo do token:
-                                // String token = UserJsonParser.parserJsonLogin(s);
 
                                 if (token != null) {
                                     SharedPreferences sp = context.getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
@@ -2139,7 +2162,7 @@ public class AppSingleton {
                                     System.out.println("DEBUG SP SAVE USER_ID_INT=" + userId);
                                 }
 
-                                if(loginListener != null) {
+                                if (loginListener != null) {
                                     loginListener.onValidateLogin(token);
                                 }
                             } catch (Exception e) {
@@ -2190,7 +2213,7 @@ public class AppSingleton {
                             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                         }
                     }
-            ){
+            ) {
                 @Nullable
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
@@ -2216,11 +2239,11 @@ public class AppSingleton {
     // FUNÇÃO QUE PEDE OS DADOS DO UTILIZADOR QUE ESTÁ LOGADO PARA DEPOIS GUARDAR NA SHARED PREFERENCES
     // ENVIA O TOKEN
     // RECEBE OS DADOS DO UTILIZADOR
-    public void getMe( final Context context){
-        if(!isConnectionInternet(context)){
+    public void getMe(final Context context) {
+        if (!isConnectionInternet(context)) {
             Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-        }else{
-            JsonObjectRequest request = new JsonObjectRequest (Request.Method.GET, endereco + getmUrlAPIMe, null, new Response.Listener<JSONObject>() {
+        } else {
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, endereco + getmUrlAPIMe, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     //atualiza o singleton
@@ -2257,7 +2280,7 @@ public class AppSingleton {
 
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                 }
-            }){
+            }) {
                 @Nullable
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
@@ -2411,14 +2434,6 @@ public class AppSingleton {
                 .apply();
     }
 
-//    public void notifyMenuRefresh(Me me) {
-//        this.me = me;
-//
-//        if (menuListener != null) {
-//            menuListener.onRefreshMenu(me);
-//        }
-//    }
-
 
     public String getToken(Context context) {
         SharedPreferences sharedPreferences =
@@ -2432,51 +2447,7 @@ public class AppSingleton {
         return sp.getInt("USER_ID_INT", -1); // -1 = não autenticado
     }
 
-    public interface SendMessageListener {
-        void onSuccess();
+    //endregion
 
-        void onError(String msg);
-    }
 
-//    private void buildUrls() {
-//        // Vai buscar às SharedPreferences (ou default)
-//        endereco = ServerConfig.getApiBase(context);
-//        endereco+FRONTEND_BASE_URL = pt.ipleiria.estg.dei.projetoandroid.utils.ServerConfig.getFrontendBase(context);
-//
-//
-//
-//        // Constrói URLs com base no endereco atual
-//        getmUrlAPILogin = endereco + "/auth/login";
-//        postmUrlAPISignup = endereco + "/auth/signup";
-//
-//        getmUrlAPIMe = endereco + "/users/me";
-//        putmUrlAPIMe = endereco + "/users/me";
-//        getMessageURL = endereco + "/messages";
-//        getmUrlAPIApplication = endereco + "/application";
-//
-//        getSentApplications = endereco + "/application/sent";
-//
-//        postAvatarURL = endereco + "/file/update-avatar";
-//        postmUrlAPIFilesDelete = endereco + "/file/delete";
-//        postmUrlAPIFilesCreate = endereco + "/file/create";
-//
-//        getmUrlAPIAnimals = endereco + "/animals?expand=listing.comments.user.profileImage,user.profileImage";
-//        putmUrlAPIAnimalUpdate = endereco + "/animals/";
-//        deletemUrlAPIAnimalDelete = endereco + "/animals/";
-//        postmUrlAPIAnimalCreate = endereco + "/animals";
-//        getmUrlAPIMyAnimals = endereco + "/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
-//        getmUrlAPIMeta = endereco + "/animals/meta";
-//        getmUrlAPIAnimalEdit = endereco + "/animals/edit/";
-//
-//        postmUrlAPICommentCreate = endereco + "/comments";
-//        deletemUrlAPICommentDelete = endereco + "/comments";
-//        putmUrlAPICommentUpdate = endereco + "/comments";
-//
-//        System.out.println("DEBUG API endereco=" + endereco);
-//    }
-
-//    public void reloadServerConfig() {
-//        //buildUrls();
-//    }
 }
-

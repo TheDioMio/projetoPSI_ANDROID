@@ -34,7 +34,7 @@
                 android:id="@+id/tvUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Utilizador"
+                android:text="@string/txt_utilizador"
                 android:textStyle="bold"
                 android:textSize="14sp"/>
 
@@ -42,7 +42,7 @@
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2024-05-01"
+                android:text="@string/txt_2024_05_01"
                 android:textSize="12sp"
                 android:textColor="?colorOnSurfaceVariant"/>
 
@@ -50,7 +50,7 @@
                 android:id="@+id/tvCommentText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Comentário do utilizador"
+                android:text="@string/txt_coment_rio_do_utilizador"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"/>
 
@@ -70,7 +70,7 @@
                 android:layout_height="40dp"
                 android:src="@drawable/ic_edit"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Editar"
+                android:contentDescription="@string/txt_editar"
                 app:tint="@color/primary"
                 android:visibility="gone"/>
 
@@ -80,7 +80,7 @@
                 android:layout_height="40dp"
                 android:src="@drawable/ic_delete_vector"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Apagar"
+                android:contentDescription="@string/txt_apagar"
                 app:tint="@color/secondary"
                 android:visibility="gone"/>
 

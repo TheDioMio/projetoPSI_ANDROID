@@ -190,10 +190,10 @@ public class MessageFragment extends Fragment {
                 + " receiver=" + msg.getReciver_user_id());
 
         if (souSender) {
-            btnSend.setText("Editar");
+            btnSend.setText(R.string.txt_editar);
             btnSend.setOnClickListener(v -> enableEditMode(msg));
         } else {
-            btnSend.setText("Responder");
+            btnSend.setText(R.string.txt_responder);
             btnSend.setOnClickListener(v -> {
 
                 MessageFragment frag = MessageFragment.newInstanceForCompose(
@@ -316,12 +316,13 @@ public class MessageFragment extends Fragment {
                     new AppSingleton.SendMessageListener() {
                         @Override
                         public void onSuccess() {
+                            Toast.makeText(getContext(), "Mensagem enviada com sucesso", Toast.LENGTH_SHORT).show();
                             requireActivity().getSupportFragmentManager().popBackStack();
                         }
 
                         @Override
                         public void onError(String erro) {
-                            // Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
+                             Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
                         }
                     }
             );
@@ -340,7 +341,7 @@ public class MessageFragment extends Fragment {
         etMensagem.setCursorVisible(true);
         etMensagem.setKeyListener(new EditText(getContext()).getKeyListener());
 
-        btnSend.setText("Guardar");
+        btnSend.setText(R.string.txt_guardar);
         btnSend.setOnClickListener(v -> saveEdit(msg));
     }
 

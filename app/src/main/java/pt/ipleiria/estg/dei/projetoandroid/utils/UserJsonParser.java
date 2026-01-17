@@ -14,51 +14,6 @@ import pt.ipleiria.estg.dei.projetoandroid.modelo.Me;
 
 public class UserJsonParser {
 
-//    public static ArrayList<Livro> parserJsonLivros(JSONArray response){
-//        ArrayList<Livro> livros = new ArrayList<>();
-//        try{
-//            for (int i=0; i< response.length(); i++){
-//                JSONObject livro = response.getJSONObject(i);
-//                int idLivro = livro.getInt("id");
-//                String titulo = livro.getString("titulo");
-//                String autor = livro.getString("autor");
-//                String serie = livro.getString("serie");
-//                int ano = livro.getInt("ano");
-//                String capa = livro.getString("capa");
-//
-//                //Se receber um array dentro da resposta, temos de fazer outro FOR para colocar dentro do outro array
-//
-//                Livro auxLivro = new Livro(idLivro, ano, capa, titulo, serie, autor);
-//
-//                livros.add(auxLivro);
-//            }
-//        } catch (JSONException e){
-//            e.printStackTrace();
-//        }
-//
-//        return livros;
-//    }
-//
-//    public static Livro parserJsonLivro(String response){
-//        Livro auxLivro = null;
-//        try{
-//            JSONObject livro = new JSONObject(response);
-//
-//            int idLivro = livro.getInt("id");
-//            String titulo = livro.getString("titulo");
-//            String autor = livro.getString("autor");
-//            String serie = livro.getString("serie");
-//            int ano = livro.getInt("ano");
-//            String capa = livro.getString("capa");
-//
-//            auxLivro = new Livro(idLivro, ano, capa, titulo, serie, autor);
-//
-//        }catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return auxLivro;
-//    }
 
     public static Me parserJsonMe(JSONObject resp){
         Me auxMe = null;

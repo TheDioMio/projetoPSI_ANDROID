@@ -83,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
         carregarDados();
 
         imgProfileChange.setOnClickListener(v -> escolherImagem());
-        
+
     }
 
 
@@ -165,56 +165,6 @@ public class ProfileActivity extends AppCompatActivity {
         finish();
         return true;
     }
-
-//    private void guardar() {
-//
-//        //primeiro ver se tem internet
-//        if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
-//            Snackbar.make(rootView,
-//                            R.string.txt_offline_indisponivel,
-//                            Snackbar.LENGTH_INDEFINITE)
-//                    .setAction(R.string.txt_ok, vv -> {})
-//                    .show();
-//            return;
-//        }
-//
-//
-//        SharedPreferences sp = getSharedPreferences("DADOS_USER", MODE_PRIVATE);
-//        int userId = sp.getInt("USER_ID_INT", -1);
-//
-//        if (userId == -1) {
-//            Toast.makeText(this, "ID do utilizador não encontrado", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        Me me = new Me(
-//                userId,
-//                etName.getText().toString(),
-//                etUsername.getText().toString(),
-//                null,
-//                etLocation.getText().toString(),
-//                etEmail.getText().toString()
-//        );
-//
-//        AppSingleton.getInstance(this).updateMe(
-//                this,
-//                me,
-//                new UserUpdateListener() {
-//
-//                    @Override
-//                    public void onUpdateSuccess(Me updatedUser) {
-//                        Toast.makeText(ProfileActivity.this, R.string.txt_utilizador_atualizado_com_sucesso, Toast.LENGTH_LONG).show();
-//                        setResult(Activity.RESULT_OK);
-//                        finish();
-//                    }
-//
-//                    @Override
-//                    public void onUpdateError(String error) {
-//                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//        );
-//    }
 
 
     private void carregarDados() {

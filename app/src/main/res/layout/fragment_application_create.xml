@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:background="@android:drawable/edit_text"
-                        android:hint="99"
+                        android:hint="@string/txt_99"
                         android:maxLength="3"
                         android:padding="10dp"/>
                 </LinearLayout>
@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:background="@android:drawable/edit_text"
-                        android:hint="999999999"
+                        android:hint="@string/txt_999999999"
                         android:padding="10dp"/>
                 </LinearLayout>
             </LinearLayout>

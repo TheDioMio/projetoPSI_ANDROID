@@ -687,27 +687,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
         }
         return null;
     }
-//    public Comment adicionarCommentBD(Comment comment) {
-//
-//        ContentValues values = new ContentValues();
-//        values.put(ID_COMMENT, comment.getIdComment());
-//        values.put(ID_ANIMAL, comment.getIdAnimal());
-//        values.put(ID_USER, comment.getUserId());
-//        values.put(COMMENT_TEXT, comment.getText());
-//        values.put(COMMENT_DATE, comment.getDate());
-//        values.put(NAME_USER, comment.getUserName());
-//        values.put(AVATAR_USER, comment.getUserAvatar());
-//
-//        long id = database.insertWithOnConflict(
-//                TABLE_ANIMALS_COMMENTS,
-//                null,
-//                values,
-//                SQLiteDatabase.CONFLICT_REPLACE  // Substitui se já existir
-//        );
-//
-//
-//        return comment;
-//    }
+
 
     public boolean deleteCommentBD(int idComment) {
         int rows = database.delete(
@@ -792,77 +772,7 @@ public class AppDBHelper extends SQLiteOpenHelper {
 
     //INICIO-------------------------------------------APPLICATION--------------------------------------------
 
-//    public ArrayList<Application> getAllApplicationsBD() {
-//        ArrayList<Application> applications = new ArrayList<>();
-//
-//        // Definimos as colunas que queremos buscar
-//        String[] columns = new String[]{
-//                APPLICATION_ID, APPLICATION_ANIMAL_ID, STATUS, APPLICATION_TYPE,
-//                APPLICATION_DESCRIPTION, CANDIDATE_NAME, APPLICATION_ANIMAL_NAME,
-//                APPLICATION_ANIMAL_IMAGE,
-//                APPLICATION_CREATED_AT, TARGET_USER_ID, STATUS_DATE, IS_READ,
-//                CANDIDATE_AGE, CANDIDATE_CONTACT, MOTIVE, HOME, TIME_ALONE,
-//                BILLS, CHILDREN, FOLLOW_UP
-//        };
-//
-//        Cursor cursor = database.query(
-//                TABLE_APPLICATIONS,
-//                columns,
-//                null, null, null, null, null
-//        );
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                applications.add(new Application(
-//                        // 1. int id
-//                        cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ID)),
-//                        // 2. int animalId
-//                        cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_ID)),
-//                        // 3. String status
-//                        cursor.getString(cursor.getColumnIndexOrThrow(STATUS)),
-//                        // 4. int type
-//                        cursor.getInt(cursor.getColumnIndexOrThrow(APPLICATION_TYPE)),
-//                        // 5. String description
-//                        cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_DESCRIPTION)),
-//                        // 6. String candidateName
-//                        cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_NAME)),
-//                        // 7. String animalName
-//                        cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_NAME)),
-//                        // 8. String animalImage
-//                        cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_ANIMAL_IMAGE)),
-//                        // 9. String createdAt
-//                        cursor.getString(cursor.getColumnIndexOrThrow(APPLICATION_CREATED_AT)),
-//                        // 10. String targetUserId
-//                        cursor.getString(cursor.getColumnIndexOrThrow(TARGET_USER_ID)),
-//                        // 11. String statusDate
-//                        cursor.getString(cursor.getColumnIndexOrThrow(STATUS_DATE)),
-//                        // 12. int isRead
-//                        cursor.getInt(cursor.getColumnIndexOrThrow(IS_READ)),
-//
-//                        // --- DADOS DO FORMULÁRIO ---
-//                        // 13. int age
-//                        cursor.getInt(cursor.getColumnIndexOrThrow(CANDIDATE_AGE)),
-//                        // 14. String contact
-//                        cursor.getString(cursor.getColumnIndexOrThrow(CANDIDATE_CONTACT)),
-//                        // 15. String motive
-//                        cursor.getString(cursor.getColumnIndexOrThrow(MOTIVE)),
-//                        // 16. String home
-//                        cursor.getString(cursor.getColumnIndexOrThrow(HOME)),
-//                        // 17. String timeAlone
-//                        cursor.getString(cursor.getColumnIndexOrThrow(TIME_ALONE)),
-//                        // 18. String bills
-//                        cursor.getString(cursor.getColumnIndexOrThrow(BILLS)),
-//                        // 19. String children
-//                        cursor.getString(cursor.getColumnIndexOrThrow(CHILDREN)),
-//                        // 20. String followUp
-//                        cursor.getString(cursor.getColumnIndexOrThrow(FOLLOW_UP))
-//                ));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        return applications;
-//    }
+
 
     public ArrayList<Application> getAllApplicationsBD(String type) { // Recebe "sent" ou "received"
         ArrayList<Application> applications = new ArrayList<>();

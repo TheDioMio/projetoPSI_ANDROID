@@ -17,6 +17,6 @@
         android:layout_gravity="top|end"
         android:background="@android:color/transparent"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:contentDescription="Remover foto" />
+        android:contentDescription="@string/txt_remover_foto" />
 
 </FrameLayout>

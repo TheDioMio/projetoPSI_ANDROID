@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Descrição da motivação..."
+                android:text="@string/txt_descri_o_da_motiva_o"
                 android:textSize="14sp" />
 
             <TextView
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="PENDENTE"
+                android:text="@string/txt_pendente"
                 android:textColor="#FFC107"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -81,7 +81,7 @@
             android:layout_marginStart="8dp"
 
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Delete"
+            android:contentDescription="@string/txt_delete"
             android:src="@drawable/ic_delete_vector"
 
             android:padding="12dp"

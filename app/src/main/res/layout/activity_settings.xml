@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Definições de Conectividade" />
+            android:text="@string/txt_definicoes_de_conectividade" />
     </LinearLayout>
 
     <LinearLayout

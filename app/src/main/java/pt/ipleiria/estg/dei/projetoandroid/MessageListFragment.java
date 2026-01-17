@@ -124,19 +124,6 @@ public class MessageListFragment extends Fragment implements MessagesListener {
 
         AppSingleton singleton = AppSingleton.getInstance(getContext());
 
-//        singleton.setMessageListener(new pt.ipleiria.estg.dei.projetoandroid.listeners.MessagesListener() {
-//            @Override
-//            public void onRefreshListaMessages(ArrayList lista) {
-//                atualizarListas(lista);
-//                mostrarRecebidas();
-//            }
-//
-//            @Override
-//            public void onErro(String erro) {
-//                // opcional: Toast
-//                // Toast.makeText(getContext(), erro, Toast.LENGTH_SHORT).show();
-//            }
-//        });
 
         singleton.setMessageListener(this);
         singleton.getAllMessagesAPI(getContext());

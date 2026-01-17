@@ -45,7 +45,7 @@ import pt.ipleiria.estg.dei.projetoandroid.adaptadores.AnimalImageAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.adaptadores.CommentAdaptador;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Comment;
 
-public class AnimalDetailsFragment extends Fragment implements CommentCreateListener {
+public class AnimalDetailsFragment extends Fragment implements CommentCreateListener, OnMapReadyCallback {
 
 //public class AnimalDetailsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -97,6 +97,14 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
         etNewComment = view.findViewById(R.id.etNewComment);
         btnSendMessage = view.findViewById(R.id.btnSendMessage);
         AppSingleton.getInstance(getContext()).setCommentCreateListener(this);
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getChildFragmentManager()
+                        .findFragmentById(R.id.map);
+
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
         // LayoutManagers
         rvAnimalImages.setLayoutManager(
@@ -158,7 +166,7 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
                     return;
                 }
 
-                //falta implementar chamar a vista de enviar a mensagem
+
                 int receiverId = animal.getUserId(); // ID do dono do animal
                 String receiver_username =animal.getOwnerName();
 
@@ -410,26 +418,44 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
     public void onCreateCommentError(String error) {
         Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
-}
 
-//
-//    //Metodoso do Listener do Comments
-//    @Override
-//    public void onEditComment(Comment comment) {
-//
-//
-//    }
-//
-//    @Override
-//    public void onDeleteComment(Comment comment) {
-//        new AlertDialog.Builder(requireContext())
-//                .setTitle("Apagar comentário")
-//                .setMessage("Tens a certeza que queres apagar este comentário?")
-//                .setPositiveButton("Apagar", (dialog, which) -> {
-//                    AppSingleton.getInstance(getContext())
-//                            .deleteCommentAPI(getContext(), comment.getId(), this);
-//                })
-//                .setNegativeButton("Cancelar", null)
-//                .show();
-//    }
-//}
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        gMap = googleMap;
+
+        if (animal == null || animal.getLocation() == null || animal.getLocation().isEmpty()) {
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+                List<Address> results =
+                        geocoder.getFromLocationName(animal.getLocation(), 1);
+
+                if (results != null && !results.isEmpty()) {
+                    Address address = results.get(0);
+                    LatLng posicao = new LatLng(
+                            address.getLatitude(),
+                            address.getLongitude()
+                    );
+
+                    requireActivity().runOnUiThread(() -> {
+                        gMap.addMarker(new MarkerOptions()
+                                .position(posicao)
+                                .title(animal.getName()));
+                        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicao, 13f));
+                    });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
+
+
+
+
+
+    }
+}

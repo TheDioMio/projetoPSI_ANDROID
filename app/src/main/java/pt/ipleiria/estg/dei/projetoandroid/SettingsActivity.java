@@ -71,11 +71,10 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "O endereço deve começar por http:// ou https://", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(getApplicationContext(), apiBase+"Vai guardar isto", Toast.LENGTH_SHORT).show();
         ServerConfig.saveApiBase(this, apiBase);
 //        ServerConfig.saveFrontendBase(this,apiFrontendBase);
 
-        Toast.makeText(this, "Configuração guardada", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Configuração guardada", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

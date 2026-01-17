@@ -252,11 +252,6 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         int id = item.getItemId();
 
         if (id == R.id.navHome || id == R.id.bottom_home) {
-//            navegarPara(new HomeFragment(), true);
-//            getSupportFragmentManager().popBackStack(
-//                    "HOME",
-//                    FragmentManager.POP_BACK_STACK_INCLUSIVE
-//            );
 
             getSupportFragmentManager().popBackStack(
                     null,

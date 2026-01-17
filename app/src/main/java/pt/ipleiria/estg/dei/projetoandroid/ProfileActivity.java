@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +18,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -64,72 +68,153 @@ public class ProfileActivity extends AppCompatActivity {
         etNewPassword = findViewById(R.id.et_newPassword);
         etRptPassword = findViewById(R.id.et_rpt_new_password);
 
-        btnCancel = findViewById(R.id.btnCancel);
-        btnSave = findViewById(R.id.btnSave);
         imgProfileChange = findViewById(R.id.imgProfileChange);
         imgProfile = findViewById(R.id.imgProfile);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.txt_user_details);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         carregarDados();
 
-        btnSave.setOnClickListener(v -> guardar());
         imgProfileChange.setOnClickListener(v -> escolherImagem());
+        
+    }
 
-        btnCancel.setOnClickListener(v -> {
-//            setResult(Activity.RESULT_CANCELED);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_animal_form, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_save) {
+
+            //primeiro ver se tem internet
+            if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
+                Snackbar.make(rootView,
+                                R.string.txt_offline_indisponivel,
+                                Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.txt_ok, vv -> {})
+                        .show();
+                return true;
+            }
+
+
+            SharedPreferences sp = getSharedPreferences("DADOS_USER", MODE_PRIVATE);
+            int userId = sp.getInt("USER_ID_INT", -1);
+
+            if (userId == -1) {
+                Toast.makeText(this, "ID do utilizador não encontrado", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+            Me me = new Me(
+                    userId,
+                    etName.getText().toString(),
+                    etUsername.getText().toString(),
+                    null,
+                    etLocation.getText().toString(),
+                    etEmail.getText().toString()
+            );
+
+            AppSingleton.getInstance(this).updateMe(
+                    this,
+                    me,
+                    new UserUpdateListener() {
+
+                        @Override
+                        public void onUpdateSuccess(Me updatedUser) {
+                            Toast.makeText(ProfileActivity.this, R.string.txt_utilizador_atualizado_com_sucesso, Toast.LENGTH_LONG).show();
+                            setResult(Activity.RESULT_OK);
+                            finish();
+                        }
+
+                        @Override
+                        public void onUpdateError(String error) {
+                            Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_LONG).show();
+                        }
+                    }
+            );
+
+
+
+
+        } else if (item.getItemId() == android.R.id.home) {
+            // Fecha a Activity quando clicas na seta
             finish();
-        });
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
-    private void guardar() {
-
-        //primeiro ver se tem internet
-        if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
-            Snackbar.make(rootView,
-                            R.string.txt_offline_indisponivel,
-                            Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.txt_ok, vv -> {})
-                    .show();
-            return;
-        }
 
 
-        SharedPreferences sp = getSharedPreferences("DADOS_USER", MODE_PRIVATE);
-        int userId = sp.getInt("USER_ID_INT", -1);
 
-        if (userId == -1) {
-            Toast.makeText(this, "ID do utilizador não encontrado", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        Me me = new Me(
-                userId,
-                etName.getText().toString(),
-                etUsername.getText().toString(),
-                null,
-                etLocation.getText().toString(),
-                etEmail.getText().toString()
-        );
-
-        AppSingleton.getInstance(this).updateMe(
-                this,
-                me,
-                new UserUpdateListener() {
-
-                    @Override
-                    public void onUpdateSuccess(Me updatedUser) {
-                        Toast.makeText(ProfileActivity.this, R.string.txt_utilizador_atualizado_com_sucesso, Toast.LENGTH_LONG).show();
-                        setResult(Activity.RESULT_OK);
-                        finish();
-                    }
-
-                    @Override
-                    public void onUpdateError(String error) {
-                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
+
+//    private void guardar() {
+//
+//        //primeiro ver se tem internet
+//        if (!AppSingleton.getInstance(getApplicationContext()).isConnectionInternet(getApplicationContext())) {
+//            Snackbar.make(rootView,
+//                            R.string.txt_offline_indisponivel,
+//                            Snackbar.LENGTH_INDEFINITE)
+//                    .setAction(R.string.txt_ok, vv -> {})
+//                    .show();
+//            return;
+//        }
+//
+//
+//        SharedPreferences sp = getSharedPreferences("DADOS_USER", MODE_PRIVATE);
+//        int userId = sp.getInt("USER_ID_INT", -1);
+//
+//        if (userId == -1) {
+//            Toast.makeText(this, "ID do utilizador não encontrado", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        Me me = new Me(
+//                userId,
+//                etName.getText().toString(),
+//                etUsername.getText().toString(),
+//                null,
+//                etLocation.getText().toString(),
+//                etEmail.getText().toString()
+//        );
+//
+//        AppSingleton.getInstance(this).updateMe(
+//                this,
+//                me,
+//                new UserUpdateListener() {
+//
+//                    @Override
+//                    public void onUpdateSuccess(Me updatedUser) {
+//                        Toast.makeText(ProfileActivity.this, R.string.txt_utilizador_atualizado_com_sucesso, Toast.LENGTH_LONG).show();
+//                        setResult(Activity.RESULT_OK);
+//                        finish();
+//                    }
+//
+//                    @Override
+//                    public void onUpdateError(String error) {
+//                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//        );
+//    }
 
 
     private void carregarDados() {

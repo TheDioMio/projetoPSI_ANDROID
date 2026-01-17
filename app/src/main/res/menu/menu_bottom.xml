@@ -5,28 +5,28 @@
     <item
         android:id="@+id/bottom_home"
         android:icon="@drawable/ic_home"
-        android:title="Home"/>
+        android:title="@string/txt_home"/>
 
     <item
         android:id="@+id/bottom_animals"
         android:icon="@drawable/ic_pets"
-        android:title="Animais"/>
+        android:title="@string/txt_animais"/>
 
     <item
         android:id="@+id/bottom_messages"
         android:icon="@drawable/ic_messages"
-        android:title="Mensagens"/>
+        android:title="@string/txt_mensagens"/>
 
 
 
     <item
         android:id="@+id/bottom_application"
         android:icon="@drawable/ic_applications"
-        android:title="Candidaturas"/>
+        android:title="@string/txt_candidaturas"/>
 
     <item
-        android:id="@+id/bottom_profile"
-        android:icon="@drawable/ic_user"
-        android:title="Perfil"/>
+        android:id="@+id/bottom_favorites"
+        android:icon="@drawable/ic_star_border"
+        android:title="@string/txt_favoritos"/>
 
 </menu>

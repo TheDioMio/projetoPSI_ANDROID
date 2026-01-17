@@ -266,7 +266,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
         } else if (id == R.id.navDetalhesAnimal || id == R.id.bottom_animals) {
             navegarPara(new AllAnimalsFragment());
-        } else if (id == R.id.navFavorites ) {
+        } else if (id == R.id.navFavorites || id == R.id.bottom_favorites) {
             navegarPara(new FavoritesFragment());
 
         } else if (id == R.id.navMyAnimals) {
@@ -278,7 +278,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
         } else if (id == R.id.navMessage || id == R.id.bottom_messages) {
             navegarPara(new MessageListFragment());
 
-        } else if (id == R.id.navProfileDetails || id == R.id.bottom_profile) {
+        } else if (id == R.id.navProfileDetails) {
             startActivityForResult(
                     new Intent(this, ProfileActivity.class),
                     EDIT

@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.projetoandroid;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -63,6 +64,13 @@ public class FavoritesFragment extends Fragment implements FavoriteRemovedListen
         loadFavoritos();
         adapter.notifyDataSetChanged();
         updateEmptyState();
+
+        AppCompatActivity act = (AppCompatActivity) requireActivity();
+        if (act.getSupportActionBar() != null) {
+            act.getSupportActionBar().setTitle(R.string.txt_favoritos);
+            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
     }
 
     private void loadFavoritos() {

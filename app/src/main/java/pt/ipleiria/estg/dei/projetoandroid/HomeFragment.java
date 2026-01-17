@@ -20,7 +20,7 @@ public class HomeFragment extends Fragment implements StatsListener {
             txtActiveListings, txtTotalViews;
 
     public HomeFragment() {
- 
+
     }
 
     @Override
@@ -63,7 +63,6 @@ public class HomeFragment extends Fragment implements StatsListener {
 
     @Override
     public void onStatsSuccess() {
-        Toast.makeText(getContext(), "Sucesso", Toast.LENGTH_SHORT).show();
         txtAnimalsAdopted.setText(String.valueOf(AppSingleton.getInstance(getContext()).getAnimalsAdopted()));
         txtAnimalsWaiting.setText(String.valueOf(AppSingleton.getInstance(getContext()).getAnimalsWaiting()));
         txtActiveUsers.setText(String.valueOf(AppSingleton.getInstance(getContext()).getActiveUsers()));

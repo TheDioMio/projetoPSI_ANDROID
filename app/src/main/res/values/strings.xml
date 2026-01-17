@@ -146,4 +146,13 @@
     <string name="txt_ainda_nao_tens_favoritos">Ainda não tens favoritos</string>
     <string name="txt_favoritos">Favoritos</string>
     <string name="txt_logout">Logout</string>
+    <string name="txt_mensagens">Mensagens</string>
+    <string name="txt_home">Home</string>
+    <string name="txt_menu_section_user">UTILIZADOR</string>
+    <string name="txt_menu_section_content">CONTEÚDO</string>
+    <string name="txt_menu_section_communication">COMUNICAÇÃO</string>
+    <string name="txt_menu_section_session">SESSÃO</string>
+    <string name="txt_anuncios_de_animais">Anúncios de Animais</string>
+    <string name="txt_animal">Animal</string>
+    <string name="txt_nomenome">Nome</string>
 </resources>

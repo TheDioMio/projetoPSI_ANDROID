@@ -58,6 +58,7 @@ import pt.ipleiria.estg.dei.projetoandroid.listeners.GetAnimalEditListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MetaListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.MyAnimalsListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.SignupListener;
+import pt.ipleiria.estg.dei.projetoandroid.listeners.StatsListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.UpdateAnimalListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.UploadAnimalPhotosListener;
 import pt.ipleiria.estg.dei.projetoandroid.utils.FileUtils;
@@ -104,21 +105,9 @@ public class AppSingleton {
 
     private Set<String> favoriteAnimalIds = new HashSet<>();
 
-
-    //-------------------------------------------
-    // Endpoints da API 10.104.146.191
-    //--------------------------------------------
-    //region ENDPOINTS
-    //public String endereco = "http://10.0.2.2/projetoPSI_WEB/backend/web/api";
-    //public String endereco = "http://192.168.1.68:8000/projetoPSI_WEB/backend/web/api";
-    //public String endereco = "http://172.22.21.240/projetoPSI_WEB/backend/web/api";
-    //endereço para as imagens
-    //public static final String FRONTEND_BASE_URL = "http://10.0.2.2/projetoPSI_WEB/frontend/web";
-    //public static final String FRONTEND_BASE_URL = "http://192.168.1.68:8000/projetoPSI_WEB/frontend/web";
-    //public static final String FRONTEND_BASE_URL = "http://172.22.21.240/projetoPSI_WEB/frontend/web";
-
     public String endereco;
     public static String FRONTEND_BASE_URL = "/projetoPSI_WEB/frontend/web";
+
 
     public String getEndereco() {
 
@@ -129,8 +118,57 @@ public class AppSingleton {
         this.endereco = endereco;
     }
 
-    //ENDPOINTS DOS USERS
+    //region VARIAVEIS ESTATISTICAS
+    private int animalsAdopted;
+    private int animalsWaiting;
+    private int activeUsers;
+    private int activeListings;
+    private int totalViews;
 
+    public void setAnimalsAdopted(int value) {
+        this.animalsAdopted = value;
+    }
+
+    public void setAnimalsWaiting(int value) {
+        this.animalsWaiting = value;
+    }
+
+    public void setActiveUsers(int value) {
+        this.activeUsers = value;
+    }
+
+    public void setActiveListings(int value) {
+        this.activeListings = value;
+    }
+
+    public void setTotalViews(int value) {
+        this.totalViews = value;
+    }
+
+    public int getAnimalsAdopted() {
+        return animalsAdopted;
+    }
+
+    public int getAnimalsWaiting() {
+        return animalsWaiting;
+    }
+
+    public int getActiveUsers() {
+        return activeUsers;
+    }
+
+    public int getActiveListings() {
+        return activeListings;
+    }
+
+    public int getTotalViews() {
+        return totalViews;
+    }
+    //endregion
+
+    //region ENDPOINTS
+
+    //ENDPOINTS DOS USERS
 
     private String getmUrlAPILogin = "/projetoPSI_WEB/backend/web/api/auth/login";
     private String postmUrlAPISignup = "/projetoPSI_WEB/backend/web/api/auth/signup";
@@ -151,12 +189,16 @@ public class AppSingleton {
     private String getmUrlAPIMyAnimals = "/projetoPSI_WEB/backend/web/api/animals/my?expand=listing.comments.user.profileImage,user.profileImage";
     private String getmUrlAPIMeta = "/projetoPSI_WEB/backend/web/api/animals/meta";
     private String getmUrlAPIAnimalEdit = "/projetoPSI_WEB/backend/web/api/animals/edit/";
+    private String postmURLAPIViewsAdd = "/projetoPSI_WEB/backend/web/api/animals/";
+
+    private String getmURLAPIStats = "/projetoPSI_WEB/backend/web/api/animals/stats";
 
     //ENDPOINTS DOS COMMENTS
     private String postmUrlAPICommentCreate = "/projetoPSI_WEB/backend/web/api/comments";
     private String deletemUrlAPICommentDelete = "/projetoPSI_WEB/backend/web/api/comments";
     private String putmUrlAPICommentUpdate = "/projetoPSI_WEB/backend/web/api/comments";
 
+//endregion
 
 
     public static boolean isConnectionInternet(Context context){
@@ -202,6 +244,11 @@ public class AppSingleton {
 
     private SignupListener signupListener;
 
+    private StatsListener statsListener;
+
+    public void setStatsListener(StatsListener listener) {
+        this.statsListener = listener;
+    }
     public void setSignupListener(SignupListener listener) {
         this.signupListener = listener;
     }
@@ -394,11 +441,10 @@ public class AppSingleton {
     //endregion
 
 
-
-
     //------------------------------
     //GESTOR DE COMMENTS
     //-----------------------------
+    //region COMMENTS
 
     //gestor dos comments no singleton (atualiza a lista dos animals e dos my animals)
 
@@ -662,7 +708,7 @@ public class AppSingleton {
     }
 
 
-
+    //endregion
 
 
 
@@ -767,10 +813,6 @@ public class AppSingleton {
             return;
         }
 
-//        if (!isConnectionInternet(context)) {
-//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
@@ -1007,10 +1049,6 @@ public class AppSingleton {
             return;
         }
 
-//        if (!isConnectionInternet(context)) {
-//            Toast.makeText(context, R.string.txt_nao_tem_internet, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
 
         JsonArrayRequest request = new JsonArrayRequest(
                 Request.Method.GET,
@@ -1163,34 +1201,118 @@ public class AppSingleton {
         volleyQueue.add(request);
     }
 
+
+    public void incrementViewAnimal(
+            final Context context,
+            final int animalId
+    ) {
+
+        if (!isConnectionInternet(context)) {
+            return;
+        }
+
+        String url = endereco + postmURLAPIViewsAdd + animalId + "/view";
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                url,
+                response -> {
+                    // 🔕 não faz nada
+                },
+                error -> {
+                    // não faz nada (ou só log)
+                    Log.e("VIEW_API", "Erro ao enviar view", error);
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                SharedPreferences sp = context.getSharedPreferences(
+                        "DADOS_USER",
+                        Context.MODE_PRIVATE
+                );
+
+                String token = sp.getString(MenuMainActivity.TOKEN, null);
+
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                headers.put("Accept", "application/json");
+
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+    // pede as estatisticas da HomePage
+    public void getStatsAPI(
+            final Context context,
+            final StatsListener listener
+    ) {
+
+        if (!isConnectionInternet(context)) {
+            if (listener != null) listener.onStatsError();
+            return;
+        }
+
+        String url = endereco + getmURLAPIStats;
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                response -> {
+                    try {
+                        JSONObject json = new JSONObject(response);
+
+                        if (!json.optBoolean("success")) {
+                            if (listener != null) listener.onStatsError();
+                            return;
+                        }
+
+                        animalsAdopted = json.optInt("animals_adopted");
+                        animalsWaiting = json.optInt("animals_waiting");
+                        activeUsers    = json.optInt("active_users");
+                        activeListings = json.optInt("active_listings");
+                        totalViews     = json.optInt("total_views");
+
+                        if (listener != null) listener.onStatsSuccess();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (listener != null) listener.onStatsError();
+                    }
+                },
+                error -> {
+                    Log.e("STATS_API", "Erro stats", error);
+                    if (listener != null) listener.onStatsError();
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                SharedPreferences sp = context.getSharedPreferences(
+                        "DADOS_USER",
+                        Context.MODE_PRIVATE
+                );
+
+                String token = sp.getString(MenuMainActivity.TOKEN, null);
+
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+        };
+
+        volleyQueue.add(request);
+    }
+
+
+
+
     //endregion
 
-
-
-
-
-
-//    /*--> MÉTODOS DE ANIMAIS <--*/
-//
-//    public void addAnimal(Animal animal) {
-//        gestorAnimals.addAnimal(animal);
-//    }
-
-//    public ArrayList<Animal> getAnimalsByUser(int userId) {
-//        return gestorAnimals.getAnimalsByUser(userId);
-//    }
-
-
-
-    //--------------------------------------
-    //----------------ANIMALS BD
-    //--------------------------------------
-
-
-//    public ArrayList<Application> getAllApplicationsBD() {
-//        applications = appBD.getAllApplicationsBD();
-//        return new ArrayList<>(applications);
-//    }
 
 
 

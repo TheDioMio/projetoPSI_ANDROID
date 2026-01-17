@@ -97,6 +97,7 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
         etNewComment = view.findViewById(R.id.etNewComment);
         btnSendMessage = view.findViewById(R.id.btnSendMessage);
         AppSingleton.getInstance(getContext()).setCommentCreateListener(this);
+
         // LayoutManagers
         rvAnimalImages.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -113,6 +114,9 @@ public class AnimalDetailsFragment extends Fragment implements CommentCreateList
             int animalId = args.getInt("ID_ANIMAL");
             //colocar a ir buscar o animal ao singleton
             animal = AppSingleton.getInstance(getContext()).getAnimalBD(animalId);
+            //incrementa as view do animal
+            AppSingleton.getInstance(getContext()).incrementViewAnimal(requireContext(), animal.getId());
+
             carregarDados(animal);
         }
 

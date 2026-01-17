@@ -1,6 +1,8 @@
 package pt.ipleiria.estg.dei.projetoandroid;
 
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,6 +62,17 @@ public class ApplicationMenuFragment extends Fragment {
             fragmentTransaction.replace(R.id.contentFragment, listFragment);
             fragmentTransaction.addToBackStack(null); // Permite voltar atrás com o botão "Back"
             fragmentTransaction.commit();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        AppCompatActivity act = (AppCompatActivity) requireActivity();
+        if (act.getSupportActionBar() != null) {
+            act.getSupportActionBar().setTitle(R.string.txt_candidaturas);
+            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 }

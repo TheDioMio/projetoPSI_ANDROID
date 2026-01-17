@@ -1,28 +1,39 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Tema base -->
+
     <style name="Base.Theme.ProjetoANDROID" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- NÃO ocupar ecrã inteiro -->
         <item name="android:windowFullscreen">false</item>
-        <!-- Cores do sistema -->
-        <item name="android:statusBarColor">?attr/colorSurfaceVariant</item>
-        <item name="android:navigationBarColor">?attr/colorSurfaceVariant</item>
+
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
 
         <item name="android:buttonStyle">@style/Widget.ProjetoANDROID.MainButton</item>
         <item name="materialButtonStyle">@style/Widget.ProjetoANDROID.MainButton</item>
+        <item name="textInputStyle">@style/Widget.ProjetoANDROID.TextInputLayout</item>
+
+        <item name="android:spinnerStyle">@style/Widget.ProjetoANDROID.Spinner</item>
+        <item name="spinnerStyle">@style/Widget.ProjetoANDROID.Spinner</item>
+
+        <item name="android:spinnerDropDownItemStyle">@style/Widget.ProjetoANDROID.DropDownItem</item>
     </style>
 
-    <!-- Tema sem ActionBar-->
+    <style name="Theme.ProjetoANDROID" parent="Base.Theme.ProjetoANDROID">
+    </style>
+
     <style name="Theme.ProjetoANDROID.NoActionBar" parent="Base.Theme.ProjetoANDROID">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">false</item>
     </style>
-    <!-- Tema padrão da app -->
-    <style name="Theme.ProjetoANDROID" parent="Base.Theme.ProjetoANDROID">
 
-    </style>
-
-    <!--Estilo Botões-->
     <style name="Widget.ProjetoANDROID.MainButton" parent="Widget.Material3.Button">
         <item name="android:backgroundTint">@color/primary</item>
         <item name="cornerRadius">12dp</item>
@@ -34,4 +45,30 @@
     <style name="Widget.ProjetoANDROID.SecondaryButton" parent="Widget.ProjetoANDROID.MainButton">
         <item name="android:backgroundTint">@color/secondary</item>
     </style>
+
+    <style name="Widget.ProjetoANDROID.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxStrokeColor">@color/primary</item>
+        <item name="hintTextColor">@color/dark_green</item>
+    </style>
+
+    <style name="Widget.ProjetoANDROID.Spinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:background">@drawable/bg_spinner_soft</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:minHeight">50dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">40dp</item>
+    </style>
+
+    <style name="Widget.ProjetoANDROID.DropDownItem" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingVertical">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+
 </resources>

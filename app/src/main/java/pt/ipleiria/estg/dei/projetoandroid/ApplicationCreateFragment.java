@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -21,22 +22,30 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import pt.ipleiria.estg.dei.projetoandroid.listeners.ApplicationsListener;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.Animal;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 import pt.ipleiria.estg.dei.projetoandroid.modelo.Application;
+import pt.ipleiria.estg.dei.projetoandroid.modelo.User;
 
 public class ApplicationCreateFragment extends Fragment {
     private EditText etCandidateName, etCandidateAge, etContact, etMotive;
     private Spinner spHomeType, spTimeAlone, spChildren, spBills, spFollowUp;
     private Button btnSubmit;
+    private TextView tvNomeAnimal;
+    private Animal animal;
 
-    private int candidateAge;
+    private int candidateAge, animalId, target_user_id;
     private String candidateName, candidateContact, candidateMotive;
     // Variáveis auxiliares para os spinners
     private String homeTypeStr, timeAloneStr, childrenStr, billsStr, followupStr;
 
+    private AppSingleton singleton = AppSingleton.getInstance(getContext());
+
     public ApplicationCreateFragment() {
         // Required empty public constructor
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +57,8 @@ public class ApplicationCreateFragment extends Fragment {
         etContact = view.findViewById(R.id.etContact);
         etMotive = view.findViewById(R.id.etMotive);
 
+        tvNomeAnimal = view.findViewById(R.id.tvNomeAnimal);
+
         spHomeType = view.findViewById(R.id.spHomeType);
         spTimeAlone = view.findViewById(R.id.spTimeAlone);
         spBills = view.findViewById(R.id.spBills);
@@ -55,6 +66,15 @@ public class ApplicationCreateFragment extends Fragment {
         spFollowUp = view.findViewById(R.id.spFollowUp);
 
         btnSubmit = view.findViewById(R.id.btnSubmit);
+
+
+        //obtém o animal da BD passado pelo Bundle
+        Bundle args = getArguments();
+        if (args != null) {
+            animalId = getArguments().getInt("ID_ANIMAL", 0);
+            target_user_id = getArguments().getInt("TARGET_USER_ID", 0);
+            animal = AppSingleton.getInstance(getContext()).getAnimalBD(animalId);
+        }
 
         //Configurar as Listas dos Spinners
         ArrayList<String> listaSimNao = new ArrayList<>();
@@ -88,6 +108,9 @@ public class ApplicationCreateFragment extends Fragment {
         spHomeType.setAdapter(adapterHabitacao);
         spTimeAlone.setAdapter(adapterTempo);
 
+        //Colocar nome do animal lá em cima --
+        tvNomeAnimal.setText("Candidatura a " + animal.getName());
+
         //Botão Enviar ---
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,14 +141,6 @@ public class ApplicationCreateFragment extends Fragment {
                 childrenStr = spChildren.getSelectedItem().toString();
                 billsStr = spBills.getSelectedItem().toString();
                 followupStr = spFollowUp.getSelectedItem().toString();
-
-                //Obter IDs
-                int animalId = 0;
-                int target_user_id = 0;
-                if (getArguments() != null) {
-                    animalId = getArguments().getInt("ID_ANIMAL", 0);
-                    target_user_id = getArguments().getInt("TARGET_USER_ID", 0);
-                }
 
                 SharedPreferences sharedPreferences = getContext().getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
                 int userId = sharedPreferences.getInt("USER_ID_INT", -1);

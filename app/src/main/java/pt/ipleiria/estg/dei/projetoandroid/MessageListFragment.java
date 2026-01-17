@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
@@ -141,9 +142,17 @@ public class MessageListFragment extends Fragment implements MessagesListener {
         singleton.getAllMessagesAPI(getContext());
 
         singleton.getAllMessagesAPI(getContext());
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AppCompatActivity act = (AppCompatActivity) requireActivity();
+        if (act.getSupportActionBar() != null) {
+            act.getSupportActionBar().setTitle(R.string.txt_mensagens);
 
-
+            act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     private void atualizarListas(ArrayList lista) {

@@ -46,12 +46,26 @@ public class MetaSpinnerAdaptador extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return createView(position, convertView, parent);
+        if (convertView == null) {
+            convertView = inflater.inflate(android.R.layout.simple_spinner_item, parent, false);
+        }
+
+        TextView tv = (TextView) convertView.findViewById(android.R.id.text1);
+        tv.setText(items.get(position).getDescription());
+
+        return convertView;
     }
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return createView(position, convertView, parent);
+        if (convertView == null) {
+            convertView = inflater.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
+        }
+
+        TextView tv = (TextView) convertView.findViewById(android.R.id.text1);
+        tv.setText(items.get(position).getDescription());
+
+        return convertView;
     }
 
     private View createView(int position, View convertView, ViewGroup parent) {

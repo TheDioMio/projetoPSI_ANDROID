@@ -88,7 +88,7 @@ public class AllAnimalsFragment extends Fragment implements AnimalsListener {
         animals = new ArrayList<>();
         animalsFiltrados = new ArrayList<>();
 
-        adaptador = new ListaAnimalsGridAdaptador(getContext(), animalsFiltrados);
+        adaptador = new ListaAnimalsGridAdaptador(getContext(), animalsFiltrados, null);
         lvAnimalsGrid.setAdapter(adaptador);
 
         AppSingleton.getInstance(getContext()).setAnimalsListener(this);

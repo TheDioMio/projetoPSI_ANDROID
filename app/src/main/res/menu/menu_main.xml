@@ -24,6 +24,11 @@
             android:title="@string/txt_OsMeusAnimais" />
 
         <item
+            android:id="@+id/navFavorites"
+            android:icon="@drawable/ic_star_filled"
+            android:title="@string/txt_favoritos" />
+
+        <item
             android:id="@+id/navCandidaturas"
             android:icon="@drawable/ic_candidaturas_foreground"
             android:title="@string/txt_candidatura" />
@@ -32,6 +37,10 @@
             android:icon="@drawable/ic_message_foreground"
             android:title="@string/txt_messages" />
 
+        <item
+            android:id="@+id/navLogout"
+
+            android:title="@string/txt_logout" />
     </group>
 
 <!--    <item android:title="@string/txt_comunicar" >-->

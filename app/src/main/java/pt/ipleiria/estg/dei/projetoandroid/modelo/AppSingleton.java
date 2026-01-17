@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Region;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -40,8 +41,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import pt.ipleiria.estg.dei.projetoandroid.listeners.AnimalDeleteListener;
 import pt.ipleiria.estg.dei.projetoandroid.listeners.AvatarUploadListener;
@@ -95,6 +98,11 @@ public class AppSingleton {
 
     private ArrayList<Comment> comments;
 
+    //variaveis e constantes dos Favoritos
+    private static final String SP_NAME = "DADOS_USER";
+    private static final String SP_FAVORITES = "FAVORITES_ANIMALS";
+
+    private Set<String> favoriteAnimalIds = new HashSet<>();
 
 
     //-------------------------------------------
@@ -151,34 +159,6 @@ public class AppSingleton {
 
 
 
-//
-//    private String getmUrlAPILogin;
-//    private String postmUrlAPISignup;
-//    private String getmUrlAPIMe;
-//    private String putmUrlAPIMe;
-//    private String getMessageURL;
-//    private String getmUrlAPIApplication;
-//
-//    private String getSentApplications;
-//
-//    private String postAvatarURL;
-//    private String postmUrlAPIFilesDelete;
-//    private String postmUrlAPIFilesCreate;
-//
-//    private String getmUrlAPIAnimals;
-//    private String putmUrlAPIAnimalUpdate;
-//    private String deletemUrlAPIAnimalDelete;
-//    private String postmUrlAPIAnimalCreate;
-//    private String getmUrlAPIMyAnimals;
-//    private String getmUrlAPIMeta;
-//    private String getmUrlAPIAnimalEdit;
-//
-//    private String postmUrlAPICommentCreate;
-//    private String deletemUrlAPICommentDelete;
-//    private String putmUrlAPICommentUpdate;
-//
-
-
     public static boolean isConnectionInternet(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         //necessita de permissões de acesso a internet
@@ -188,7 +168,6 @@ public class AppSingleton {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
-    //endregion
 
 
     //region LISTENERS
@@ -298,6 +277,9 @@ public class AppSingleton {
 
     private static AppSingleton instance = null;
 //    private GestorAnimals gestorAnimals = new GestorAnimals();
+
+
+    // retirar isto daqui
     private GestorUsers gestorUsers = new GestorUsers();
 
 
@@ -323,17 +305,102 @@ public class AppSingleton {
         applications = new ArrayList<>();
     }
 
+    // ------------------------------------------
+    // ----------------------------FAVORITOS-----
+    // ------------------------------------------
+    //region FAVORITOS
+
+    private void saveFavorites(Context context) {
+        SharedPreferences sp =
+                context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putStringSet(SP_FAVORITES, favoriteAnimalIds);
+        editor.apply();
+
+        System.out.println("DEBUG SP SAVE FAVORITES=" + favoriteAnimalIds);
+    }
+
+    private void loadFavorites(Context context) {
+        SharedPreferences sp =
+                context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+
+        Set<String> stored =
+                sp.getStringSet(SP_FAVORITES, null);
+
+        if (stored != null) {
+            favoriteAnimalIds = new HashSet<>(stored);
+        } else {
+            favoriteAnimalIds = new HashSet<>();
+        }
+
+        System.out.println("DEBUG SP LOAD FAVORITES=" + favoriteAnimalIds);
+    }
+
+    public void clearFavorites(Context context) {
+
+        // Limpa memória
+        favoriteAnimalIds.clear();
+
+        // Limpa SharedPreferences
+        SharedPreferences sp =
+                context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+
+        sp.edit()
+                .remove(SP_FAVORITES)
+                .apply();
+
+        System.out.println("DEBUG clearFavorites OK");
+    }
+
+
+    public boolean isFavorite(int animalId) {
+        return favoriteAnimalIds.contains(String.valueOf(animalId));
+    }
+
+    public void addFavorite(Context context, int animalId) {
+        favoriteAnimalIds.add(String.valueOf(animalId));
+        saveFavorites(context);
+    }
+
+    public void removeFavorite(Context context, int animalId) {
+        favoriteAnimalIds.remove(String.valueOf(animalId));
+        saveFavorites(context);
+    }
+
+    public boolean toggleFavorite(Context context, int animalId) {
+        String id = String.valueOf(animalId);
+
+        boolean isNowFavorite;
+
+        if (favoriteAnimalIds.contains(id)) {
+            favoriteAnimalIds.remove(id);
+            isNowFavorite = false;
+        } else {
+            favoriteAnimalIds.add(id);
+            isNowFavorite = true;
+        }
+
+        saveFavorites(context);
+        return isNowFavorite;
+    }
+
+    public Set<String> getFavoriteAnimalIds() {
+        return new HashSet<>(favoriteAnimalIds);
+    }
+
+
+
+    //endregion
+
+
+
 
     //------------------------------
     //GESTOR DE COMMENTS
     //-----------------------------
 
-    //gestor dos comments no singlerton (atualiza a lista dos animals e dos my animals)
-
-
-
-
-
+    //gestor dos comments no singleton (atualiza a lista dos animals e dos my animals)
 
     public void adicionarCommentsBD(ArrayList<Comment> comments){
         for (Comment c: comments){
@@ -1896,6 +1963,23 @@ public class AppSingleton {
         };
 
         volleyQueue.add(request);
+    }
+
+
+
+
+    public void logout(Context context) {
+
+        clearFavorites(context);
+
+        SharedPreferences sp = context.getSharedPreferences(
+                "DADOS_USER",
+                Context.MODE_PRIVATE
+        );
+
+        sp.edit()
+                .clear()   // limpa TUDO do user (token, id, favoritos, etc.)
+                .apply();
     }
 
 

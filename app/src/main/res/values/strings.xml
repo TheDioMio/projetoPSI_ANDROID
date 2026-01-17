@@ -141,4 +141,9 @@
     <string name="txt_ipAdress">Endereço</string>
     <string name="txt_port">Porta</string>
     <string name="txt_settings">Definições</string>
+    <string name="color_dourado">#C9A227</string>
+    <string name="txt_favorito">Favorito</string>
+    <string name="txt_ainda_nao_tens_favoritos">Ainda não tens favoritos</string>
+    <string name="txt_favoritos">Favoritos</string>
+    <string name="txt_logout">Logout</string>
 </resources>

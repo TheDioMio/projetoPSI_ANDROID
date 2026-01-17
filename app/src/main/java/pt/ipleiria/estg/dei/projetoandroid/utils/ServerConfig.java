@@ -2,6 +2,7 @@ package pt.ipleiria.estg.dei.projetoandroid.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import pt.ipleiria.estg.dei.projetoandroid.modelo.AppSingleton;
 
@@ -32,6 +33,7 @@ public class ServerConfig {
 
     public static String getApiBase(Context ctx) {
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        Toast.makeText(ctx, sp.getString(KEY_API_BASE, DEFAULT_API_BASE), Toast.LENGTH_SHORT).show();
         return sp.getString(KEY_API_BASE, DEFAULT_API_BASE);
     }
 
@@ -42,7 +44,7 @@ public class ServerConfig {
 
     public static void saveApiBase(Context ctx, String apiBase) {
         AppSingleton.getInstance(ctx.getApplicationContext()).setEndereco(apiBase);
-
+        Toast.makeText(ctx, apiBase, Toast.LENGTH_SHORT).show();
         SharedPreferences sp = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
         sp.edit()
                 .putString(KEY_API_BASE, apiBase)

@@ -76,12 +76,17 @@ public class ListaAnimalsAdaptador extends BaseAdapter {
         private ImageView imgAnimal;
         private ImageButton btnDelete;
 
+
         public ViewHolderLista(View view) {
             tvName = view.findViewById(R.id.tvName);
             tvAge = view.findViewById(R.id.tvAge);
             tvBreed = view.findViewById(R.id.tvBreed);
             imgAnimal = view.findViewById(R.id.imgAnimal);
             btnDelete = view.findViewById(R.id.btnDelete);
+
+
+
+
 
             // Garantir que o botão não bloqueia o clique da ListView
             btnDelete.setFocusable(false);

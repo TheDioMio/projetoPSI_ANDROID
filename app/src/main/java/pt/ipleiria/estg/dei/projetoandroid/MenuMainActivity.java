@@ -73,6 +73,28 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //  BLOQUEIO DE ACESSO SEM LOGIN (PRIMEIRA COISA!)
+        SharedPreferences sp = getSharedPreferences(
+                "DADOS_USER",
+                MODE_PRIVATE
+        );
+
+        String token = sp.getString(MenuMainActivity.TOKEN, null);
+
+        if (token == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+            );
+            startActivity(intent);
+            finish();
+            return;
+        }
+
+
+
         setContentView(R.layout.activity_menu_main);
         requestNotificationPermissionIfNeeded();
 
@@ -91,7 +113,7 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 R.string.ndClose
         );
 
-        // Listener correto para o ícone (hamburger/seta)
+        // Listener para o ícone (hamburger/seta)
         drawerToggle.setToolbarNavigationClickListener(v -> {
             if (!drawerToggle.isDrawerIndicatorEnabled()) {
                 // Estamos no modo seta → faz back
@@ -123,8 +145,6 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                         if (fm.getBackStackEntryCount() > 0) {
                             fm.popBackStack();
                         } else {
-//                            carregarFragmentoInicial();  // volta a colocar o HomeFragment
-//                            showHamburger();
                             moveTaskToBack(true);
                         }
                     }
@@ -162,19 +182,6 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
 
 
-//    public void abrirFragment(Fragment fragment, boolean addToBackStack) {
-//        FragmentTransaction ft = getSupportFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.contentFragment, fragment);
-//
-//        if (addToBackStack) {
-//            ft.addToBackStack(null);
-//        }
-//
-//        ft.commit();
-//    }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -199,14 +206,6 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
     }
 
 
-    private void clearBackStack() {
-        getSupportFragmentManager().popBackStack(
-                null,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE
-        );
-    }
-
-
     @Override
     public boolean onSupportNavigateUp() {
         getOnBackPressedDispatcher().onBackPressed();
@@ -222,37 +221,18 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                 .commit();
 
         showHamburger();
-//       Fragment fragment = new HomeFragment();
-//       fragmentManager.beginTransaction().replace(R.id.contentFragment, fragment).commit();
-
     }
 
     private void carregarCabecalho() {
 
 
-        //DEVE IR BUSCAR O TOKEN A SHARED PREFERENCES E NÃO AO INTENT
-        // 1️⃣ Receber token do intent
-//        token = getIntent().getStringExtra(TOKEN);
-//
-//        if (token == null) {
-//            Toast.makeText(this, "Token em falta", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // 2️⃣ Guardar token nas SharedPreferences
-//        SharedPreferences sp =
-//                getSharedPreferences("DADOS_USER", Context.MODE_PRIVATE);
-//
-//        sp.edit().putString("TOKEN", token).apply();
-
-        // 3️⃣ Configurar Singleton
+        //  Configurar Singleton
         AppSingleton singleton = AppSingleton.getInstance(getApplicationContext());
         singleton.setMenuListener(this);
 
-        // 4️⃣ Chamar API (AGORA o token já existe)
+        // Chamar API (AGORA o token já existe)
         singleton.getMe(this);
 
-        // 5️⃣ Inicializar views do header
         View headerView = navigationView.getHeaderView(0);
         nav_tvEmail = headerView.findViewById(R.id.tvEmail);
         nav_tvName = headerView.findViewById(R.id.tvName);
@@ -286,6 +266,8 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
 
         } else if (id == R.id.navDetalhesAnimal || id == R.id.bottom_animals) {
             navegarPara(new AllAnimalsFragment());
+        } else if (id == R.id.navFavorites ) {
+            navegarPara(new FavoritesFragment());
 
         } else if (id == R.id.navMyAnimals) {
             navegarPara(new MyAnimalsFragment());
@@ -301,7 +283,25 @@ public class MenuMainActivity extends AppCompatActivity implements NavigationVie
                     new Intent(this, ProfileActivity.class),
                     EDIT
             );
+        } else if (id == R.id.navLogout ) {
+            AppSingleton.getInstance(getApplicationContext())
+                    .logout(getApplicationContext());
+
+            Intent intent = new Intent(
+                    MenuMainActivity.this,
+                    LoginActivity.class
+            );
+
+            // MUITO IMPORTANTE
+            intent.setFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK
+            );
+
+            startActivity(intent);
+            finish();
         }
+
 
         drawer.closeDrawer(GravityCompat.START);
         return true;

@@ -54,25 +54,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             @Override
             public void onClick(View v) {
 
-//                codigo da ficha books
-//                if (!isEmailValido(email.getText().toString())) {
-//                    Toast.makeText(LoginActivity.this, "Email inválido!!", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                if (!isPasswordValida(password.getText().toString())) {
-//                    Toast.makeText(LoginActivity.this, "Password inválida!!", Toast.LENGTH_SHORT).show();
-//                    password.setText("");
-//                    return;
-//                }
-//
-//                SingletonGestorLivros.getInstance(getApplicationContext()).loginAPI(email.getText().toString(), password.getText().toString(), getApplicationContext());
-
-
-
-//                String password = LoginActivity.this.password.getText().toString();
-//                String username = LoginActivity.this.username.getText().toString();
-
                 if (!isUsernameValid(username.getText().toString())) {
                     username.setError("Email inválido!!");
                     Toast.makeText(LoginActivity.this, "Email inválido!!", Toast.LENGTH_SHORT).show();
@@ -86,17 +67,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
                     return;
                 }
                 AppSingleton.getInstance(getApplicationContext()).loginAPI(username.getText().toString(), password.getText().toString(), getApplicationContext());
-
-
-//                User user = AppSingleton.getInstance().getUserLogin(username, password);
-//
-//                if (user != null){
-//                    Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
-//                    intent.putExtra(MenuMainActivity.IDUSER, user.getId());
-//                    startActivity(intent);
-//                }else {
-//                    Toast.makeText(LoginActivity.this, "Credenciais inválidas!", Toast.LENGTH_SHORT).show();
-//                }
 
             }
         });
@@ -120,7 +90,11 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     @Override
     protected void onResume() {
         super.onResume();
-        //AppSingleton.getInstance(getApplicationContext()).reloadServerConfig();
+
+        if (password != null) {
+            password.setText("");
+        }
+
     }
 
     private boolean isUsernameValid(String username){
@@ -150,7 +124,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             sp.edit().putString(MenuMainActivity.TOKEN, token).apply();
 
             Intent intent = new Intent(getApplicationContext(), MenuMainActivity.class);
-//            intent.putExtra(MenuMainActivity.TOKEN, token);
             startActivity(intent);
             finish();
         }else{

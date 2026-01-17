@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
+
         <!-- IMAGEM -->
         <ImageView
             android:id="@+id/imgAnimal"
@@ -89,73 +90,3 @@
 </androidx.cardview.widget.CardView>
 
 
-
-
-    <!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:layout_margin="8dp"-->
-<!--    app:cardCornerRadius="12dp"-->
-<!--    app:cardElevation="8dp"-->
-<!--    app:cardUseCompatPadding="true"-->
-<!--    app:cardBackgroundColor="@android:color/white">-->
-
-<!--    &lt;!&ndash; Conteúdo do card &ndash;&gt;-->
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:padding="8dp">-->
-
-<!--        &lt;!&ndash; Imagem à esquerda &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/imgCapa"-->
-<!--            android:layout_width="150dp"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:layout_marginEnd="12dp"-->
-<!--            android:contentDescription="@string/app_name"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:src="@mipmap/img_teste" />-->
-
-<!--        &lt;!&ndash; Texto à direita &ndash;&gt;-->
-<!--        <LinearLayout-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_weight="1"-->
-<!--            android:orientation="vertical"-->
-<!--            android:gravity="center_vertical">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tvName"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="20dp"-->
-<!--                android:gravity="center"-->
-<!--                android:text="@string/txt_name_test"-->
-<!--                android:textColor="#000000"-->
-<!--                android:textSize="16sp"-->
-<!--                android:textStyle="bold" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tvBreed"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:text="@string/txt_breed_test"-->
-<!--                android:textColor="#444444"-->
-<!--                android:textSize="14sp" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tvAge"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:gravity="center"-->
-<!--                android:text="@string/txt_age_test"-->
-<!--                android:textColor="#444444"-->
-<!--                android:textSize="14sp" />-->
-
-<!--        </LinearLayout>-->
-<!--    </LinearLayout>-->
-<!--</androidx.cardview.widget.CardView>-->
